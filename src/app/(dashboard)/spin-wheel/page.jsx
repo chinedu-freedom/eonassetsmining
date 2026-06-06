@@ -111,10 +111,10 @@ export default function SpinWheelPage() {
       {/* Filters & Export Options */}
       <Card className="border-none shadow-sm bg-card">
         <CardContent className="p-6">
-          <div className="flex flex-col md:flex-row justify-between gap-4">
+          <div className="flex flex-col md:flex-row gap-4 w-full">
             {/* Export Buttons Removed */}
-            <div className="flex items-center gap-4 w-full md:w-auto ml-auto">
-              <div className="relative flex-1 md:w-64">
+            <div className="flex items-center gap-4 w-full">
+              <div className="relative flex-1">
                 <Search className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
                 <Input
                   placeholder="Search prizes..."

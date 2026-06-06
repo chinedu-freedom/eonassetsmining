@@ -108,8 +108,8 @@ export default function NewsManagementPage() {
       {/* Filters */}
       <Card className="border-none shadow-sm bg-card">
         <CardContent className="p-6">
-          <div className="flex justify-end">
-            <div className="relative w-full md:w-64">
+          <div className="flex w-full">
+            <div className="relative flex-1">
               <Search className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
               <Input
                 placeholder="Search news..."

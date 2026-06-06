@@ -38,7 +38,7 @@ const navigation = [
   { name: "Live Market", href: "/live-market" }, // No icon
   { name: "Customers", href: "/customers", icon: ArrowRight },
   { name: "Activity Monitor", href: "/activity-monitor", icon: Activity },
-  { name: "Purchase Record", href: "/purchase-record", icon: ArrowRight },
+  // { name: "Purchase Record", href: "/purchase-record", icon: ArrowRight },
   {
     name: "Recharge Payments",
     icon: Play,
