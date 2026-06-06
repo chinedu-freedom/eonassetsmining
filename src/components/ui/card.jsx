@@ -17,3 +17,13 @@ export function CardTitle({ className = "", children }) {
 export function CardContent({ className = "", children }) {
   return <div className={`p-6 ${className}`}>{children}</div>;
 }
+
+export function CardDescription({ className = "", children }) {
+  return <p className={`text-sm text-gray-500 dark:text-gray-400 ${className}`}>{children}</p>;
+}
+
+export function CardFooter({ className = "", children }) {
+  return <div className={`flex items-center p-6 pt-0 ${className}`}>{children}</div>;
+}
+
+
