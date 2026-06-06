@@ -52,31 +52,52 @@ export default function PlansTable({ searchTerm = "" }) {
 
   const limit = 10;
 
-  const { data, isLoading, refetch, error } = useFetchData(
-    `/api/plans?page=${page}&limit=${limit}${searchTerm ? `&search=${encodeURIComponent(searchTerm)}` : ""}`,
-    ["plans", page, searchTerm]
-  );
+  // DUMMY DATA
+  const dummyPlans = [
+    {
+      _id: "1",
+      title: "Basic Miner",
+      minDeposit: 100,
+      maxDeposit: 500,
+      dailyProfit: 1.5,
+      contractDuration: 30,
+      isFixedDeposit: false,
+      status: "Active",
+      createdAt: new Date().toISOString(),
+    },
+    {
+      _id: "2",
+      title: "Pro Miner",
+      minDeposit: 500,
+      maxDeposit: 2000,
+      dailyProfit: 2.5,
+      contractDuration: 60,
+      isFixedDeposit: true,
+      status: "Active",
+      createdAt: new Date().toISOString(),
+    },
+    {
+      _id: "3",
+      title: "Elite Miner",
+      minDeposit: 2000,
+      maxDeposit: 10000,
+      dailyProfit: 4.0,
+      contractDuration: 90,
+      isFixedDeposit: true,
+      status: "Inactive",
+      createdAt: new Date().toISOString(),
+    }
+  ];
+
+  const isLoading = false;
+  const error = null;
 
   useEffect(() => {
     setPage(1);
   }, [searchTerm]);
 
-  if (error) {
-    return (
-      <div className="p-6 text-center text-red-500">
-        Failed to load investment plans.
-      </div>
-    );
-  }
-
-  const deletePlan = useDelete(
-    (id) => `/api/plans/${id}`,
-    ["plans", page],
-    { onSuccess: () => refetch() }
-  );
-
-  const plans = data?.data || [];
-  const meta = data?.meta ?? {};
+  const plans = dummyPlans.filter(p => p.title.toLowerCase().includes(searchTerm.toLowerCase()));
+  const meta = { total: plans.length, page, limit, totalPages: Math.ceil(plans.length / limit) };
 
   const filteredData = plans;
 
@@ -91,13 +112,8 @@ export default function PlansTable({ searchTerm = "" }) {
 
     try {
       setIsDeleting(true);
-      await deletePlan.mutateAsync(planToDelete._id);
-
-      if (plans.length === 1 && page > 1) {
-        setPage(page - 1);
-      } else {
-        refetch();
-      }
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 500));
 
       setIsDeleting(false);
       setIsDeleteOpen(false);

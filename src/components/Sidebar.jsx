@@ -19,60 +19,67 @@ import {
 } from "lucide-react";
 
 const navigation = [
-  { name: "Home", href: "/ktdevpro/dashboard", icon: Home },
+  { name: "Home", href: "/dashboard", icon: Home },
   { type: "divider", name: "APPS" },
-  { name: "Packages", href: "/ktdevpro/packages", icon: ArrowRight },
+  { name: "Packages", href: "/packages", icon: ArrowRight },
   { 
     name: "Gift Bonus", 
     icon: Play,
     children: [
-      { name: "Bonus", href: "/ktdevpro/gift-bonus/bonus" },
-      { name: "Uses List", href: "/ktdevpro/gift-bonus/uses-list" }
+      { name: "Bonus", href: "/gift-bonus/bonus" },
+      { name: "Uses List", href: "/gift-bonus/uses-list" }
     ]
   },
-  { name: "Tasks", href: "/ktdevpro/tasks", icon: ClipboardCheck },
-  { name: "Daily Check-In", href: "/ktdevpro/daily-check-in", icon: CalendarCheck },
-  { name: "Spin Wheel", href: "/ktdevpro/spin-wheel", icon: Loader },
-  { name: "News", href: "/ktdevpro/news", icon: Newspaper },
-  { name: "Partners", href: "/ktdevpro/partners", icon: Building },
-  { name: "Live Market", href: "/ktdevpro/live-market" }, // No icon
-  { name: "Customers", href: "/ktdevpro/customers", icon: ArrowRight },
-  { name: "Activity Monitor", href: "/ktdevpro/activity-monitor", icon: Activity },
-  { name: "Purchase Record", href: "/ktdevpro/purchase-record", icon: ArrowRight },
+  { name: "Tasks", href: "/tasks", icon: ClipboardCheck },
+  { name: "Daily Check-In", href: "/daily-check-in", icon: CalendarCheck },
+  { name: "Spin Wheel", href: "/spin-wheel", icon: Loader },
+  { name: "News", href: "/news", icon: Newspaper },
+  { name: "Partners", href: "/partners", icon: Building },
+  { name: "Live Market", href: "/live-market" }, // No icon
+  { name: "Customers", href: "/customers", icon: ArrowRight },
+  { name: "Activity Monitor", href: "/activity-monitor", icon: Activity },
+  { name: "Purchase Record", href: "/purchase-record", icon: ArrowRight },
   {
     name: "Recharge Payments",
     icon: Play,
     children: [
-      { name: "Pending", href: "/ktdevpro/recharge/pending" },
-      { name: "Approved", href: "/ktdevpro/recharge/approved" },
-      { name: "Rejected", href: "/ktdevpro/recharge/rejected" }
+      { name: "Pending", href: "/recharge/pending" },
+      { name: "Approved", href: "/recharge/approved" },
+      { name: "Rejected", href: "/recharge/rejected" }
     ]
   },
   {
     name: "Withdrawal Payments",
     icon: Play,
     children: [
-      { name: "Pending", href: "/ktdevpro/withdrawals/pending" },
-      { name: "Approved", href: "/ktdevpro/withdrawals/approved" },
-      { name: "Rejected", href: "/ktdevpro/withdrawals/rejected" }
+      { name: "Pending", href: "/withdrawals/pending" },
+      { name: "Approved", href: "/withdrawals/approved" },
+      { name: "Rejected", href: "/withdrawals/rejected" }
     ]
   },
-  { name: "Slider Images", href: "/ktdevpro/slider-images", icon: ArrowRight },
+  { name: "Slider Images", href: "/slider-images", icon: ArrowRight },
   {
     name: "Settings",
     icon: Play,
     children: [
-      { name: "General Settings", href: "/ktdevpro/settings/general" }
+      { name: "Basic", href: "/settings/basic" },
+      { name: "Email Settings", href: "/settings/email" },
+      { name: "Countries & Rates", href: "/settings/countries" },
+      { name: "Languages", href: "/settings/languages" },
+      { name: "About Us", href: "/settings/about" },
+      { name: "Commission", href: "/settings/commission" },
+      { name: "Payout Methods", href: "/settings/payout-methods" },
+      { name: "Payout Cryptos", href: "/settings/payout-cryptos" },
     ]
   }
 ];
 
 export function Sidebar() {
   const pathname = usePathname();
-  const [openMenus, setOpenMenus] = useState({});
+  const [openMenu, setOpenMenu] = useState(null);
 
   const toggleMenu = (name) => {
-    setOpenMenus(prev => ({ ...prev, [name]: !prev[name] }));
+    setOpenMenu(prev => (prev === name ? "" : name));
   };
 
   const isActive = (href) => {
@@ -85,14 +92,14 @@ export function Sidebar() {
   };
 
   return (
-    <div className="flex h-full w-[260px] flex-col bg-[#F9FAFB] shadow-[0_0_15px_0_rgba(0,0,0,0.05)] z-30 font-['Rubik',sans-serif] transition-all">
+    <div className="flex h-full w-[290px] flex-col bg-[#F9FAFB] shadow-[0_0_15px_0_rgba(0,0,0,0.05)] z-30 font-['Rubik',sans-serif] transition-all">
       <div className="flex h-[80px] items-center px-6 mt-2">
         <Link href="/ktdevpro/dashboard" className="flex items-center gap-3 w-full">
           <span className="text-[1.8rem] font-medium text-[#475f7b] tracking-wide">Dashboard</span>
         </Link>
       </div>
       
-      <div className="flex-1 overflow-y-auto py-4 px-0">
+      <div className="flex-1 overflow-y-auto py-4 px-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
         <nav className="space-y-1">
           {navigation.map((item, index) => {
             if (item.type === "divider") {
@@ -104,7 +111,7 @@ export function Sidebar() {
             }
 
             const active = isActive(item.href) || isChildActive(item.children);
-            const isOpen = openMenus[item.name] || isChildActive(item.children);
+            const isOpen = openMenu !== null ? openMenu === item.name : isChildActive(item.children);
 
             if (item.children) {
               return (
