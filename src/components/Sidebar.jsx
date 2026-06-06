@@ -92,7 +92,7 @@ export function Sidebar() {
   };
 
   return (
-    <div className="flex h-full w-[290px] flex-col bg-[#F9FAFB] shadow-[0_0_15px_0_rgba(0,0,0,0.05)] z-30 font-['Rubik',sans-serif] transition-all">
+    <div className="flex h-full w-[250px] flex-col bg-[#F9FAFB] shadow-[0_0_15px_0_rgba(0,0,0,0.05)] z-30 font-['Rubik',sans-serif] transition-all">
       <div className="flex h-[80px] items-center px-6 mt-2">
         <Link href="/ktdevpro/dashboard" className="flex items-center gap-3 w-full">
           <span className="text-[1.8rem] font-medium text-[#475f7b] tracking-wide">Dashboard</span>

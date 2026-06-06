@@ -3,7 +3,7 @@ import { Header } from "@/components/Header";
 
 export default function DashboardLayout({ children }) {
   return (
-    <div className="flex h-screen overflow-hidden bg-[#F2F4F4] font-['Rubik',sans-serif]">
+    <div className="flex w-full overflow-hidden bg-[#F2F4F4] font-['Rubik',sans-serif]" style={{ height: 'calc(100vh / 0.9)' }}>
       <Sidebar />
       <div className="flex-1 flex flex-col overflow-hidden relative">
         <Header />
