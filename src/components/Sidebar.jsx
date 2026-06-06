@@ -62,6 +62,7 @@ const navigation = [
     name: "Settings",
     icon: Play,
     children: [
+      { name: "Profile", href: "/settings/profile" },
       { name: "Basic", href: "/settings/basic" },
       { name: "Email Settings", href: "/settings/email" },
       { name: "Countries & Rates", href: "/settings/countries" },
