@@ -1,91 +1,95 @@
 "use client"
 
 import { useState } from "react"
-import { Search, CreditCard } from "lucide-react"
+import { Search, CreditCard, Loader2 } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
-
-const pendingPaymentsData = [
-  {
-    id: "1",
-    sn: 1,
-    userInfo: {
-      name: "imranpk144",
-      username: "imranaliiop2@gmail.com",
-      refId: "CID91U"
-    },
-    paymentInfo: {
-      paymentNumber: "ORD17793894989698",
-      transactionId: "128133664",
-      date: "21-05-2026 18:51:38"
-    },
-    amounts: {
-      paymentAmount: 10.00,
-      finalAmount: 10.00
-    },
-    operation: {
-      status: "PENDING",
-      type: "AUTO",
-      methodName: "Usdt trc20",
-      gateway: "oxapay"
-    }
-  },
-  {
-    id: "2",
-    sn: 2,
-    userInfo: {
-      name: "imranpk144",
-      username: "imranaliiop2@gmail.com",
-      refId: "CID91U"
-    },
-    paymentInfo: {
-      paymentNumber: "ORD17790976749922",
-      transactionId: "128133664",
-      date: "18-05-2026 09:47:54"
-    },
-    amounts: {
-      paymentAmount: 10.00,
-      finalAmount: 10.00
-    },
-    operation: {
-      status: "PENDING",
-      type: "AUTO",
-      methodName: "Usdt trc20",
-      gateway: "oxapay"
-    }
-  },
-  {
-    id: "3",
-    sn: 3,
-    userInfo: {
-      name: "Lurdx",
-      username: "Fxlurd@gmail.com",
-      refId: "P7KR39"
-    },
-    paymentInfo: {
-      paymentNumber: "ORD17790948848375",
-      transactionId: "155884049",
-      date: "18-05-2026 09:01:24"
-    },
-    amounts: {
-      paymentAmount: 1.00,
-      finalAmount: 1.00
-    },
-    operation: {
-      status: "PENDING",
-      type: "AUTO",
-      methodName: "usdt bep20",
-      gateway: "oxapay"
-    }
-  }
-];
+import { useFetchData } from "@/hooks/useApi"
+import { format } from "date-fns"
+import { toast } from "sonner"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog"
 
 export default function PendingRechargePage() {
-  const [searchTerm, setSearchTerm] = useState("")
+  const [searchTerm, setSearchTerm] = useState("");
+  const { data: depositsRes, isLoading, mutate } = useFetchData("/admin/transactions/deposits", ["deposits"]);
+  const deposits = Array.isArray(depositsRes) ? depositsRes : depositsRes?.data || [];
+  
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [confirmModal, setConfirmModal] = useState({ show: false, type: "", depositId: null });
 
-  const filteredData = pendingPaymentsData.filter((item) => {
+  const safeFormatDate = (dateString) => {
+    try {
+      return format(new Date(dateString), "dd-MM-yyyy HH:mm:ss");
+    } catch (e) {
+      return dateString;
+    }
+  };
+
+  const handleProcess = async () => {
+    const { type, depositId } = confirmModal;
+    setConfirmModal(prev => ({ ...prev, show: false }));
+    setIsProcessing(true);
+    try {
+      const token = document.cookie.split("; ").find(row => row.startsWith("satrixnow-admin-token="))?.split("=")[1];
+      const res = await fetch(`http://localhost:3001/api/admin/transactions/deposits/${depositId}/status`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify({ status: type })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        toast.success(`Deposit ${type.toLowerCase()} successfully`);
+        mutate();
+      } else {
+        toast.error(data.error || `Failed to ${type.toLowerCase()} deposit`);
+      }
+    } catch (error) {
+      toast.error("Network error processing request");
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  const pendingDeposits = deposits.filter(d => d.status === 'PENDING');
+
+  const displayData = pendingDeposits.map((d, index) => ({
+    id: d.id,
+    sn: index + 1,
+    userInfo: {
+      name: d.user?.full_name || "Unknown",
+      username: d.user?.email || "Unknown",
+      refId: (d.user_id || "").substring(0, 6).toUpperCase() || "N/A"
+    },
+    paymentInfo: {
+      paymentNumber: d.id,
+      transactionId: d.id,
+      date: safeFormatDate(d.created_at)
+    },
+    amounts: {
+      paymentAmount: Number(d.amount) || 0,
+      finalAmount: Number(d.amount) || 0
+    },
+    operation: {
+      status: d.status,
+      type: "AUTO",
+      methodName: d.cryptocurrency || d.payment_method?.name || "Crypto",
+      gateway: "manual"
+    }
+  }));
+
+  const filteredData = displayData.filter((item) => {
     const searchLower = searchTerm.toLowerCase()
     return (
       item.userInfo.name.toLowerCase().includes(searchLower) ||
@@ -111,12 +115,12 @@ export default function PendingRechargePage() {
           <div className="flex flex-col md:flex-row gap-4 w-full">
             <div className="flex items-center gap-4 w-full">
               <div className="relative flex-1">
-                <Search className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground z-10 pointer-events-none" />
                 <Input
                   placeholder="Search by name, username, payment number or transaction id..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 bg-white border-gray-200 h-10 w-full"
+                  className="pl-9 bg-white border-gray-200 h-10 w-full"
                 />
               </div>
             </div>
@@ -140,7 +144,14 @@ export default function PendingRechargePage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredData.length > 0 ? (
+                {isLoading ? (
+                  <TableRow>
+                    <TableCell colSpan={6} className="text-center py-10 text-gray-500 bg-gray-50/30">
+                      <Loader2 className="w-6 h-6 animate-spin mx-auto mb-2" />
+                      Loading pending deposits...
+                    </TableCell>
+                  </TableRow>
+                ) : filteredData.length > 0 ? (
                   filteredData.map((item) => (
                     <TableRow key={item.id} className="hover:bg-gray-50 border-b last:border-0 align-top">
                       <TableCell className="font-medium text-gray-700 text-[13px] py-4 pl-6">
@@ -219,11 +230,20 @@ export default function PendingRechargePage() {
 
                       {/* ACTIVE */}
                       <TableCell className="py-4 pr-6">
-                        <Button 
-                          className="bg-[#39DA8A] hover:bg-[#2bbd74] text-white font-medium px-6 py-2 h-9 rounded-md shadow-sm border-0"
-                        >
-                          Action
-                        </Button>
+                        <div className="flex flex-col gap-2">
+                          <Button 
+                            onClick={() => setConfirmModal({ show: true, type: 'APPROVED', depositId: item.id })}
+                            className="bg-[#39DA8A] hover:bg-[#2bbd74] text-white font-medium px-4 py-1.5 h-8 rounded-md shadow-sm border-0 text-xs w-full"
+                          >
+                            Approve
+                          </Button>
+                          <Button 
+                            onClick={() => setConfirmModal({ show: true, type: 'REJECTED', depositId: item.id })}
+                            className="bg-red-500 hover:bg-red-600 text-white font-medium px-4 py-1.5 h-8 rounded-md shadow-sm border-0 text-xs w-full"
+                          >
+                            Reject
+                          </Button>
+                        </div>
                       </TableCell>
                     </TableRow>
                   ))
@@ -239,6 +259,34 @@ export default function PendingRechargePage() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Confirmation Modal */}
+      <Dialog open={confirmModal.show} onOpenChange={(open) => setConfirmModal(prev => ({ ...prev, show: open }))}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Confirm {confirmModal.type === 'APPROVED' ? 'Approval' : 'Rejection'}</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to {confirmModal.type === 'APPROVED' ? 'approve' : 'reject'} this deposit?
+              {confirmModal.type === 'APPROVED' && " This will automatically credit the user's account balance."}
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="mt-4 gap-2 sm:gap-0">
+            <Button
+              variant="outline"
+              onClick={() => setConfirmModal(prev => ({ ...prev, show: false }))}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="default"
+              onClick={handleProcess}
+              className={confirmModal.type === "REJECTED" ? "bg-red-600 hover:bg-red-700 text-white" : ""}
+            >
+              Confirm
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

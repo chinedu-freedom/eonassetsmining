@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -11,6 +11,7 @@ import {
   DialogTitle,
   DialogFooter,
   DialogClose,
+  DialogDescription,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -23,7 +24,7 @@ import {
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Loader2, Camera } from "lucide-react";
-import { usePost, usePatch } from "@/hooks/useApi";
+import { usePost, usePut } from "@/hooks/useApi";
 import { useQueryClient } from "@tanstack/react-query";
 
 // ✅ Schema matching the image
@@ -40,7 +41,10 @@ const planSchema = z.object({
 
 export default function PlanDialog({ open, setOpen, initialData }) {
   const queryClient = useQueryClient();
-  const isEdit = !!initialData?._id;
+  const isEdit = !!initialData?.id;
+  const fileInputRef = useRef(null);
+  const [imagePreview, setImagePreview] = useState(null);
+  const [imageName, setImageName] = useState("");
 
   const {
     register,
@@ -60,6 +64,7 @@ export default function PlanDialog({ open, setOpen, initialData }) {
       minInvestment: 10,
       maxInvestment: 10000,
       returnCapital: "yes",
+      isFixedDeposit: "no",
       status: "active",
     },
   });
@@ -73,23 +78,32 @@ export default function PlanDialog({ open, setOpen, initialData }) {
   useEffect(() => {
     if (initialData) {
       reset({
-        title: initialData.title || "",
+        title: initialData.name || "",
         description: initialData.description || "",
-        duration: initialData.duration || initialData.contractDuration || 30,
-        dailyReturn: initialData.dailyReturn || initialData.dailyProfit || 1.2,
-        minInvestment: initialData.minInvestment || initialData.minDeposit || 10,
-        maxInvestment: initialData.maxInvestment || initialData.maxDeposit || 10000,
-        returnCapital: initialData.returnCapital || "yes",
-        status: initialData.status?.toLowerCase() === "inactive" ? "inactive" : "active",
+        duration: initialData.duration || 30,
+        dailyReturn: initialData.daily_income ? Number(initialData.daily_income) : 1.2,
+        minInvestment: initialData.min_investment ? Number(initialData.min_investment) : 10,
+        maxInvestment: initialData.max_investment ? Number(initialData.max_investment) : 10000,
+        returnCapital: initialData.capital_return ? "yes" : "no",
+        isFixedDeposit: initialData.is_fixed_deposit ? "yes" : "no",
+        status: initialData.status ? "active" : "inactive",
       });
+      setImagePreview(initialData.image || null);
+      setImageName(initialData.image ? "existing_image" : "");
+    } else {
+      setImagePreview(null);
+      setImageName("");
     }
   }, [initialData, reset]);
 
   const returnCapital = watch("returnCapital");
   const status = watch("status");
 
-  // Mocking API for now since we're using dummy data
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const createMutation = usePost("/admin/plans", ["plans"]);
+  // If it's edit, we use usePut
+  const editMutation = usePut(initialData?.id ? `/admin/plans/${initialData.id}` : "", ["plans"]);
+
+  const isSubmitting = createMutation.isPending || editMutation.isPending;
 
   const onSubmit = async (data) => {
     if (data.maxInvestment < data.minInvestment) {
@@ -100,12 +114,30 @@ export default function PlanDialog({ open, setOpen, initialData }) {
       return;
     }
 
-    setIsSubmitting(true);
-    // Simulate API delay
-    await new Promise((resolve) => setTimeout(resolve, 800));
-    setIsSubmitting(false);
-    setOpen(false);
-    reset();
+    const payload = {
+      name: data.title,
+      description: data.description,
+      duration: Number(data.duration),
+      daily_income: Number(data.dailyReturn),
+      min_investment: Number(data.minInvestment),
+      max_investment: Number(data.maxInvestment),
+      capital_return: data.returnCapital === "yes",
+      is_fixed_deposit: data.isFixedDeposit === "yes",
+      status: data.status === "active",
+      image: imagePreview
+    };
+
+    try {
+      if (isEdit) {
+        await editMutation.mutateAsync(payload);
+      } else {
+        await createMutation.mutateAsync(payload);
+      }
+      setOpen(false);
+      reset();
+    } catch (err) {
+      // Errors handled by useApi
+    }
   };
 
   return (
@@ -116,10 +148,9 @@ export default function PlanDialog({ open, setOpen, initialData }) {
           <DialogTitle className="text-xl font-medium text-gray-700">
             {isEdit ? "Edit Investment Plan" : "Create New Investment Plan"}
           </DialogTitle>
-          <DialogClose asChild>
-            <Button variant="default" className="bg-[#4f46e5] hover:bg-[#4338ca] text-white flex items-center gap-2">
-            </Button>
-          </DialogClose>
+          <DialogDescription className="hidden">
+            {isEdit ? "Form to edit an existing plan" : "Form to create a new plan"}
+          </DialogDescription>
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="px-8 py-6 space-y-8">
@@ -130,7 +161,7 @@ export default function PlanDialog({ open, setOpen, initialData }) {
               <Input
                 {...register("title")}
                 placeholder="e.g. USDT, BTC, ETH"
-                className="border-green-400 focus-visible:ring-green-400"
+                className="border-green-400 focus-visible:ring-green-400 rounded-sm h-10"
               />
               <p className="text-[11px] text-green-500 mt-1.5">● This will be displayed as the plan title</p>
               {errors.title && <p className="text-red-500 text-sm mt-1">{errors.title.message}</p>}
@@ -140,7 +171,7 @@ export default function PlanDialog({ open, setOpen, initialData }) {
               <Input
                 {...register("description")}
                 placeholder="Short description"
-                className="border-gray-200"
+                className="border-gray-200 rounded-sm h-10"
               />
             </div>
           </div>
@@ -155,7 +186,7 @@ export default function PlanDialog({ open, setOpen, initialData }) {
                   type="number"
                   {...register("duration")}
                   placeholder="e.g. 30, 60, 90"
-                  className="border-green-400 focus-visible:ring-green-400"
+                  className="border-green-400 focus-visible:ring-green-400 rounded-sm h-10"
                 />
                 <p className="text-[11px] text-green-500 mt-1.5">● Investment period in days</p>
               </div>
@@ -166,7 +197,7 @@ export default function PlanDialog({ open, setOpen, initialData }) {
                   step="0.01"
                   {...register("dailyReturn")}
                   placeholder="e.g. 0.5, 1.2"
-                  className="border-green-400 focus-visible:ring-green-400"
+                  className="border-green-400 focus-visible:ring-green-400 rounded-sm h-10"
                 />
                 <p className="text-[11px] text-green-500 mt-1.5">● Daily percentage return on investment</p>
               </div>
@@ -175,7 +206,7 @@ export default function PlanDialog({ open, setOpen, initialData }) {
                 <Input
                   disabled
                   value={`${totalYield}%`}
-                  className="bg-gray-50 border-gray-200 text-gray-500"
+                  className="bg-gray-50 border-gray-200 text-gray-500 rounded-sm h-10"
                 />
                 <p className="text-[11px] text-gray-400 mt-1.5">Auto-calculated: Daily % × Days</p>
               </div>
@@ -192,7 +223,7 @@ export default function PlanDialog({ open, setOpen, initialData }) {
                   type="number"
                   {...register("minInvestment")}
                   placeholder="10"
-                  className="border-green-400 focus-visible:ring-green-400"
+                  className="border-green-400 focus-visible:ring-green-400 rounded-sm h-10"
                 />
                 <p className="text-[11px] text-green-500 mt-1.5">● Minimum amount user can invest</p>
               </div>
@@ -202,7 +233,7 @@ export default function PlanDialog({ open, setOpen, initialData }) {
                   type="number"
                   {...register("maxInvestment")}
                   placeholder="10000"
-                  className="border-green-400 focus-visible:ring-green-400"
+                  className="border-green-400 focus-visible:ring-green-400 rounded-sm h-10"
                 />
                 <p className="text-[11px] text-green-500 mt-1.5">● Maximum amount user can invest</p>
                 {errors.maxInvestment && <p className="text-red-500 text-sm mt-1">{errors.maxInvestment.message}</p>}
@@ -219,24 +250,56 @@ export default function PlanDialog({ open, setOpen, initialData }) {
                   Upload Thumbnail <span className="text-gray-400 text-xs">(Recommended: 200x200px, circular)</span>
                 </Label>
                 <div className="flex items-center border rounded-md overflow-hidden bg-gray-50">
-                  <Input type="text" placeholder="Choose file" disabled className="border-0 bg-transparent rounded-none flex-1" />
-                  <Button type="button" variant="secondary" className="rounded-none border-l h-10 px-6 bg-gray-100 hover:bg-gray-200 text-gray-700">
+                  <Input 
+                    type="text" 
+                    placeholder="Choose file" 
+                    value={imageName}
+                    readOnly 
+                    className="border-0 bg-transparent rounded-none flex-1" 
+                  />
+                  <input
+                    type="file"
+                    accept="image/*"
+                    ref={fileInputRef}
+                    className="hidden"
+                    onChange={(e) => {
+                      const file = e.target.files[0];
+                      if (file) {
+                        setImageName(file.name);
+                        const reader = new FileReader();
+                        reader.onloadend = () => {
+                          setImagePreview(reader.result);
+                        };
+                        reader.readAsDataURL(file);
+                      }
+                    }}
+                  />
+                  <Button 
+                    type="button" 
+                    variant="secondary" 
+                    className="rounded-none border-l h-10 px-6 bg-gray-100 hover:bg-gray-200 text-gray-700"
+                    onClick={() => fileInputRef.current?.click()}
+                  >
                     Browse
                   </Button>
                 </div>
               </div>
-              <div className="w-16 h-16 rounded-full bg-gray-200 border-2 border-gray-100 flex items-center justify-center shrink-0">
-                <Camera className="w-6 h-6 text-gray-400" />
+              <div className="w-16 h-16 rounded-full bg-gray-200 border-2 border-gray-100 flex items-center justify-center shrink-0 overflow-hidden">
+                {imagePreview ? (
+                  <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
+                ) : (
+                  <Camera className="w-6 h-6 text-gray-400" />
+                )}
               </div>
             </div>
           </div>
 
           {/* Capital & Status */}
           <div className="bg-white p-6 rounded-lg border shadow-sm space-y-4">
-            <h3 className="text-lg font-medium text-blue-500">Capital & Status</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <h3 className="text-lg font-medium text-blue-500">Capital, Deposit Type & Status</h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div>
-                <Label className="text-gray-600 text-sm mb-1.5 block">Return Capital After Completion?</Label>
+                <Label className="text-gray-600 text-sm mb-1.5 block">Return Capital?</Label>
                 <Select value={returnCapital} onValueChange={(val) => setValue("returnCapital", val)}>
                   <SelectTrigger className="border-green-400 focus:ring-green-400">
                     <SelectValue />
@@ -246,7 +309,23 @@ export default function PlanDialog({ open, setOpen, initialData }) {
                     <SelectItem value="no">No - Do not return capital</SelectItem>
                   </SelectContent>
                 </Select>
-                <p className="text-[11px] text-green-500 mt-1.5">● If Yes, user gets their invested amount back after plan ends</p>
+                <p className="text-[11px] text-gray-500 mt-1.5">● Yes: Initial capital returned after plan ends</p>
+              </div>
+              <div>
+                <Label className="text-gray-600 text-sm mb-1.5 block">Is Fixed Deposit?</Label>
+                <Select
+                  value={watch("isFixedDeposit") || "no"}
+                  onValueChange={(val) => setValue("isFixedDeposit", val)}
+                >
+                  <SelectTrigger className="border-green-400 focus:ring-green-400 bg-white rounded-sm h-10">
+                    <SelectValue placeholder="Select type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="yes">Yes (Locked)</SelectItem>
+                    <SelectItem value="no">No (Flexible)</SelectItem>
+                  </SelectContent>
+                </Select>
+                <p className="text-[11px] text-gray-500 mt-1.5">● Yes: Earnings locked until plan expires</p>
               </div>
               <div>
                 <Label className="text-gray-600 text-sm mb-1.5 block">Plan Status</Label>

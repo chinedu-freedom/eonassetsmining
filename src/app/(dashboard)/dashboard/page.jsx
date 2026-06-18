@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { 
   Briefcase, 
@@ -14,68 +15,90 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 
-const mainStats = [
-  {
-    title: "Total Assets",
-    value: "0",
-    icon: Briefcase,
-    colorClasses: "bg-[#e2ffe8] text-[#39DA8A]" // light-success
-  },
-  {
-    title: "Total Users",
-    value: "7",
-    icon: User,
-    colorClasses: "bg-[#ffeded] text-[#FF5B5C]" // light-danger
-  },
-  {
-    title: "Assets Value",
-    value: "$0.00",
-    icon: CircleDollarSign,
-    colorClasses: "bg-[#e2ffe8] text-[#39DA8A]" 
-  },
-  {
-    title: "In-Progress Assets",
-    value: "0",
-    icon: Clock,
-    colorClasses: "bg-[#ffeded] text-[#FF5B5C]" 
-  }
-];
-
-const countStats = [
-  { title: "Pending Withdraw", value: "0", icon: FileText, colorClasses: "bg-[#ffeded] text-[#FF5B5C]" },
-  { title: "Approved Withdraw", value: "0", icon: FileText, colorClasses: "bg-[#ffeded] text-[#FF5B5C]" },
-  { title: "Pending Deposit", value: "3", icon: FileText, colorClasses: "bg-[#ffeded] text-[#FF5B5C]" },
-  { title: "Approved Deposit", value: "1", icon: FileText, colorClasses: "bg-[#ffeded] text-[#FF5B5C]" },
-];
-
-const sumStats = [
-  { title: "Pending Withdraw", value: "$0.00", icon: DollarSign, colorClasses: "bg-[#e2ffe8] text-[#39DA8A]" },
-  { title: "Approved Withdraw", value: "$0.00", icon: DollarSign, colorClasses: "bg-[#e2ffe8] text-[#39DA8A]" },
-  { title: "Pending Deposit", value: "$21.00", icon: DollarSign, colorClasses: "bg-[#e2ffe8] text-[#39DA8A]" },
-  { title: "Approved Deposit", value: "$2.00", icon: DollarSign, colorClasses: "bg-[#e2ffe8] text-[#39DA8A]" },
-];
-
-const todayStats = [
-  { title: "Today Deposit", value: "$0.00", icon: DollarSign, colorClasses: "bg-[#e2ffe8] text-[#39DA8A]" },
-  { title: "Today Withdraw", value: "$0.00", icon: DollarSign, colorClasses: "bg-[#e2ffe8] text-[#39DA8A]" },
-  { title: "Today Users", value: "0", icon: User, colorClasses: "bg-[#e2ffe8] text-[#39DA8A]" },
-  { title: "Today Assets", value: "0", icon: Briefcase, colorClasses: "bg-[#e2ffe8] text-[#39DA8A]" },
-];
-
-const StatCard = ({ title, value, icon: Icon, colorClasses }) => (
-  <Card className="border-none shadow-[0_4px_24px_0_rgba(34,41,47,0.1)] rounded-[0.5rem] bg-white">
-    <CardContent className="p-6 text-center flex flex-col items-center justify-center">
-      <div className={`w-[60px] h-[60px] rounded-full flex items-center justify-center mb-4 ${colorClasses}`}>
-        <Icon className="w-8 h-8" />
-      </div>
-      <div className="text-[#828d99] text-[14px] truncate w-full mb-1">{title}</div>
-      <h3 className="text-[1.8rem] font-medium text-[#475f7b] mb-0 leading-[1.2]">{value}</h3>
-    </CardContent>
-  </Card>
-);
-
 export default function DashboardOverview() {
   const currentMonthYear = new Date().toLocaleString('default', { month: 'short', year: 'numeric' }).replace(' ', '-'); // e.g., 2026-Jun
+
+  const [stats, setStats] = useState({
+    totalUsers: 0,
+    activeUsers: 0,
+    todayUsers: 0,
+    totalAssets: 0,
+    assetsValue: 0,
+    inProgressAssetsCount: 0,
+    inProgressAssetsSum: 0,
+    pendingDepositsCount: 0,
+    approvedDepositsCount: 0,
+    pendingWithdrawalsCount: 0,
+    approvedWithdrawalsCount: 0,
+    pendingDepositsSum: 0,
+    approvedDepositsSum: 0,
+    pendingWithdrawalsSum: 0,
+    approvedWithdrawalsSum: 0,
+    todayDepositsSum: 0,
+    todayWithdrawalsSum: 0,
+    todayInvestmentsSum: 0,
+    totalInterestAmount: 0
+  });
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const token = localStorage.getItem('adminToken');
+        const res = await fetch('http://localhost:3001/api/admin/dashboard/stats', {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        if (res.ok) {
+          const { data } = await res.json();
+          setStats(data || {});
+        }
+      } catch (err) {
+        console.error("Failed to fetch dashboard stats", err);
+      }
+    };
+    fetchStats();
+  }, []);
+
+  const mainStats = [
+    { title: "Total Assets", value: `$${Number(stats.totalAssets || 0).toFixed(2)}`, icon: Briefcase, colorClasses: "bg-[#e2ffe8] text-[#39DA8A]" },
+    { title: "Total Users", value: (stats.totalUsers || 0).toString(), icon: User, colorClasses: "bg-[#ffeded] text-[#FF5B5C]" },
+    { title: "Assets Value", value: `$${Number(stats.assetsValue || 0).toFixed(2)}`, icon: CircleDollarSign, colorClasses: "bg-[#e2ffe8] text-[#39DA8A]" },
+    { title: "In-Progress Assets", value: (stats.inProgressAssetsCount || 0).toString(), icon: Clock, colorClasses: "bg-[#ffeded] text-[#FF5B5C]" }
+  ];
+
+  const countStats = [
+    { title: "Pending Withdraw", value: (stats.pendingWithdrawalsCount || 0).toString(), icon: FileText, colorClasses: "bg-[#ffeded] text-[#FF5B5C]" },
+    { title: "Approved Withdraw", value: (stats.approvedWithdrawalsCount || 0).toString(), icon: FileText, colorClasses: "bg-[#ffeded] text-[#FF5B5C]" },
+    { title: "Pending Deposit", value: (stats.pendingDepositsCount || 0).toString(), icon: FileText, colorClasses: "bg-[#ffeded] text-[#FF5B5C]" },
+    { title: "Approved Deposit", value: (stats.approvedDepositsCount || 0).toString(), icon: FileText, colorClasses: "bg-[#ffeded] text-[#FF5B5C]" },
+  ];
+
+  const sumStats = [
+    { title: "Pending Withdraw", value: `$${Number(stats.pendingWithdrawalsSum || 0).toFixed(2)}`, icon: DollarSign, colorClasses: "bg-[#e2ffe8] text-[#39DA8A]" },
+    { title: "Approved Withdraw", value: `$${Number(stats.approvedWithdrawalsSum || 0).toFixed(2)}`, icon: DollarSign, colorClasses: "bg-[#e2ffe8] text-[#39DA8A]" },
+    { title: "Pending Deposit", value: `$${Number(stats.pendingDepositsSum || 0).toFixed(2)}`, icon: DollarSign, colorClasses: "bg-[#e2ffe8] text-[#39DA8A]" },
+    { title: "Approved Deposit", value: `$${Number(stats.approvedDepositsSum || 0).toFixed(2)}`, icon: DollarSign, colorClasses: "bg-[#e2ffe8] text-[#39DA8A]" },
+  ];
+
+  const todayStats = [
+    { title: "Today Deposit", value: `$${Number(stats.todayDepositsSum || 0).toFixed(2)}`, icon: DollarSign, colorClasses: "bg-[#e2ffe8] text-[#39DA8A]" },
+    { title: "Today Withdraw", value: `$${Number(stats.todayWithdrawalsSum || 0).toFixed(2)}`, icon: DollarSign, colorClasses: "bg-[#e2ffe8] text-[#39DA8A]" },
+    { title: "Today Users", value: (stats.todayUsers || 0).toString(), icon: User, colorClasses: "bg-[#e2ffe8] text-[#39DA8A]" },
+    { title: "Today Assets", value: `$${Number(stats.todayInvestmentsSum || 0).toFixed(2)}`, icon: Briefcase, colorClasses: "bg-[#e2ffe8] text-[#39DA8A]" },
+  ];
+
+  const StatCard = ({ title, value, icon: Icon, colorClasses }) => (
+    <Card className="border-none shadow-[0_4px_24px_0_rgba(34,41,47,0.1)] rounded-[0.5rem] bg-white">
+      <CardContent className="p-6 text-center flex flex-col items-center justify-center">
+        <div className={`w-[60px] h-[60px] rounded-full flex items-center justify-center mb-4 ${colorClasses}`}>
+          <Icon className="w-8 h-8" />
+        </div>
+        <div className="text-[#828d99] text-[14px] truncate w-full mb-1">{title}</div>
+        <h3 className="text-[1.8rem] font-medium text-[#475f7b] mb-0 leading-[1.2]">{value}</h3>
+      </CardContent>
+    </Card>
+  );
 
   return (
     <div className="p-6 max-w-7xl mx-auto space-y-6 font-['Rubik',sans-serif]">
@@ -129,8 +152,8 @@ export default function DashboardOverview() {
           </div>
           <CardContent className="p-8 pt-0 z-10 relative">
             <div className="flex flex-col justify-end h-full mt-10">
-              <h1 className="text-[#5A8DEE] text-[3.5rem] font-medium leading-[1.2] mb-3">$0.00</h1>
-              <p className="text-[#828d99] text-[15px] max-w-[200px]">With total interest amount of $0.00.</p>
+              <h1 className="text-[#5A8DEE] text-[3.5rem] font-medium leading-[1.2] mb-3">${Number(stats.todayInvestmentsSum || 0).toFixed(2)}</h1>
+              <p className="text-[#828d99] text-[15px] max-w-[200px]">With total interest amount of ${Number(stats.totalInterestAmount || 0).toFixed(2)}.</p>
             </div>
           </CardContent>
           <div className="absolute right-[20px] bottom-[20px] z-0">

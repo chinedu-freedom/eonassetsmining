@@ -1,19 +1,49 @@
 "use client"
 
 import { useState } from "react"
-import { Search, ArrowDownToLine } from "lucide-react"
+import { Search, ArrowDownToLine, Loader2 } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-
-const rejectedWithdrawData = [
-  // Empty array to show "No data available in table"
-]
+import { useFetchData } from "@/hooks/useApi"
+import { format } from "date-fns"
 
 export default function RejectedWithdrawPage() {
-  const [searchTerm, setSearchTerm] = useState("")
+  const [searchTerm, setSearchTerm] = useState("");
+  const { data: withdrawalsRes, isLoading } = useFetchData("/admin/transactions/withdrawals", ["withdrawals"]);
+  const withdrawals = Array.isArray(withdrawalsRes) ? withdrawalsRes : withdrawalsRes?.data || [];
+  
+  const safeFormatDate = (dateString) => {
+    try {
+      return format(new Date(dateString), "dd-MM-yyyy HH:mm:ss");
+    } catch (e) {
+      return dateString;
+    }
+  };
 
-  const filteredData = rejectedWithdrawData.filter((item) => {
+  const rejectedWithdrawals = withdrawals.filter(w => w.status === 'REJECTED');
+
+  const displayData = rejectedWithdrawals.map((w, index) => ({
+    id: w.id,
+    sn: index + 1,
+    userInfo: {
+      name: w.user?.full_name || "Unknown",
+      username: w.user?.email || "Unknown"
+    },
+    withdrawInfo: {
+      method: w.network || "Crypto",
+      transactionId: w.id,
+      date: safeFormatDate(w.created_at)
+    },
+    amountDetails: {
+      amount: Number(w.amount) || 0,
+      charge: 0,
+      payable: Number(w.amount) || 0
+    },
+    status: w.status
+  }));
+
+  const filteredData = displayData.filter((item) => {
     const searchLower = searchTerm.toLowerCase()
     return (
       item.userInfo?.name?.toLowerCase().includes(searchLower) ||
@@ -38,12 +68,12 @@ export default function RejectedWithdrawPage() {
           <div className="flex flex-col md:flex-row gap-4 w-full">
             <div className="flex items-center gap-4 w-full">
               <div className="relative flex-1">
-                <Search className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground z-10 pointer-events-none" />
                 <Input
                   placeholder="Search by name, username or transaction id..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 bg-white border-gray-200 h-10 w-full"
+                  className="pl-9 bg-white border-gray-200 h-10 w-full"
                 />
               </div>
             </div>
@@ -67,7 +97,14 @@ export default function RejectedWithdrawPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredData.length > 0 ? (
+                {isLoading ? (
+                  <TableRow>
+                    <TableCell colSpan={6} className="text-center py-10 text-gray-500 bg-gray-50/30">
+                      <Loader2 className="w-6 h-6 animate-spin mx-auto mb-2" />
+                      Loading rejected withdrawals...
+                    </TableCell>
+                  </TableRow>
+                ) : filteredData.length > 0 ? (
                   filteredData.map((item) => (
                     <TableRow key={item.id} className="hover:bg-gray-50 border-b last:border-0 align-top">
                       <TableCell className="font-medium text-gray-700 text-[13px] py-4 pl-6">

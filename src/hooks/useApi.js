@@ -31,7 +31,7 @@ export const useFetchData = (endpoint, queryKey, options = {}) => {
     queryFn: async ({ signal }) => {
       const res = await fetchData(endpoint, { signal });
 
-      if (!res?.success) {
+      if (res && !Array.isArray(res) && res.success === false) {
         throw new Error(res?.message || "Failed to fetch data");
       }
 

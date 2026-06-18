@@ -1,42 +1,54 @@
 "use client"
 
 import { useState } from "react"
-import { Search, CreditCard } from "lucide-react"
+import { Search, CreditCard, Loader2 } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-
-const rejectedPaymentsData = [
-  {
-    id: "1",
-    sn: 1,
-    userInfo: {
-      name: "John Doe",
-      username: "johndoe123@gmail.com",
-      refId: "X9F2A1"
-    },
-    paymentInfo: {
-      paymentNumber: "ORD17790941234567",
-      transactionId: "155884999",
-      date: "17-05-2026 14:22:10"
-    },
-    amounts: {
-      paymentAmount: 5.00,
-      finalAmount: 5.00
-    },
-    operation: {
-      status: "REJECTED",
-      type: "AUTO",
-      methodName: "usdt bep20",
-      gateway: "oxapay"
-    }
-  }
-];
+import { useFetchData } from "@/hooks/useApi"
+import { format } from "date-fns"
 
 export default function RejectedRechargePage() {
-  const [searchTerm, setSearchTerm] = useState("")
+  const [searchTerm, setSearchTerm] = useState("");
+  const { data: depositsRes, isLoading } = useFetchData("/admin/transactions/deposits", ["deposits"]);
+  const deposits = Array.isArray(depositsRes) ? depositsRes : depositsRes?.data || [];
+  
+  const safeFormatDate = (dateString) => {
+    try {
+      return format(new Date(dateString), "dd-MM-yyyy HH:mm:ss");
+    } catch (e) {
+      return dateString;
+    }
+  };
 
-  const filteredData = rejectedPaymentsData.filter((item) => {
+  const rejectedDeposits = deposits.filter(d => d.status === 'REJECTED');
+
+  const displayData = rejectedDeposits.map((d, index) => ({
+    id: d.id,
+    sn: index + 1,
+    userInfo: {
+      name: d.user?.full_name || "Unknown",
+      username: d.user?.email || "Unknown",
+      refId: (d.user_id || "").substring(0, 6).toUpperCase() || "N/A"
+    },
+    paymentInfo: {
+      paymentNumber: d.id,
+      transactionId: d.id,
+      date: safeFormatDate(d.created_at)
+    },
+    amounts: {
+      paymentAmount: Number(d.amount) || 0,
+      finalAmount: Number(d.amount) || 0
+    },
+    operation: {
+      status: d.status,
+      type: "AUTO",
+      methodName: d.cryptocurrency || d.payment_method?.name || "Crypto",
+      gateway: "manual"
+    }
+  }));
+
+  const filteredData = displayData.filter((item) => {
     const searchLower = searchTerm.toLowerCase()
     return (
       item.userInfo.name.toLowerCase().includes(searchLower) ||
@@ -62,12 +74,12 @@ export default function RejectedRechargePage() {
           <div className="flex flex-col md:flex-row gap-4 w-full">
             <div className="flex items-center gap-4 w-full">
               <div className="relative flex-1">
-                <Search className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground z-10 pointer-events-none" />
                 <Input
                   placeholder="Search by name, username, payment number or transaction id..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 bg-white border-gray-200 h-10 w-full"
+                  className="pl-9 bg-white border-gray-200 h-10 w-full"
                 />
               </div>
             </div>
@@ -91,7 +103,14 @@ export default function RejectedRechargePage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredData.length > 0 ? (
+                {isLoading ? (
+                  <TableRow>
+                    <TableCell colSpan={6} className="text-center py-10 text-gray-500 bg-gray-50/30">
+                      <Loader2 className="w-6 h-6 animate-spin mx-auto mb-2" />
+                      Loading rejected deposits...
+                    </TableCell>
+                  </TableRow>
+                ) : filteredData.length > 0 ? (
                   filteredData.map((item) => (
                     <TableRow key={item.id} className="hover:bg-gray-50 border-b last:border-0 align-top">
                       <TableCell className="font-medium text-gray-700 text-[13px] py-4 pl-6">

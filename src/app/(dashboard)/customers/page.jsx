@@ -7,40 +7,58 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
+import { StatusBadge } from "@/components/ui/status-badge"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Switch } from "@/components/ui/switch"
+import { toast } from "sonner"
+import Link from "next/link"
 
-const usersData = [
-  { id: 1, email: "balleryoung88@gmail.com", username: "Young_tech", country: "NG", mainBalance: "0.00", giftBalance: "5.00", registered: "May 27, 2026", status: "ACTIVE" },
-  { id: 2, email: "chinedufreedom10@gmail.com", username: "Spark", country: "NG", mainBalance: "0.60", giftBalance: "4.50", registered: "May 27, 2026", status: "ACTIVE" },
-  { id: 3, email: "mdmujahidislam7080@gmail.com", username: "Mujahid", country: "BD", mainBalance: "0.10", giftBalance: "5.00", registered: "May 27, 2026", status: "ACTIVE" },
-  { id: 4, email: "mdshorofuddin09@gmail.com", username: "Mahmud090", country: "BD", mainBalance: "0.00", giftBalance: "5.00", registered: "May 27, 2026", status: "ACTIVE" },
-  { id: 5, email: "Fxlurd@gmail.com", username: "Lurdx", country: "ZA", mainBalance: "2.10", giftBalance: "5.00", registered: "May 18, 2026", status: "ACTIVE" },
-  { id: 6, email: "imranaliiop2@gmail.com", username: "imranpk144", country: "BD", mainBalance: "0.00", giftBalance: "5.00", registered: "May 14, 2026", status: "ACTIVE" },
-  { id: 7, email: "pkblackpro@gmail.com", username: "ktdev144", country: "BD", mainBalance: "0.90", giftBalance: "4.50", registered: "Dec 28, 2025", status: "ACTIVE" },
-]
-
-const stats = [
-  { title: "Total Users", value: "7", icon: Users, color: "text-blue-600", bg: "bg-blue-100" },
-  { title: "Active Users", value: "7", icon: CheckCircle, color: "text-green-600", bg: "bg-green-100" },
-  { title: "Unverified Users", value: "0", icon: Clock, color: "text-yellow-600", bg: "bg-yellow-100" },
-  { title: "Banned Users", value: "0", icon: Ban, color: "text-red-600", bg: "bg-red-100" },
-]
+import { useFetchData } from "@/hooks/useApi"
+import { format } from "date-fns"
+import { Loader2 } from "lucide-react"
 
 export default function CustomersManagementPage() {
   const [searchTerm, setSearchTerm] = useState("")
   const [statusFilter, setStatusFilter] = useState("all-status")
   const [countryFilter, setCountryFilter] = useState("all-countries")
 
+  const { data: usersRes, isLoading, mutate } = useFetchData("/admin/users", ["adminUsers"]);
+  const usersData = Array.isArray(usersRes) ? usersRes : usersRes?.data || [];
+
+
+
+  const uniqueCountriesMap = usersData.reduce((acc, user) => {
+    if (user.country && user.country.country_code) {
+      acc[user.country.country_code.toLowerCase()] = user.country.country_name || user.country.country_code;
+    }
+    return acc;
+  }, {});
+
   const filteredUsers = usersData.filter((user) => {
     const matchesSearch = 
       user.email.toLowerCase().includes(searchTerm.toLowerCase()) || 
-      user.username.toLowerCase().includes(searchTerm.toLowerCase())
+      (user.username || "").toLowerCase().includes(searchTerm.toLowerCase())
       
-    const matchesStatus = statusFilter === "all-status" || user.status.toLowerCase() === statusFilter.toLowerCase()
-    const matchesCountry = countryFilter === "all-countries" || user.country.toLowerCase() === countryFilter.toLowerCase()
+    const statusStr = user.is_active ? "active" : "banned"
+    const matchesStatus = statusFilter === "all-status" || statusStr === statusFilter.toLowerCase()
+    const matchesCountry = countryFilter === "all-countries" || (user.country?.country_code || "").toLowerCase() === countryFilter.toLowerCase()
 
     return matchesSearch && matchesStatus && matchesCountry
   })
+
+  const activeUsersCount = usersData.filter(u => u.is_active).length;
+  const bannedUsersCount = usersData.filter(u => !u.is_active).length;
+
+  const stats = [
+    { title: "Total Users", value: usersData.length.toString(), icon: Users, color: "text-blue-600", bg: "bg-blue-100" },
+    { title: "Active Users", value: activeUsersCount.toString(), icon: CheckCircle, color: "text-green-600", bg: "bg-green-100" },
+    { title: "Unverified Users", value: "0", icon: Clock, color: "text-yellow-600", bg: "bg-yellow-100" },
+    { title: "Banned Users", value: bannedUsersCount.toString(), icon: Ban, color: "text-red-600", bg: "bg-red-100" },
+  ]
+
+  if (isLoading) {
+    return <div className="min-h-[60vh] flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-blue-500" /></div>
+  }
 
   return (
     <div className="space-y-6">
@@ -82,12 +100,13 @@ export default function CustomersManagementPage() {
 
           {/* Filters Row */}
           <div className="flex flex-wrap gap-4">
-            <div className="flex-1 min-w-[200px]">
+            <div className="relative flex-1 min-w-[300px]">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
               <Input
-                placeholder="Search user..."
+                placeholder="Search users by name, email or phone number..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="border-gray-200 h-10"
+                className="pl-9 border-gray-300 h-10 rounded-md text-[13px]"
               />
             </div>
             <div className="w-[180px]">
@@ -109,9 +128,9 @@ export default function CustomersManagementPage() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all-countries">All Countries</SelectItem>
-                  <SelectItem value="ng">Nigeria</SelectItem>
-                  <SelectItem value="bd">Bangladesh</SelectItem>
-                  <SelectItem value="za">South Africa</SelectItem>
+                  {Object.entries(uniqueCountriesMap).map(([code, name]) => (
+                    <SelectItem key={code} value={code}>{name}</SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
@@ -125,7 +144,6 @@ export default function CustomersManagementPage() {
               <TableRow className="hover:bg-transparent">
                 <TableHead className="font-bold text-gray-600 uppercase text-[11px] tracking-wider w-[50px] py-4">#</TableHead>
                 <TableHead className="font-bold text-gray-600 uppercase text-[11px] tracking-wider py-4">USER</TableHead>
-                <TableHead className="font-bold text-gray-600 uppercase text-[11px] tracking-wider py-4">EMAIL</TableHead>
                 <TableHead className="font-bold text-gray-600 uppercase text-[11px] tracking-wider py-4">COUNTRY</TableHead>
                 <TableHead className="font-bold text-gray-600 uppercase text-[11px] tracking-wider py-4">MAIN BALANCE</TableHead>
                 <TableHead className="font-bold text-gray-600 uppercase text-[11px] tracking-wider py-4">GIFT BALANCE</TableHead>
@@ -135,10 +153,21 @@ export default function CustomersManagementPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredUsers.map((user) => (
+              {filteredUsers.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={8} className="h-[400px] text-center">
+                    <div className="flex flex-col items-center justify-center text-gray-500">
+                      <Search className="w-12 h-12 mb-4 text-gray-300" />
+                      <p className="text-lg font-medium text-gray-600">No users found</p>
+                      <p className="text-sm mt-1 text-gray-400">We couldn't find any users matching your search or filters.</p>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ) : (
+                filteredUsers.map((user) => (
                 <TableRow key={user.id} className="hover:bg-gray-50 border-b last:border-0">
                   <TableCell className="font-medium text-gray-700 text-[13px] py-4">
-                    {user.id}
+                    {user.id.substring(0, 8)}...
                   </TableCell>
                   <TableCell className="py-4">
                     <div className="flex items-center gap-3">
@@ -146,38 +175,36 @@ export default function CustomersManagementPage() {
                         {user.email.charAt(0).toUpperCase()}
                       </div>
                       <div>
-                        <div className="font-bold text-gray-800 text-[13px] leading-tight">{user.email}</div>
-                        <div className="text-[11px] text-gray-400 mt-0.5">{user.username}</div>
+                        <div className="font-bold text-gray-800 text-[13px] leading-tight">{user.full_name || user.username || "Unnamed User"}</div>
+                        <div className="text-[11px] text-gray-400 mt-0.5">{user.email}</div>
                       </div>
                     </div>
                   </TableCell>
-                  <TableCell className="text-[13px] text-gray-600 py-4">
-                    {user.email}
-                  </TableCell>
+
                   <TableCell className="py-4">
-                    <Badge className="bg-gray-400 hover:bg-gray-500 text-white border-0 px-2.5 py-0.5 rounded-[4px] font-medium text-[11px]">
-                      {user.country}
+                    <Badge showDot={false} className="bg-gray-400 hover:bg-gray-500 text-white border-0 px-2.5 py-0.5 rounded-[4px] font-medium text-[11px]">
+                      {user.country?.country_code || "N/A"}
                     </Badge>
                   </TableCell>
                   <TableCell className="py-4">
-                    <span className="font-bold text-[#5A8DEE] text-[13px]">{user.mainBalance}</span>
+                    <span className="font-bold text-[#5A8DEE] text-[13px]">${Number(user.balance || 0).toFixed(2)}</span>
                   </TableCell>
                   <TableCell className="py-4">
-                    <span className="font-bold text-[#39DA8A] text-[13px]">{user.giftBalance}</span>
+                    <span className="font-bold text-[#39DA8A] text-[13px]">${Number(user.gift_balance || 0).toFixed(2)}</span>
                   </TableCell>
                   <TableCell className="text-[12px] text-gray-600 py-4">
-                    {user.registered}
+                    {format(new Date(user.created_at), "MMM dd, yyyy")}
                   </TableCell>
                   <TableCell className="py-4">
-                    <Badge className="bg-[#39DA8A] hover:bg-[#28c76f] text-white border-0 px-3 py-0.5 rounded-[4px] font-bold text-[10px] tracking-wide uppercase">
-                      {user.status}
-                    </Badge>
+                    <StatusBadge status={user.is_active ? "ACTIVE" : "BANNED"} />
                   </TableCell>
                   <TableCell className="py-4">
                     <div className="flex items-center gap-1.5">
-                      <Button variant="outline" size="icon" className="h-7 w-7 text-blue-500 border-gray-200 hover:bg-blue-50" title="Edit">
-                        <Edit className="w-3.5 h-3.5" />
-                      </Button>
+                      <Link href={`/customers/${user.id}`}>
+                        <Button variant="outline" size="icon" className="h-7 w-7 text-blue-500 border-gray-200 hover:bg-blue-50" title="Edit">
+                          <Edit className="w-3.5 h-3.5" />
+                        </Button>
+                      </Link>
                       <Button variant="outline" size="icon" className="h-7 w-7 text-cyan-500 border-gray-200 hover:bg-cyan-50" title="Login As">
                         <LogIn className="w-3.5 h-3.5" />
                       </Button>
@@ -187,12 +214,15 @@ export default function CustomersManagementPage() {
                     </div>
                   </TableCell>
                 </TableRow>
-              ))}
+                ))
+              )}
             </TableBody>
           </Table>
         </div>
         
       </Card>
+
+
     </div>
   )
 }

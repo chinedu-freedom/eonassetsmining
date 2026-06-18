@@ -39,12 +39,12 @@ export default function BonusUsesListPage() {
           <div className="flex flex-col md:flex-row gap-4 w-full">
             <div className="flex items-center gap-4 w-full">
               <div className="relative flex-1">
-                <Search className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground z-10 pointer-events-none" />
                 <Input
                   placeholder="Search by customer or bonus code..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 bg-white border-gray-200 h-10 w-full"
+                  className="pl-9 bg-white border-gray-200 h-10 w-full"
                 />
               </div>
               <Select value={statusFilter} onValueChange={setStatusFilter}>
