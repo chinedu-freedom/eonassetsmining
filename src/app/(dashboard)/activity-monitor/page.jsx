@@ -14,20 +14,20 @@ import Pagination from "@/components/Pagination"
 // Predefined actions map for colors and icons
 const ACTION_MAP = {
   "user login": { color: "bg-[#00cfe8] hover:bg-[#00cfe8]/90", icon: LogIn },
-  "user registered": { color: "bg-[#28c76f] hover:bg-[#28c76f]/90", icon: UserPlus },
+  "user registered": { color: "bg-blue-600 hover:bg-blue-700/90", icon: UserPlus },
   "password reset": { color: "bg-[#ff9f43] hover:bg-[#ff9f43]/90", icon: Key },
   "deposit initiated": { color: "bg-[#ea5455] hover:bg-[#ea5455]/90", icon: CreditCard },
-  "deposit completed": { color: "bg-[#28c76f] hover:bg-[#28c76f]/90", icon: CreditCard },
+  "deposit completed": { color: "bg-blue-600 hover:bg-blue-700/90", icon: CreditCard },
   "withdrawal requested": { color: "bg-[#ff9f43] hover:bg-[#ff9f43]/90", icon: Wallet },
   "bonus claimed": { color: "bg-[#7367f0] hover:bg-[#7367f0]/90", icon: Gift },
   "spin wheel": { color: "bg-[#00cfe8] hover:bg-[#00cfe8]/90", icon: Dices },
-  "daily check in": { color: "bg-[#28c76f] hover:bg-[#28c76f]/90", icon: CalendarCheck },
+  "daily check in": { color: "bg-blue-600 hover:bg-blue-700/90", icon: CalendarCheck },
   "package purchase": { color: "bg-[#7367f0] hover:bg-[#7367f0]/90", icon: Database },
   "profile updated": { color: "bg-[#4cc5d9] hover:bg-[#4cc5d9]/90", icon: Settings },
-  "admin credit": { color: "bg-[#28c76f] hover:bg-[#28c76f]/90", icon: Shield },
+  "admin credit": { color: "bg-blue-600 hover:bg-blue-700/90", icon: Shield },
   "admin debit": { color: "bg-[#ea5455] hover:bg-[#ea5455]/90", icon: ShieldAlert },
   "user banned": { color: "bg-[#ea5455] hover:bg-[#ea5455]/90", icon: UserX },
-  "user unbanned": { color: "bg-[#28c76f] hover:bg-[#28c76f]/90", icon: UserCheck },
+  "user unbanned": { color: "bg-blue-600 hover:bg-blue-700/90", icon: UserCheck },
   "default": { color: "bg-gray-500 hover:bg-gray-600", icon: History }
 }
 
@@ -158,7 +158,7 @@ export default function ActivityMonitorPage() {
               <Button onClick={() => refetch()} variant="outline" className="h-9 px-3 rounded-md text-gray-600">
                 <RefreshCw className="w-4 h-4" />
               </Button>
-              <Button className="bg-[#94a3b8] hover:bg-[#8292a8] text-white h-9 px-4 rounded-md pointer-events-none">
+              <Button className="bg-[#94a3b8] hover:bg-[#8292a8] text-white h-9 px-4 rounded-sm-sm pointer-events-none">
                 <Database className="w-4 h-4 mr-2" />
                 TOTAL: {meta.total.toLocaleString()} RECORDS
               </Button>
@@ -242,28 +242,28 @@ export default function ActivityMonitorPage() {
             </div>
           ) : (
             <>
-              <Table>
-                <TableHeader className="bg-gray-50/50 border-y">
-                  <TableRow className="hover:bg-transparent">
-                    <TableHead className="font-bold text-gray-500 uppercase text-[11px] tracking-wider py-4 w-[60px] pl-6">ID</TableHead>
-                    <TableHead className="font-bold text-gray-500 uppercase text-[11px] tracking-wider py-4 min-w-[140px]">TIME</TableHead>
-                    <TableHead className="font-bold text-gray-500 uppercase text-[11px] tracking-wider py-4 min-w-[250px]">USER</TableHead>
-                    <TableHead className="font-bold text-gray-500 uppercase text-[11px] tracking-wider py-4 min-w-[180px]">ACTION</TableHead>
-                    <TableHead className="font-bold text-gray-500 uppercase text-[11px] tracking-wider py-4 min-w-[140px]">DETAILS</TableHead>
-                    <TableHead className="font-bold text-gray-500 uppercase text-[11px] tracking-wider py-4 min-w-[130px]">IP ADDRESS</TableHead>
+              <Table className="min-w-[1000px] whitespace-nowrap">
+                <TableHeader className="bg-gray-50/50 border-y min-w-[1000px] whitespace-nowrap">
+                  <TableRow className="hover:bg-transparent min-w-[1000px] whitespace-nowrap">
+                    <TableHead className="font-bold text-gray-500 uppercase text-[11px] tracking-wider py-4 w-[60px] pl-6 min-w-[1000px] whitespace-nowrap">ID</TableHead>
+                    <TableHead className="font-bold text-gray-500 uppercase text-[11px] tracking-wider py-4 min-w-[140px] whitespace-nowrap">TIME</TableHead>
+                    <TableHead className="font-bold text-gray-500 uppercase text-[11px] tracking-wider py-4 min-w-[250px] whitespace-nowrap">USER</TableHead>
+                    <TableHead className="font-bold text-gray-500 uppercase text-[11px] tracking-wider py-4 min-w-[180px] whitespace-nowrap">ACTION</TableHead>
+                    <TableHead className="font-bold text-gray-500 uppercase text-[11px] tracking-wider py-4 min-w-[140px] whitespace-nowrap">DETAILS</TableHead>
+                    <TableHead className="font-bold text-gray-500 uppercase text-[11px] tracking-wider py-4 min-w-[130px] whitespace-nowrap">IP ADDRESS</TableHead>
                   </TableRow>
                 </TableHeader>
-                <TableBody>
+                <TableBody className="min-w-[1000px] whitespace-nowrap">
                   {activities.map((record, index) => {
                     const actionInfo = getActionDetails(record.action)
                     const dateObj = new Date(record.created_at)
                     
                     return (
-                      <TableRow key={record.id} className="hover:bg-gray-50 border-b last:border-0">
-                        <TableCell className="font-medium text-gray-500 text-[13px] py-4 pl-6">
+                      <TableRow key={record.id} className="hover:bg-gray-50 border-b last:border-0 min-w-[1000px] whitespace-nowrap">
+                        <TableCell className="font-medium text-gray-500 text-[13px] py-4 pl-6 min-w-[1000px] whitespace-nowrap">
                           #{record.id.substring(0, 5)}...
                         </TableCell>
-                        <TableCell className="py-4">
+                        <TableCell className="py-4 min-w-[1000px] whitespace-nowrap">
                           <div className="font-bold text-gray-800 text-[12px]">
                             {dateObj.toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' })}
                           </div>
@@ -271,19 +271,19 @@ export default function ActivityMonitorPage() {
                             {dateObj.toLocaleTimeString()}
                           </div>
                         </TableCell>
-                        <TableCell className="py-4">
+                        <TableCell className="py-4 min-w-[1000px] whitespace-nowrap">
                           <div className="font-bold text-[#5A8DEE] text-[13px] hover:underline cursor-pointer">
                             {record.user?.email || "Unknown User"}
                           </div>
                           <div className="text-[12px] text-gray-500 mt-1">ID: {record.user?.id || "-"}</div>
                         </TableCell>
-                        <TableCell className="py-4">
+                        <TableCell className="py-4 min-w-[1000px] whitespace-nowrap">
                           <Badge className={`${actionInfo.color} text-white border-0 px-3 py-1 rounded-full font-bold text-[10px] tracking-wide uppercase flex items-center w-fit gap-1.5`}>
                             <actionInfo.icon className="w-3.5 h-3.5" />
                             {record.action}
                           </Badge>
                         </TableCell>
-                        <TableCell className="py-4">
+                        <TableCell className="py-4 min-w-[1000px] whitespace-nowrap">
                           <div className="text-[11px] text-gray-600 max-w-[200px] truncate" title={record.details ? JSON.stringify(record.details) : "No specific details"}>
                             {record.details ? (
                               <span className="font-mono bg-gray-100 px-1 rounded">JSON</span>
@@ -292,7 +292,7 @@ export default function ActivityMonitorPage() {
                             )}
                           </div>
                         </TableCell>
-                        <TableCell className="py-4">
+                        <TableCell className="py-4 min-w-[1000px] whitespace-nowrap">
                           <Badge className="bg-gray-100 text-gray-700 hover:bg-gray-200 border-0 px-2 py-1 rounded-[4px] font-bold text-[11px]">
                             {record.ip_address || "Unknown IP"}
                           </Badge>

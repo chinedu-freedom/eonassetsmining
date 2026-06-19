@@ -72,8 +72,11 @@ export default function PartnersManagementPage() {
             <RefreshCcw className={`w-4 h-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
             Refresh
           </Button>
-          <Button onClick={handleCreate} className="bg-[#5A8DEE] hover:bg-[#4778d9] text-white">
-            <Plus className="w-4 h-4 mr-2" />
+          <Button 
+            onClick={handleCreate}
+            className="bg-blue-600 hover:bg-blue-700 text-white rounded-sm-sm px-6 shadow-lg"
+          >
+            <Plus className="w-4 h-4 " />
             Add Partner
           </Button>
         </div>
@@ -122,7 +125,7 @@ export default function PartnersManagementPage() {
                 <h3 className="font-semibold text-gray-700 text-[15px] mb-2">{partner.partner_name}</h3>
 
                 {/* Status Badge */}
-                <Badge className={`${partner.status ? 'bg-[#39DA8A]/10 text-[#39DA8A]' : 'bg-red-100 text-red-600'} hover:opacity-80 border-0 text-[10px] tracking-widest uppercase px-3 py-0.5 rounded font-bold mb-4`}>
+                <Badge className={`${partner.status ? 'bg-blue-600/10 text-blue-600' : 'bg-red-100 text-red-600'} hover:opacity-80 border-0 text-[10px] tracking-widest uppercase px-3 py-0.5 rounded font-bold mb-4`}>
                   {partner.status ? "ACTIVE" : "HIDDEN"}
                 </Badge>
 

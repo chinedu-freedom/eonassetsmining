@@ -11,7 +11,8 @@ import {
   DollarSign,
   TrendingUp,
   MoreVertical,
-  Award
+  Award,
+  Loader2
 } from "lucide-react";
 import Image from "next/image";
 
@@ -40,6 +41,8 @@ export default function DashboardOverview() {
     totalInterestAmount: 0
   });
 
+  const [isLoading, setIsLoading] = useState(true);
+
   useEffect(() => {
     const fetchStats = async () => {
       try {
@@ -55,15 +58,17 @@ export default function DashboardOverview() {
         }
       } catch (err) {
         console.error("Failed to fetch dashboard stats", err);
+      } finally {
+        setIsLoading(false);
       }
     };
     fetchStats();
   }, []);
 
   const mainStats = [
-    { title: "Total Assets", value: `$${Number(stats.totalAssets || 0).toFixed(2)}`, icon: Briefcase, colorClasses: "bg-[#e2ffe8] text-[#39DA8A]" },
+    { title: "Total Assets", value: `$${Number(stats.totalAssets || 0).toFixed(2)}`, icon: Briefcase, colorClasses: "bg-[#e2ffe8] text-blue-600" },
     { title: "Total Users", value: (stats.totalUsers || 0).toString(), icon: User, colorClasses: "bg-[#ffeded] text-[#FF5B5C]" },
-    { title: "Assets Value", value: `$${Number(stats.assetsValue || 0).toFixed(2)}`, icon: CircleDollarSign, colorClasses: "bg-[#e2ffe8] text-[#39DA8A]" },
+    { title: "Assets Value", value: `$${Number(stats.assetsValue || 0).toFixed(2)}`, icon: CircleDollarSign, colorClasses: "bg-[#e2ffe8] text-blue-600" },
     { title: "In-Progress Assets", value: (stats.inProgressAssetsCount || 0).toString(), icon: Clock, colorClasses: "bg-[#ffeded] text-[#FF5B5C]" }
   ];
 
@@ -75,17 +80,17 @@ export default function DashboardOverview() {
   ];
 
   const sumStats = [
-    { title: "Pending Withdraw", value: `$${Number(stats.pendingWithdrawalsSum || 0).toFixed(2)}`, icon: DollarSign, colorClasses: "bg-[#e2ffe8] text-[#39DA8A]" },
-    { title: "Approved Withdraw", value: `$${Number(stats.approvedWithdrawalsSum || 0).toFixed(2)}`, icon: DollarSign, colorClasses: "bg-[#e2ffe8] text-[#39DA8A]" },
-    { title: "Pending Deposit", value: `$${Number(stats.pendingDepositsSum || 0).toFixed(2)}`, icon: DollarSign, colorClasses: "bg-[#e2ffe8] text-[#39DA8A]" },
-    { title: "Approved Deposit", value: `$${Number(stats.approvedDepositsSum || 0).toFixed(2)}`, icon: DollarSign, colorClasses: "bg-[#e2ffe8] text-[#39DA8A]" },
+    { title: "Pending Withdraw", value: `$${Number(stats.pendingWithdrawalsSum || 0).toFixed(2)}`, icon: DollarSign, colorClasses: "bg-[#e2ffe8] text-blue-600" },
+    { title: "Approved Withdraw", value: `$${Number(stats.approvedWithdrawalsSum || 0).toFixed(2)}`, icon: DollarSign, colorClasses: "bg-[#e2ffe8] text-blue-600" },
+    { title: "Pending Deposit", value: `$${Number(stats.pendingDepositsSum || 0).toFixed(2)}`, icon: DollarSign, colorClasses: "bg-[#e2ffe8] text-blue-600" },
+    { title: "Approved Deposit", value: `$${Number(stats.approvedDepositsSum || 0).toFixed(2)}`, icon: DollarSign, colorClasses: "bg-[#e2ffe8] text-blue-600" },
   ];
 
   const todayStats = [
-    { title: "Today Deposit", value: `$${Number(stats.todayDepositsSum || 0).toFixed(2)}`, icon: DollarSign, colorClasses: "bg-[#e2ffe8] text-[#39DA8A]" },
-    { title: "Today Withdraw", value: `$${Number(stats.todayWithdrawalsSum || 0).toFixed(2)}`, icon: DollarSign, colorClasses: "bg-[#e2ffe8] text-[#39DA8A]" },
-    { title: "Today Users", value: (stats.todayUsers || 0).toString(), icon: User, colorClasses: "bg-[#e2ffe8] text-[#39DA8A]" },
-    { title: "Today Assets", value: `$${Number(stats.todayInvestmentsSum || 0).toFixed(2)}`, icon: Briefcase, colorClasses: "bg-[#e2ffe8] text-[#39DA8A]" },
+    { title: "Today Deposit", value: `$${Number(stats.todayDepositsSum || 0).toFixed(2)}`, icon: DollarSign, colorClasses: "bg-[#e2ffe8] text-blue-600" },
+    { title: "Today Withdraw", value: `$${Number(stats.todayWithdrawalsSum || 0).toFixed(2)}`, icon: DollarSign, colorClasses: "bg-[#e2ffe8] text-blue-600" },
+    { title: "Today Users", value: (stats.todayUsers || 0).toString(), icon: User, colorClasses: "bg-[#e2ffe8] text-blue-600" },
+    { title: "Today Assets", value: `$${Number(stats.todayInvestmentsSum || 0).toFixed(2)}`, icon: Briefcase, colorClasses: "bg-[#e2ffe8] text-blue-600" },
   ];
 
   const StatCard = ({ title, value, icon: Icon, colorClasses }) => (
@@ -99,6 +104,15 @@ export default function DashboardOverview() {
       </CardContent>
     </Card>
   );
+
+  if (isLoading) {
+    return (
+      <div className="min-h-[60vh] flex flex-col items-center justify-center space-y-4">
+        <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
+        <p className="text-muted-foreground text-sm">Loading dashboard stats...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="p-6 max-w-7xl mx-auto space-y-6 font-['Rubik',sans-serif]">

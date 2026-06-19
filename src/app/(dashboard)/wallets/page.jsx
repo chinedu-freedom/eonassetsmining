@@ -17,7 +17,7 @@ export default function WalletsPage() {
           <h1 className="text-2xl font-bold text-white mb-1">Company Wallets</h1>
           <p className="text-slate-400 text-sm">Manage crypto addresses where users send their deposits.</p>
         </div>
-        <button className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-xl text-sm font-medium transition-colors flex items-center gap-2">
+        <button className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-sm-sm text-sm font-medium transition-colors flex items-center gap-2">
           <Plus className="w-4 h-4" />
           Add Wallet
         </button>
@@ -40,10 +40,10 @@ export default function WalletsPage() {
                   </span>
                 </div>
                 <div className="flex items-center gap-1">
-                  <button className="p-1.5 text-slate-400 hover:text-blue-400 hover:bg-blue-400/10 rounded-md transition-colors">
+                  <button className="p-1.5 text-slate-400 hover:text-blue-400 hover:bg-blue-400/10 rounded-sm-sm transition-colors">
                     <Edit2 className="w-4 h-4" />
                   </button>
-                  <button className="p-1.5 text-slate-400 hover:text-red-400 hover:bg-red-400/10 rounded-md transition-colors">
+                  <button className="p-1.5 text-slate-400 hover:text-red-400 hover:bg-red-400/10 rounded-sm-sm transition-colors">
                     <Trash2 className="w-4 h-4" />
                   </button>
                 </div>

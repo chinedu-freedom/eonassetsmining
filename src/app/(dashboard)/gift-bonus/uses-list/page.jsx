@@ -72,56 +72,56 @@ export default function BonusUsesListPage() {
       <Card className="border-none shadow-sm bg-white rounded-md">
         <CardContent className="p-0">
           <div className="overflow-x-auto">
-            <Table>
-              <TableHeader className="bg-gray-50/50 border-b">
-                <TableRow className="hover:bg-transparent">
-                  <TableHead className="w-[60px] font-bold text-gray-600 uppercase text-[12px] tracking-wider py-4 pl-6">S.N</TableHead>
-                  <TableHead className="font-bold text-gray-600 uppercase text-[12px] tracking-wider py-4">DATE</TableHead>
-                  <TableHead className="font-bold text-gray-600 uppercase text-[12px] tracking-wider py-4">CUSTOMER INFO</TableHead>
-                  <TableHead className="font-bold text-gray-600 uppercase text-[12px] tracking-wider py-4">BONUS INFO</TableHead>
-                  <TableHead className="font-bold text-gray-600 uppercase text-[12px] tracking-wider py-4 pr-6">STATUS</TableHead>
+            <Table className="min-w-[1000px] whitespace-nowrap">
+              <TableHeader className="bg-gray-50/50 border-b min-w-[1000px] whitespace-nowrap">
+                <TableRow className="hover:bg-transparent min-w-[1000px] whitespace-nowrap">
+                  <TableHead className="w-[60px] font-bold text-gray-600 uppercase text-[12px] tracking-wider py-4 pl-6 min-w-[1000px] whitespace-nowrap">S.N</TableHead>
+                  <TableHead className="font-bold text-gray-600 uppercase text-[12px] tracking-wider py-4 min-w-[1000px] whitespace-nowrap">DATE</TableHead>
+                  <TableHead className="font-bold text-gray-600 uppercase text-[12px] tracking-wider py-4 min-w-[1000px] whitespace-nowrap">CUSTOMER INFO</TableHead>
+                  <TableHead className="font-bold text-gray-600 uppercase text-[12px] tracking-wider py-4 min-w-[1000px] whitespace-nowrap">BONUS INFO</TableHead>
+                  <TableHead className="font-bold text-gray-600 uppercase text-[12px] tracking-wider py-4 pr-6 min-w-[1000px] whitespace-nowrap">STATUS</TableHead>
                 </TableRow>
               </TableHeader>
-              <TableBody>
+              <TableBody className="min-w-[1000px] whitespace-nowrap">
                 {isLoading ? (
-                  <TableRow>
-                    <TableCell colSpan={5} className="text-center py-10 text-gray-500 bg-gray-50/30">
+                  <TableRow className="min-w-[1000px] whitespace-nowrap">
+                    <TableCell colSpan={5} className="text-center py-10 text-gray-500 bg-gray-50/30 min-w-[1000px] whitespace-nowrap">
                       Loading...
                     </TableCell>
                   </TableRow>
                 ) : filteredData.length > 0 ? (
                   filteredData.map((item, index) => (
-                    <TableRow key={item.id} className="hover:bg-gray-50 border-b last:border-0">
-                      <TableCell className="font-medium text-gray-700 text-[13px] py-4 pl-6">
+                    <TableRow key={item.id} className="hover:bg-gray-50 border-b last:border-0 min-w-[1000px] whitespace-nowrap">
+                      <TableCell className="font-medium text-gray-700 text-[13px] py-4 pl-6 min-w-[1000px] whitespace-nowrap">
                         {index + 1}
                       </TableCell>
-                      <TableCell className="py-4">
+                      <TableCell className="py-4 min-w-[1000px] whitespace-nowrap">
                         <span className="font-medium text-gray-700 text-[13px]">
                           {item.claimed_at ? format(new Date(item.claimed_at), "MMM dd, yyyy HH:mm") : "N/A"}
                         </span>
                       </TableCell>
-                      <TableCell className="py-4">
+                      <TableCell className="py-4 min-w-[1000px] whitespace-nowrap">
                         <div className="flex flex-col">
                           <span className="font-medium text-[#5A8DEE] text-[13px]">{item.user?.full_name || "Unknown"}</span>
                           <span className="text-gray-500 text-[12px]">{item.user?.email}</span>
                         </div>
                       </TableCell>
-                      <TableCell className="py-4">
+                      <TableCell className="py-4 min-w-[1000px] whitespace-nowrap">
                         <div className="flex flex-col">
                           <span className="font-medium text-gray-700 text-[13px]">{item.gift_code?.code || "N/A"}</span>
                           <span className="text-gray-500 text-[12px]">${Number(item.reward_amount || 0).toFixed(2)}</span>
                         </div>
                       </TableCell>
-                      <TableCell className="py-4 pr-6">
-                        <span className="text-[12px] px-2.5 py-1 rounded-md font-medium bg-[#39DA8A]/10 text-[#39DA8A]">
+                      <TableCell className="py-4 pr-6 min-w-[1000px] whitespace-nowrap">
+                        <span className="text-[12px] px-2.5 py-1 rounded-md font-medium bg-blue-600/10 text-blue-600">
                           Successful
                         </span>
                       </TableCell>
                     </TableRow>
                   ))
                 ) : (
-                  <TableRow>
-                    <TableCell colSpan={5} className="text-center py-10 text-gray-500 bg-gray-50/30">
+                  <TableRow className="min-w-[1000px] whitespace-nowrap">
+                    <TableCell colSpan={5} className="text-center py-10 text-gray-500 bg-gray-50/30 min-w-[1000px] whitespace-nowrap">
                       No data available in table
                     </TableCell>
                   </TableRow>

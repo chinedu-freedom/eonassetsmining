@@ -91,13 +91,13 @@ export default function SliderImagesPage() {
         </div>
         <div className="flex items-center space-x-3">
           <Button 
-            className="bg-[#5A8DEE] hover:bg-[#4778d9] text-white h-10 px-4 rounded-md"
             onClick={() => {
               setEditingSlider(null)
               setDialogOpen(true)
             }}
+            className="bg-blue-600 hover:bg-blue-700 text-white rounded-sm px-6 shadow-lg"
           >
-            <Plus className="w-4 h-4 mr-2" />
+            <Plus className="w-4 h-4 " />
             Add New Item
           </Button>
         </div>
@@ -143,24 +143,24 @@ export default function SliderImagesPage() {
               </div>
             ) : (
               <>
-                <Table>
-                  <TableHeader className="bg-gray-50/50 border-b">
-                    <TableRow className="hover:bg-transparent">
-                      <TableHead className="font-bold text-gray-600 uppercase text-[12px] tracking-wider py-4 pl-6">ID</TableHead>
-                      <TableHead className="font-bold text-gray-600 uppercase text-[12px] tracking-wider py-4">PHOTO</TableHead>
-                      <TableHead className="font-bold text-gray-600 uppercase text-[12px] tracking-wider py-4">PAGE VIEW</TableHead>
-                      <TableHead className="font-bold text-gray-600 uppercase text-[12px] tracking-wider py-4">STATUS</TableHead>
-                      <TableHead className="font-bold text-gray-600 uppercase text-[12px] tracking-wider py-4 text-right pr-6 w-[120px]">ACTION</TableHead>
+                <Table className="min-w-[1000px] whitespace-nowrap">
+                  <TableHeader className="bg-gray-50/50 border-b min-w-[1000px] whitespace-nowrap">
+                    <TableRow className="hover:bg-transparent min-w-[1000px] whitespace-nowrap">
+                      <TableHead className="font-bold text-gray-600 uppercase text-[12px] tracking-wider py-4 pl-6 min-w-[1000px] whitespace-nowrap">ID</TableHead>
+                      <TableHead className="font-bold text-gray-600 uppercase text-[12px] tracking-wider py-4 min-w-[1000px] whitespace-nowrap">PHOTO</TableHead>
+                      <TableHead className="font-bold text-gray-600 uppercase text-[12px] tracking-wider py-4 min-w-[1000px] whitespace-nowrap">PAGE VIEW</TableHead>
+                      <TableHead className="font-bold text-gray-600 uppercase text-[12px] tracking-wider py-4 min-w-[1000px] whitespace-nowrap">STATUS</TableHead>
+                      <TableHead className="font-bold text-gray-600 uppercase text-[12px] tracking-wider py-4 text-right pr-6 w-[120px] min-w-[1000px] whitespace-nowrap">ACTION</TableHead>
                     </TableRow>
                   </TableHeader>
-                  <TableBody>
+                  <TableBody className="min-w-[1000px] whitespace-nowrap">
                     {sliders.length > 0 ? (
                       sliders.map((item, index) => (
-                        <TableRow key={item.id} className="hover:bg-gray-50 border-b last:border-0">
-                          <TableCell className="font-medium text-gray-700 text-[13px] py-4 pl-6">
+                        <TableRow key={item.id} className="hover:bg-gray-50 border-b last:border-0 min-w-[1000px] whitespace-nowrap">
+                          <TableCell className="font-medium text-gray-700 text-[13px] py-4 pl-6 min-w-[1000px] whitespace-nowrap">
                             {(meta.page - 1) * meta.limit + index + 1}
                           </TableCell>
-                          <TableCell className="py-4">
+                          <TableCell className="py-4 min-w-[1000px] whitespace-nowrap">
                             <div className="w-[100px] h-[60px] bg-gray-100 border border-gray-200 rounded-sm overflow-hidden flex items-center justify-center text-gray-400 shadow-sm">
                               {item.image ? (
                                 <img src={item.image} alt={item.display_location} className="w-full h-full object-cover" />
@@ -169,24 +169,24 @@ export default function SliderImagesPage() {
                               )}
                             </div>
                           </TableCell>
-                          <TableCell className="py-4">
+                          <TableCell className="py-4 min-w-[1000px] whitespace-nowrap">
                             <span className="font-medium text-[#5A8DEE] text-[13px]">{item.display_location}</span>
                           </TableCell>
-                          <TableCell className="py-4">
+                          <TableCell className="py-4 min-w-[1000px] whitespace-nowrap">
                             <span className={`px-2.5 py-1 text-[11px] font-bold rounded uppercase ${
                               item.status 
-                                ? "bg-[#28c76f]/10 text-[#28c76f]" 
+                                ? "bg-blue-100 text-blue-600" 
                                 : "bg-[#ff9f43]/10 text-[#ff9f43]"
                             }`}>
                               {item.status ? "Active" : "Inactive"}
                             </span>
                           </TableCell>
-                          <TableCell className="py-4 text-right pr-6">
+                          <TableCell className="py-4 text-right pr-6 min-w-[1000px] whitespace-nowrap">
                             <div className="flex items-center justify-end space-x-2">
                               <Button 
                                 variant="default" 
                                 size="icon" 
-                                className="h-8 w-8 bg-[#ffb822] hover:bg-[#e5a51f] text-white border-0 shadow-sm rounded-md"
+                                className="h-8 w-8 bg-[#ffb822] hover:bg-[#e5a51f] text-white border-0 shadow-sm rounded-sm-sm"
                                 title="Edit"
                                 onClick={() => {
                                   setEditingSlider(item)
@@ -198,7 +198,7 @@ export default function SliderImagesPage() {
                               <Button 
                                 variant="default" 
                                 size="icon" 
-                                className="h-8 w-8 bg-[#ff5b5c] hover:bg-[#e55253] text-white border-0 shadow-sm rounded-md"
+                                className="h-8 w-8 bg-[#ff5b5c] hover:bg-[#e55253] text-white border-0 shadow-sm rounded-sm-sm"
                                 title="Delete"
                                 onClick={() => handleDeleteClick(item)}
                               >
@@ -209,8 +209,8 @@ export default function SliderImagesPage() {
                         </TableRow>
                       ))
                     ) : (
-                      <TableRow>
-                        <TableCell colSpan={5} className="text-center py-10 text-gray-500">
+                      <TableRow className="min-w-[1000px] whitespace-nowrap">
+                        <TableCell colSpan={5} className="text-center py-10 text-gray-500 min-w-[1000px] whitespace-nowrap">
                           No slider images found matching your criteria.
                         </TableCell>
                       </TableRow>

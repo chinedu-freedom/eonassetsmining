@@ -131,7 +131,7 @@ export default function GiftCodeDialog({ open, setOpen, initialData }) {
               <Input
                 {...register("codeName")}
                 placeholder="e.g., Welcome Bonus, Holiday Gift"
-                className="border-gray-200 h-11 focus-visible:ring-blue-400"
+                className="border-gray-200 focus-visible:ring-blue-400 rounded-sm h-10"
               />
               <p className="text-[12px] text-gray-400 mt-1.5">A friendly name to identify this gift code</p>
               {errors.codeName && <p className="text-red-500 text-xs mt-1">{errors.codeName.message}</p>}
@@ -147,12 +147,12 @@ export default function GiftCodeDialog({ open, setOpen, initialData }) {
                 <Input
                   {...register("giftCode")}
                   placeholder="e.g., WELCOME2024"
-                  className="border-gray-200 h-11 rounded-r-none focus-visible:ring-blue-400"
+                  className="border-gray-200 focus-visible:ring-blue-400 rounded-sm h-10"
                 />
                 <Button 
                   type="button" 
                   onClick={generateCode}
-                  className="h-11 rounded-l-none bg-blue-50 text-[#5A8DEE] border border-l-0 border-gray-200 hover:bg-blue-100"
+                  className="h-11 rounded-sm-l-none bg-blue-50 text-[#5A8DEE] border border-l-0 border-gray-200 hover:bg-blue-100"
                 >
                   Generate
                 </Button>
@@ -163,7 +163,7 @@ export default function GiftCodeDialog({ open, setOpen, initialData }) {
 
             {/* Reward Amount */}
             <div>
-              <Label className="text-[#39DA8A] text-sm mb-1.5 flex items-center gap-1.5 font-medium">
+              <Label className="text-blue-600 text-sm mb-1.5 flex items-center gap-1.5 font-medium">
                 <DollarSign className="w-4 h-4" />
                 Reward Amount ($) <span className="text-red-500">*</span>
               </Label>
@@ -172,7 +172,7 @@ export default function GiftCodeDialog({ open, setOpen, initialData }) {
                 step="0.01"
                 {...register("amount")}
                 placeholder="e.g., 10.00"
-                className="border-gray-200 h-11 focus-visible:ring-green-400"
+                className="border-gray-200 focus-visible:ring-blue-500 rounded-sm h-10"
               />
               <p className="text-[12px] text-gray-400 mt-1.5">Amount credited to user's balance when code is redeemed</p>
               {errors.amount && <p className="text-red-500 text-xs mt-1">{errors.amount.message}</p>}
@@ -188,7 +188,7 @@ export default function GiftCodeDialog({ open, setOpen, initialData }) {
                 type="number"
                 {...register("maxUses")}
                 placeholder="e.g., 100"
-                className="border-gray-200 h-11 focus-visible:ring-cyan-400"
+                className="border-gray-200 focus-visible:ring-cyan-400 rounded-sm h-10"
               />
               <p className="text-[12px] text-gray-400 mt-1.5">How many times this code can be used in total</p>
               {errors.maxUses && <p className="text-red-500 text-xs mt-1">{errors.maxUses.message}</p>}
@@ -204,7 +204,7 @@ export default function GiftCodeDialog({ open, setOpen, initialData }) {
                 <Switch
                   checked={isStatus}
                   onCheckedChange={(val) => setValue("status", val)}
-                  className="data-[state=checked]:bg-green-500"
+                  className="data-[state=checked]:bg-blue-500"
                 />
               </div>
             </div>
@@ -213,12 +213,12 @@ export default function GiftCodeDialog({ open, setOpen, initialData }) {
           {/* Footer Area inside form */}
           <div className="bg-white p-6 rounded-lg border shadow-sm flex items-center justify-between mt-6">
             <div className="flex items-center gap-2 text-[#475f7b]">
-              <Save className="w-5 h-5 text-[#39DA8A]" />
+              <Save className="w-5 h-5 text-blue-600" />
               <h3 className="text-[16px] font-medium">Save Gift Code</h3>
             </div>
             <Button
               type="submit"
-              className="bg-[#39DA8A] hover:bg-[#2bbd74] text-white px-6 py-2 h-10 text-[15px] font-medium rounded-md shadow-sm border-0"
+              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 h-10 text-[15px] font-medium rounded-sm-sm shadow-sm border-0"
               disabled={isSubmitting}
             >
               {isSubmitting ? (

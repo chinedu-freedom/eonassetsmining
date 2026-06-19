@@ -75,10 +75,10 @@ export default function WithdrawalsPage() {
                   <td className="px-6 py-4 text-right">
                     {withdrawal.status === 'Pending' ? (
                       <div className="flex items-center justify-end gap-2">
-                        <button className="px-3 py-1.5 text-xs font-medium bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 rounded-lg transition-colors border border-emerald-500/20">
+                        <button className="px-3 py-1.5 text-xs font-medium bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 rounded-sm-sm transition-colors border border-emerald-500/20">
                           Process
                         </button>
-                        <button className="px-3 py-1.5 text-xs font-medium bg-red-500/10 text-red-400 hover:bg-red-500/20 rounded-lg transition-colors border border-red-500/20">
+                        <button className="px-3 py-1.5 text-xs font-medium bg-red-500/10 text-red-400 hover:bg-red-500/20 rounded-sm-sm transition-colors border border-red-500/20">
                           Deny
                         </button>
                       </div>

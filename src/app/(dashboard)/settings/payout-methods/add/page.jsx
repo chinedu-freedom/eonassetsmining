@@ -158,12 +158,12 @@ export default function AddPayoutMethodPage() {
 
             {/* Actions */}
             <div className="flex items-center gap-2 pt-8 pb-4">
-              <Button className="bg-[#39DA8A] hover:bg-[#2ebd75] text-white px-6 h-10 font-medium rounded-sm shadow-sm border-0 flex items-center gap-2">
+              <Button className="bg-blue-600 hover:bg-blue-700 text-white px-6 h-10 font-medium rounded-sm-sm shadow-sm border-0 flex items-center gap-2">
                 <Save className="w-4 h-4" />
                 Create Payout Method
               </Button>
               <Link href="/settings/payout-methods">
-                <Button className="bg-[#475f7b] hover:bg-[#394c63] text-white px-6 h-10 font-medium rounded-sm shadow-sm border-0 flex items-center gap-2">
+                <Button className="bg-[#475f7b] hover:bg-[#394c63] text-white px-6 h-10 font-medium rounded-sm-sm shadow-sm border-0 flex items-center gap-2">
                   <ArrowLeft className="w-4 h-4" />
                   Back to List
                 </Button>

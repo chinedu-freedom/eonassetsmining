@@ -8,7 +8,7 @@ export const getStatusColor = (status) => {
     case "paid":
     case "approved":
     case "success":
-      return "bg-[#39DA8A] text-white"; // Using the design system's green
+      return "bg-blue-600 text-white"; // Using the design system's green
 
     // Processing / In Progress states
     case "processing":

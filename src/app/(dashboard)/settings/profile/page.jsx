@@ -7,6 +7,7 @@ import Tabs from "@/components/ui/tabs";
 import ManageAccount from "./tabs/manage-account";
 import ChangePassword from "./tabs/change-password";
 import { useSearchParams } from "next/navigation";
+import { Loader2 } from "lucide-react";
 
 function SettingsContent() {
   const searchParams = useSearchParams();
@@ -31,7 +32,12 @@ function SettingsContent() {
 
 export default function SettingsPage() {
   return (
-    <Suspense fallback={<div className="p-6">Loading...</div>}>
+    <Suspense fallback={
+      <div className="min-h-[40vh] flex flex-col items-center justify-center space-y-4">
+        <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
+        <p className="text-muted-foreground text-sm">Loading...</p>
+      </div>
+    }>
       <SettingsContent />
     </Suspense>
   );

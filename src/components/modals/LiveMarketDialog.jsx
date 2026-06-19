@@ -107,7 +107,7 @@ export default function LiveMarketDialog({ open, setOpen, initialData, onSuccess
               <Input
                 {...register("symbol")}
                 placeholder="e.g., BTC"
-                className="border-green-400 focus-visible:ring-green-400 rounded-sm h-10"
+                className="border-blue-500 focus-visible:ring-blue-500 rounded-sm h-10"
               />
               <p className="text-[11px] text-gray-500 mt-1.5">The cryptocurrency symbol (e.g., BTC, ETH)</p>
               {errors.symbol && <p className="text-red-500 text-sm mt-1">{errors.symbol.message}</p>}
@@ -118,7 +118,7 @@ export default function LiveMarketDialog({ open, setOpen, initialData, onSuccess
               <Input
                 {...register("name")}
                 placeholder="e.g., Bitcoin"
-                className="border-green-400 focus-visible:ring-green-400 rounded-sm h-10"
+                className="border-blue-500 focus-visible:ring-blue-500 rounded-sm h-10"
               />
               {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>}
             </div>
@@ -128,7 +128,7 @@ export default function LiveMarketDialog({ open, setOpen, initialData, onSuccess
               <Input
                 {...register("trading_pair")}
                 placeholder="e.g., BTCUSDT"
-                className="border-green-400 focus-visible:ring-green-400 rounded-sm h-10"
+                className="border-blue-500 focus-visible:ring-blue-500 rounded-sm h-10"
               />
               <p className="text-[11px] text-gray-500 mt-1.5">The Binance trading pair symbol (e.g., BTCUSDT, ETHUSDT). This is used to fetch live prices.</p>
               {errors.trading_pair && <p className="text-red-500 text-sm mt-1">{errors.trading_pair.message}</p>}
@@ -139,7 +139,7 @@ export default function LiveMarketDialog({ open, setOpen, initialData, onSuccess
               <Input
                 {...register("logo_url")}
                 placeholder="https://assets.coingecko.com/coins/images/1/small/bitcoin.png"
-                className="border-green-400 focus-visible:ring-green-400 rounded-sm h-10"
+                className="border-blue-500 focus-visible:ring-blue-500 rounded-sm h-10"
               />
               <p className="text-[11px] text-gray-500 mt-1.5">Get logo URL from CoinGecko. Right-click on coin logo → Copy image address</p>
               {errors.logo_url && <p className="text-red-500 text-sm mt-1">{errors.logo_url.message}</p>}
@@ -161,7 +161,7 @@ export default function LiveMarketDialog({ open, setOpen, initialData, onSuccess
           <div className="flex justify-end pt-2 pb-6">
             <Button
               type="submit"
-              className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-2 h-auto text-base rounded-md"
+              className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-2 h-auto text-base rounded-sm-sm"
               disabled={isSubmitting}
             >
               {isSubmitting ? (

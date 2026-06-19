@@ -123,7 +123,7 @@ export default function AboutUsSettingsPage() {
           </div>
 
           <div className="pt-6 border-t border-gray-100">
-            <Button className="bg-[#5A8DEE] hover:bg-[#4778d9] text-white px-6 h-10 font-medium rounded-md shadow-sm border-0 flex items-center gap-2">
+            <Button className="bg-[#5A8DEE] hover:bg-[#4778d9] text-white px-6 h-10 font-medium rounded-sm-sm shadow-sm border-0 flex items-center gap-2">
               <Save className="w-4 h-4" />
               Save Changes
             </Button>

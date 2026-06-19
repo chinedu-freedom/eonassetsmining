@@ -15,7 +15,7 @@ const badgeVariants = cva(
           "border-transparent bg-destructive text-destructive-foreground ",
         outline: "text-foreground border-foreground/20",
         success:
-          "border-transparent bg-green-100 text-green-700 dark:bg-green-900/20 dark:text-green-400",
+          "border-transparent bg-blue-100 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400",
         warning:
           "border-transparent bg-yellow-100 text-yellow-700 dark:bg-yellow-900/20 dark:text-yellow-400",
         info: "border-transparent bg-blue-100 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400",
@@ -38,7 +38,7 @@ function Badge({ className, variant, showDot = true, children, ...props }) {
           className={cn(
             "w-2 h-2 rounded-full",
             variant === "success"
-              ? "bg-green-500"
+              ? "bg-blue-500"
               : variant === "warning"
               ? "bg-yellow-500"
               : variant === "info"

@@ -82,7 +82,7 @@ export default function EditPartnerPage({ params }) {
           <h1 className="text-lg font-semibold text-gray-700">Edit Partner: {partner.name}</h1>
         </div>
         <Link href="/partners">
-          <Button variant="default" className="bg-[#5A8DEE] hover:bg-[#4778d9] text-white flex items-center gap-2 h-9 px-4 rounded-md">
+          <Button variant="default" className="bg-[#5A8DEE] hover:bg-[#4778d9] text-white flex items-center gap-2 h-9 px-4 rounded-sm-sm">
             <ChevronLeft className="w-4 h-4" />
             Back To Partners
           </Button>
@@ -246,13 +246,13 @@ export default function EditPartnerPage({ params }) {
         {/* Footer Actions */}
         <div className="flex justify-end">
           {/* <div className="flex items-center gap-2 text-gray-600 font-medium">
-            <Save className="w-5 h-5 text-green-500" />
+            <Save className="w-5 h-5 text-blue-500" />
             Save Changes
           </div> */}
           <Button
             type="submit"
             disabled={isSubmitting}
-            className="bg-[#39DA8A] hover:bg-[#28c76f] text-white flex items-center gap-2 h-10 px-6 rounded-md font-medium"
+            className="bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-2 h-10 px-6 rounded-sm-sm font-medium"
           >
             {isSubmitting ? "Updating..." : (
               <>

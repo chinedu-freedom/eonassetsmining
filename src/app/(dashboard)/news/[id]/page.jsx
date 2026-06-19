@@ -25,7 +25,7 @@ export default function AdminNewsPreviewPage() {
         </div>
         <div className="flex items-center gap-2">
           {article && (
-            <Badge className={`${article.status ? 'bg-[#39DA8A]/10 text-[#39DA8A]' : 'bg-red-100 text-red-600'} border-0 px-3 py-1 font-bold`}>
+            <Badge className={`${article.status ? 'bg-blue-600/10 text-blue-600' : 'bg-red-100 text-red-600'} border-0 px-3 py-1 font-bold`}>
               {article.status ? "Published" : "Hidden"}
             </Badge>
           )}

@@ -91,34 +91,34 @@ export default function ApprovedRechargePage() {
       <Card className="border-none shadow-sm bg-white rounded-md">
         <CardContent className="p-0">
           <div className="overflow-x-auto">
-            <Table>
-              <TableHeader className="bg-gray-50/50 border-b">
-                <TableRow className="hover:bg-transparent">
-                  <TableHead className="w-[60px] font-bold text-gray-600 uppercase text-[12px] tracking-wider py-4 pl-6">S.N</TableHead>
-                  <TableHead className="font-bold text-gray-600 uppercase text-[12px] tracking-wider py-4">USER INFO</TableHead>
-                  <TableHead className="font-bold text-gray-600 uppercase text-[12px] tracking-wider py-4">PAYMENT INFO</TableHead>
-                  <TableHead className="font-bold text-gray-600 uppercase text-[12px] tracking-wider py-4">PAYMENT AMOUNTS</TableHead>
-                  <TableHead className="font-bold text-gray-600 uppercase text-[12px] tracking-wider py-4">PAYMENT OPERATION</TableHead>
-                  <TableHead className="font-bold text-gray-600 uppercase text-[12px] tracking-wider py-4 pr-6">ACTIVE</TableHead>
+            <Table className="min-w-[1000px] whitespace-nowrap">
+              <TableHeader className="bg-gray-50/50 border-b min-w-[1000px] whitespace-nowrap">
+                <TableRow className="hover:bg-transparent min-w-[1000px] whitespace-nowrap">
+                  <TableHead className="w-[60px] font-bold text-gray-600 uppercase text-[12px] tracking-wider py-4 pl-6 min-w-[1000px] whitespace-nowrap">S.N</TableHead>
+                  <TableHead className="font-bold text-gray-600 uppercase text-[12px] tracking-wider py-4 min-w-[1000px] whitespace-nowrap">USER INFO</TableHead>
+                  <TableHead className="font-bold text-gray-600 uppercase text-[12px] tracking-wider py-4 min-w-[1000px] whitespace-nowrap">PAYMENT INFO</TableHead>
+                  <TableHead className="font-bold text-gray-600 uppercase text-[12px] tracking-wider py-4 min-w-[1000px] whitespace-nowrap">PAYMENT AMOUNTS</TableHead>
+                  <TableHead className="font-bold text-gray-600 uppercase text-[12px] tracking-wider py-4 min-w-[1000px] whitespace-nowrap">PAYMENT OPERATION</TableHead>
+                  <TableHead className="font-bold text-gray-600 uppercase text-[12px] tracking-wider py-4 pr-6 min-w-[1000px] whitespace-nowrap">ACTIVE</TableHead>
                 </TableRow>
               </TableHeader>
-              <TableBody>
+              <TableBody className="min-w-[1000px] whitespace-nowrap">
                 {isLoading ? (
-                  <TableRow>
-                    <TableCell colSpan={6} className="text-center py-10 text-gray-500 bg-gray-50/30">
+                  <TableRow className="min-w-[1000px] whitespace-nowrap">
+                    <TableCell colSpan={6} className="text-center py-10 text-gray-500 bg-gray-50/30 min-w-[1000px] whitespace-nowrap">
                       <Loader2 className="w-6 h-6 animate-spin mx-auto mb-2" />
                       Loading approved deposits...
                     </TableCell>
                   </TableRow>
                 ) : filteredData.length > 0 ? (
                   filteredData.map((item) => (
-                    <TableRow key={item.id} className="hover:bg-gray-50 border-b last:border-0 align-top">
-                      <TableCell className="font-medium text-gray-700 text-[13px] py-4 pl-6">
+                    <TableRow key={item.id} className="hover:bg-gray-50 border-b last:border-0 align-top min-w-[1000px] whitespace-nowrap">
+                      <TableCell className="font-medium text-gray-700 text-[13px] py-4 pl-6 min-w-[1000px] whitespace-nowrap">
                         {item.sn}
                       </TableCell>
                       
                       {/* USER INFO */}
-                      <TableCell className="py-4">
+                      <TableCell className="py-4 min-w-[1000px] whitespace-nowrap">
                         <div className="flex flex-col space-y-1.5">
                           <div className="text-[13px] text-gray-700">
                             Name: <span className="font-medium">{item.userInfo.name}</span>
@@ -134,7 +134,7 @@ export default function ApprovedRechargePage() {
                       </TableCell>
 
                       {/* PAYMENT INFO */}
-                      <TableCell className="py-4">
+                      <TableCell className="py-4 min-w-[1000px] whitespace-nowrap">
                         <div className="flex flex-col space-y-1.5">
                           <div className="text-[13px] text-gray-700">
                             Payment Number: <br />
@@ -150,7 +150,7 @@ export default function ApprovedRechargePage() {
                       </TableCell>
 
                       {/* PAYMENT AMOUNTS */}
-                      <TableCell className="py-4">
+                      <TableCell className="py-4 min-w-[1000px] whitespace-nowrap">
                         <div className="flex flex-col space-y-1.5">
                           <div className="text-[13px] text-gray-700">
                             Payment Amount: <span className="font-medium">${item.amounts.paymentAmount.toFixed(2)}</span>
@@ -162,11 +162,11 @@ export default function ApprovedRechargePage() {
                       </TableCell>
 
                       {/* PAYMENT OPERATION */}
-                      <TableCell className="py-4">
+                      <TableCell className="py-4 min-w-[1000px] whitespace-nowrap">
                         <div className="flex flex-col space-y-2">
                           <div className="flex items-center gap-2 text-[13px] text-gray-700">
                             Status: 
-                            <span className="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-sm font-bold bg-[#39DA8A] text-white">
+                            <span className="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-sm font-bold bg-blue-600 text-white">
                               {item.operation.status}
                             </span>
                           </div>
@@ -188,7 +188,7 @@ export default function ApprovedRechargePage() {
                       </TableCell>
 
                       {/* ACTIVE */}
-                      <TableCell className="py-4 pr-6 align-middle">
+                      <TableCell className="py-4 pr-6 align-middle min-w-[1000px] whitespace-nowrap">
                         <div className="text-[#00CFDD] font-medium text-[14px]">
                           Already<br />processed
                         </div>
@@ -196,8 +196,8 @@ export default function ApprovedRechargePage() {
                     </TableRow>
                   ))
                 ) : (
-                  <TableRow>
-                    <TableCell colSpan={6} className="text-center py-10 text-gray-500 bg-gray-50/30">
+                  <TableRow className="min-w-[1000px] whitespace-nowrap">
+                    <TableCell colSpan={6} className="text-center py-10 text-gray-500 bg-gray-50/30 min-w-[1000px] whitespace-nowrap">
                       No data available in table
                     </TableCell>
                   </TableRow>

@@ -51,14 +51,10 @@ export default function CustomersManagementPage() {
 
   const stats = [
     { title: "Total Users", value: usersData.length.toString(), icon: Users, color: "text-blue-600", bg: "bg-blue-100" },
-    { title: "Active Users", value: activeUsersCount.toString(), icon: CheckCircle, color: "text-green-600", bg: "bg-green-100" },
+    { title: "Active Users", value: activeUsersCount.toString(), icon: CheckCircle, color: "text-blue-600", bg: "bg-blue-100" },
     { title: "Unverified Users", value: "0", icon: Clock, color: "text-yellow-600", bg: "bg-yellow-100" },
     { title: "Banned Users", value: bannedUsersCount.toString(), icon: Ban, color: "text-red-600", bg: "bg-red-100" },
   ]
-
-  if (isLoading) {
-    return <div className="min-h-[60vh] flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-blue-500" /></div>
-  }
 
   return (
     <div className="space-y-6">
@@ -92,7 +88,7 @@ export default function CustomersManagementPage() {
               <UserCog className="w-5 h-5 text-gray-500" />
               <h2 className="text-[16px] font-semibold">User Management</h2>
             </div>
-            <Button variant="outline" className="border-cyan-500 text-cyan-500 hover:bg-cyan-50 h-9 px-4 rounded-md">
+            <Button variant="outline" className="border-cyan-500 text-cyan-500 hover:bg-cyan-50 h-9 px-4 rounded-sm-sm">
               <History className="w-4 h-4 mr-2" />
               Activity
             </Button>
@@ -139,23 +135,30 @@ export default function CustomersManagementPage() {
 
         {/* Table Section */}
         <div className="overflow-x-auto">
-          <Table>
-            <TableHeader className="bg-gray-50/50 border-b">
-              <TableRow className="hover:bg-transparent">
-                <TableHead className="font-bold text-gray-600 uppercase text-[11px] tracking-wider w-[50px] py-4">#</TableHead>
-                <TableHead className="font-bold text-gray-600 uppercase text-[11px] tracking-wider py-4">USER</TableHead>
-                <TableHead className="font-bold text-gray-600 uppercase text-[11px] tracking-wider py-4">COUNTRY</TableHead>
-                <TableHead className="font-bold text-gray-600 uppercase text-[11px] tracking-wider py-4">MAIN BALANCE</TableHead>
-                <TableHead className="font-bold text-gray-600 uppercase text-[11px] tracking-wider py-4">GIFT BALANCE</TableHead>
-                <TableHead className="font-bold text-gray-600 uppercase text-[11px] tracking-wider py-4">REGISTERED</TableHead>
-                <TableHead className="font-bold text-gray-600 uppercase text-[11px] tracking-wider py-4">STATUS</TableHead>
-                <TableHead className="font-bold text-gray-600 uppercase text-[11px] tracking-wider py-4">ACTIONS</TableHead>
+          <Table className="min-w-[1000px] whitespace-nowrap">
+            <TableHeader className="bg-gray-50/50 border-b min-w-[1000px] whitespace-nowrap">
+              <TableRow className="hover:bg-transparent min-w-[1000px] whitespace-nowrap">
+                <TableHead className="font-bold text-gray-600 uppercase text-[11px] tracking-wider w-[50px] py-4 min-w-[1000px] whitespace-nowrap">#</TableHead>
+                <TableHead className="font-bold text-gray-600 uppercase text-[11px] tracking-wider py-4 min-w-[1000px] whitespace-nowrap">USER</TableHead>
+                <TableHead className="font-bold text-gray-600 uppercase text-[11px] tracking-wider py-4 min-w-[1000px] whitespace-nowrap">COUNTRY</TableHead>
+                <TableHead className="font-bold text-gray-600 uppercase text-[11px] tracking-wider py-4 min-w-[1000px] whitespace-nowrap">MAIN BALANCE</TableHead>
+                <TableHead className="font-bold text-gray-600 uppercase text-[11px] tracking-wider py-4 min-w-[1000px] whitespace-nowrap">GIFT BALANCE</TableHead>
+                <TableHead className="font-bold text-gray-600 uppercase text-[11px] tracking-wider py-4 min-w-[1000px] whitespace-nowrap">REGISTERED</TableHead>
+                <TableHead className="font-bold text-gray-600 uppercase text-[11px] tracking-wider py-4 min-w-[1000px] whitespace-nowrap">STATUS</TableHead>
+                <TableHead className="font-bold text-gray-600 uppercase text-[11px] tracking-wider py-4 min-w-[1000px] whitespace-nowrap">ACTIONS</TableHead>
               </TableRow>
             </TableHeader>
-            <TableBody>
-              {filteredUsers.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={8} className="h-[400px] text-center">
+            <TableBody className="min-w-[1000px] whitespace-nowrap">
+              {isLoading ? (
+                <TableRow className="min-w-[1000px] whitespace-nowrap">
+                  <TableCell colSpan={8} className="text-center py-10 text-gray-500 bg-gray-50/30 min-w-[1000px] whitespace-nowrap">
+                    <Loader2 className="w-6 h-6 animate-spin mx-auto mb-2" />
+                    Loading users...
+                  </TableCell>
+                </TableRow>
+              ) : filteredUsers.length === 0 ? (
+                <TableRow className="min-w-[1000px] whitespace-nowrap">
+                  <TableCell colSpan={8} className="h-[400px] text-center min-w-[1000px] whitespace-nowrap">
                     <div className="flex flex-col items-center justify-center text-gray-500">
                       <Search className="w-12 h-12 mb-4 text-gray-300" />
                       <p className="text-lg font-medium text-gray-600">No users found</p>
@@ -165,11 +168,11 @@ export default function CustomersManagementPage() {
                 </TableRow>
               ) : (
                 filteredUsers.map((user) => (
-                <TableRow key={user.id} className="hover:bg-gray-50 border-b last:border-0">
-                  <TableCell className="font-medium text-gray-700 text-[13px] py-4">
+                <TableRow key={user.id} className="hover:bg-gray-50 border-b last:border-0 min-w-[1000px] whitespace-nowrap">
+                  <TableCell className="font-medium text-gray-700 text-[13px] py-4 min-w-[1000px] whitespace-nowrap">
                     {user.id.substring(0, 8)}...
                   </TableCell>
-                  <TableCell className="py-4">
+                  <TableCell className="py-4 min-w-[1000px] whitespace-nowrap">
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 rounded-full bg-[#5A8DEE] text-white flex items-center justify-center font-bold text-sm shrink-0">
                         {user.email.charAt(0).toUpperCase()}
@@ -181,24 +184,24 @@ export default function CustomersManagementPage() {
                     </div>
                   </TableCell>
 
-                  <TableCell className="py-4">
+                  <TableCell className="py-4 min-w-[1000px] whitespace-nowrap">
                     <Badge showDot={false} className="bg-gray-400 hover:bg-gray-500 text-white border-0 px-2.5 py-0.5 rounded-[4px] font-medium text-[11px]">
                       {user.country?.country_code || "N/A"}
                     </Badge>
                   </TableCell>
-                  <TableCell className="py-4">
+                  <TableCell className="py-4 min-w-[1000px] whitespace-nowrap">
                     <span className="font-bold text-[#5A8DEE] text-[13px]">${Number(user.balance || 0).toFixed(2)}</span>
                   </TableCell>
-                  <TableCell className="py-4">
-                    <span className="font-bold text-[#39DA8A] text-[13px]">${Number(user.gift_balance || 0).toFixed(2)}</span>
+                  <TableCell className="py-4 min-w-[1000px] whitespace-nowrap">
+                    <span className="font-bold text-blue-600 text-[13px]">${Number(user.gift_balance || 0).toFixed(2)}</span>
                   </TableCell>
-                  <TableCell className="text-[12px] text-gray-600 py-4">
+                  <TableCell className="text-[12px] text-gray-600 py-4 min-w-[1000px] whitespace-nowrap">
                     {format(new Date(user.created_at), "MMM dd, yyyy")}
                   </TableCell>
-                  <TableCell className="py-4">
+                  <TableCell className="py-4 min-w-[1000px] whitespace-nowrap">
                     <StatusBadge status={user.is_active ? "ACTIVE" : "BANNED"} />
                   </TableCell>
-                  <TableCell className="py-4">
+                  <TableCell className="py-4 min-w-[1000px] whitespace-nowrap">
                     <div className="flex items-center gap-1.5">
                       <Link href={`/customers/${user.id}`}>
                         <Button variant="outline" size="icon" className="h-7 w-7 text-blue-500 border-gray-200 hover:bg-blue-50" title="Edit">

@@ -136,7 +136,7 @@ export default function SliderDialog({ open, setOpen, initialData, onSuccess }) 
                     placeholder="Choose file" 
                     value={imageName}
                     readOnly 
-                    className="border-0 bg-transparent rounded-none flex-1 text-gray-500" 
+                    className="border-0 bg-transparent flex-1 text-gray-500 rounded-sm h-10" 
                   />
                   <input
                     type="file"
@@ -156,7 +156,7 @@ export default function SliderDialog({ open, setOpen, initialData, onSuccess }) 
                   <Button 
                     type="button" 
                     variant="secondary" 
-                    className="rounded-none border-l h-10 px-6 bg-gray-100 hover:bg-gray-200 text-gray-700 font-normal border-gray-300"
+                    className="rounded-sm-none border-l h-10 px-6 bg-gray-100 hover:bg-gray-200 text-gray-700 font-normal border-gray-300"
                     onClick={() => fileInputRef.current?.click()}
                   >
                     Browse
@@ -181,7 +181,7 @@ export default function SliderDialog({ open, setOpen, initialData, onSuccess }) 
               <div>
                 <Label className="text-gray-600 text-sm mb-1.5 block font-bold">Page View</Label>
                 <Select value={display_location} onValueChange={(val) => setValue("display_location", val)}>
-                  <SelectTrigger className="border-green-300 focus:ring-green-400 text-gray-600 h-10">
+                  <SelectTrigger className="border-blue-300 focus:ring-blue-500 text-gray-600 rounded-sm h-10">
                     <SelectValue placeholder="Select page view" />
                   </SelectTrigger>
                   <SelectContent>
@@ -209,7 +209,7 @@ export default function SliderDialog({ open, setOpen, initialData, onSuccess }) 
             <h3 className="text-[16px] text-[#475f7b] font-medium">Submit Your Slider Information</h3>
             <Button
               type="submit"
-              className="bg-[#39DA8A] hover:bg-[#2bbd74] text-white px-6 py-2 h-10 text-[15px] font-medium rounded-md shadow-sm"
+              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 h-10 text-[15px] font-medium rounded-sm-sm shadow-sm"
               disabled={isSubmitting}
             >
               {isSubmitting ? (

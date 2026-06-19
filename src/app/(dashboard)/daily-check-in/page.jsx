@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Save, ChevronLeft } from "lucide-react"
+import { Save, ChevronLeft, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -17,8 +17,8 @@ export default function DailyCheckInPage() {
   const [isSystemEnabled, setIsSystemEnabled] = useState(true)
   const [rewards, setRewards] = useState([])
 
-  const { data: settingsData } = useFetchData("/admin/settings/platform", ["admin-platform-settings"])
-  const { data: checkinsData } = useFetchData("/admin/rewards/check-ins", ["admin-checkins"])
+  const { data: settingsData, isLoading: loadingSettings } = useFetchData("/admin/settings/platform", ["admin-platform-settings"])
+  const { data: checkinsData, isLoading: loadingCheckins } = useFetchData("/admin/rewards/check-ins", ["admin-checkins"])
 
   const updateSettingsMutation = usePut("/admin/settings/platform", ["admin-platform-settings"])
   const updateCheckinsMutation = usePut("/admin/rewards/check-ins/bulk", ["admin-checkins"])
@@ -123,13 +123,20 @@ export default function DailyCheckInPage() {
               </tr>
             </thead>
             <tbody>
-              {rewards.map((reward, index) => (
+              {loadingCheckins ? (
+                <tr>
+                  <td colSpan={3} className="text-center py-10 text-gray-500 bg-gray-50/30">
+                    <Loader2 className="w-6 h-6 animate-spin mx-auto mb-2 text-blue-500" />
+                    Loading daily check-in rewards...
+                  </td>
+                </tr>
+              ) : rewards.map((reward, index) => (
                 <tr key={reward.day_number} className="border-b last:border-0 hover:bg-gray-50/30 transition-colors">
                   <td className="px-6 py-5">
                     <div className="flex items-center gap-3">
                       <span className="font-bold text-gray-800">Day {reward.day_number}</span>
                       {reward.day_number === 7 && (
-                        <Badge className="bg-[#39DA8A] hover:bg-[#2bbd74] text-white border-0 text-[10px] uppercase tracking-wider px-2 py-0.5 font-bold">
+                        <Badge className="bg-blue-600 hover:bg-blue-700 text-white border-0 text-[10px] uppercase tracking-wider px-2 py-0.5 font-bold">
                           Final Reward
                         </Badge>
                       )}
@@ -154,7 +161,7 @@ export default function DailyCheckInPage() {
                       type="text"
                       value={reward.description || ""}
                       onChange={(e) => handleDescriptionChange(index, e.target.value)}
-                      className={`w-full outline-none bg-transparent ${index === 0 ? "text-[#00cfdd]" : index === 6 ? "text-[#39DA8A]" : "text-gray-400"} font-medium`}
+                      className={`w-full outline-none bg-transparent ${index === 0 ? "text-[#00cfdd]" : index === 6 ? "text-blue-600" : "text-gray-400"} font-medium`}
                     />
                   </td>
                 </tr>
@@ -166,7 +173,7 @@ export default function DailyCheckInPage() {
     <Button 
       onClick={handleSave} 
       disabled={isSubmitting}
-      className="bg-[#39DA8A] hover:bg-[#2bbd74] text-white font-medium px-6 shadow-sm rounded-sm py-4.5"
+      className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 shadow-sm rounded-sm-sm py-4.5"
     >
       <Save className="w-4 h-4 mr-2" />
       {isSubmitting ? "Saving..." : "Save Settings"}
@@ -174,7 +181,6 @@ export default function DailyCheckInPage() {
   </div>  
       </Card>
 
-      {/* Action Buttons */}
     
     </div>
   )

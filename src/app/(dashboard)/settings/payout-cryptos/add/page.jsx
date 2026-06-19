@@ -16,18 +16,18 @@ const ValidatedInput = ({ label, required, placeholder, defaultValue, helperText
         type={type}
         placeholder={placeholder}
         defaultValue={defaultValue}
-        className="border-[#39DA8A] focus-visible:ring-0 focus-visible:border-[#39DA8A] h-10 pr-10 text-gray-700 text-[13px]"
+        className="border-blue-500 focus-visible:ring-0 focus-visible:border-blue-500 h-10 pr-10 text-gray-700 text-[13px]"
       />
       <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center space-x-1">
-        <Check className="w-5 h-5 text-[#39DA8A]" />
+        <Check className="w-5 h-5 text-blue-600" />
       </div>
     </div>
     {helperText && (
       <div className="flex items-center gap-1 mt-1">
-        <div className="w-1.5 h-1.5 rounded-full border border-[#39DA8A] flex items-center justify-center">
-          <div className="w-0.5 h-0.5 bg-[#39DA8A] rounded-full"></div>
+        <div className="w-1.5 h-1.5 rounded-full border border-blue-500 flex items-center justify-center">
+          <div className="w-0.5 h-0.5 bg-blue-600 rounded-full"></div>
         </div>
-        <p className="text-[11px] text-[#39DA8A]">{helperText}</p>
+        <p className="text-[11px] text-blue-600">{helperText}</p>
       </div>
     )}
   </div>
@@ -43,7 +43,7 @@ export default function AddPayoutCryptoPage() {
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
             <h2 className="text-[1.2rem] font-medium text-[#475f7b]">Create New Payout Crypto</h2>
             <Link href="/settings/payout-cryptos">
-              <Button className="bg-[#5A8DEE] hover:bg-[#4778d9] text-white px-4 h-10 font-medium rounded-sm shadow-sm border-0 flex items-center gap-2">
+              <Button className="bg-[#5A8DEE] hover:bg-[#4778d9] text-white px-4 h-10 font-medium rounded-sm-sm shadow-sm border-0 flex items-center gap-2">
                 <ArrowLeft className="w-4 h-4" />
                 Payout Crypto List
               </Button>
@@ -84,7 +84,7 @@ export default function AddPayoutCryptoPage() {
                   Upload Icon <span className="text-gray-400 font-normal">(Optional - 64x64px)</span>
                 </label>
                 <div className="flex items-center gap-4">
-                  <div className="flex-1 border border-[#39DA8A] rounded-sm flex items-center h-10 overflow-hidden relative">
+                  <div className="flex-1 border border-blue-500 rounded-sm flex items-center h-10 overflow-hidden relative">
                     <span className="px-3 text-[13px] text-gray-400 flex-1 truncate bg-white h-full flex items-center">
                       Choose file
                     </span>
@@ -171,7 +171,7 @@ export default function AddPayoutCryptoPage() {
       <Card className="border-none shadow-sm bg-white rounded-md">
         <CardContent className="p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <h2 className="text-[1.1rem] font-medium text-[#475f7b]">Submit Payout Crypto</h2>
-          <Button className="bg-[#39DA8A] hover:bg-[#2ebd75] text-white px-5 h-10 font-medium rounded-sm shadow-sm border-0 flex items-center gap-2">
+          <Button className="bg-blue-600 hover:bg-blue-700 text-white px-5 h-10 font-medium rounded-sm-sm shadow-sm border-0 flex items-center gap-2">
             <Plus className="w-4 h-4" />
             Create
           </Button>

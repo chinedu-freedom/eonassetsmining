@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/auth-input";
 import { Button } from "@/components/ui/button";
 import { usePost, useGet } from "@/hooks/useApi";
+import { Loader2 } from "lucide-react";
 
 export default function VipPage() {
   const createVip = usePost("/api/admin/vip");
@@ -65,7 +66,10 @@ export default function VipPage() {
         <h2 className="text-lg font-semibold mb-4">Existing VIP Levels</h2>
 
         {isLoading ? (
-          <p className="text-gray-500">Loading...</p>
+          <div className="flex flex-col items-center justify-center py-8 space-y-3">
+            <Loader2 className="w-6 h-6 animate-spin text-blue-500" />
+            <p className="text-gray-500 text-sm">Loading VIP levels...</p>
+          </div>
         ) : vipList.length === 0 ? (
           <p className="text-gray-500">No VIP levels yet</p>
         ) : (

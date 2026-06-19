@@ -70,7 +70,7 @@ export default function SettingsPage() {
               </div>
             </div>
             <div className="pt-2">
-              <button className="bg-white/5 hover:bg-white/10 border border-white/10 text-white px-4 py-2 rounded-xl text-sm font-medium transition-colors">
+              <button className="bg-white/5 hover:bg-white/10 border border-white/10 text-white px-4 py-2 rounded-sm-sm text-sm font-medium transition-colors">
                 Enable Two-Factor Authentication (2FA)
               </button>
             </div>
@@ -108,7 +108,7 @@ export default function SettingsPage() {
         </Card>
 
         <div className="flex justify-end pt-4">
-          <button className="bg-blue-600 hover:bg-blue-500 text-white px-6 py-2.5 rounded-xl text-sm font-medium transition-colors flex items-center gap-2 shadow-lg shadow-blue-500/20">
+          <button className="bg-blue-600 hover:bg-blue-500 text-white px-6 py-2.5 rounded-sm-sm text-sm font-medium transition-colors flex items-center gap-2 shadow-lg shadow-blue-500/20">
             <Save className="w-4 h-4" />
             Save Changes
           </button>

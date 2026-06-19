@@ -11,7 +11,7 @@ export const getStatusColor = (status) => {
     case "approved":
     case "success":
     case "verified":
-      return { bg: "bg-green-100 hover:bg-green-200", text: "text-green-800", dot: "bg-green-800" };
+      return { bg: "bg-blue-100 hover:bg-green-200", text: "text-green-800", dot: "bg-green-800" };
 
     // Processing / In Progress states (Blue)
     case "processing":

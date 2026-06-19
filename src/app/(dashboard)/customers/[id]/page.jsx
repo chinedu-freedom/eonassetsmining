@@ -231,15 +231,15 @@ export default function CustomerDetailsPage() {
           </div>
         </div>
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-          <Button variant="outline" className="text-white border-red-500 bg-red-500/100 hover:bg-red-600 hover:text-white rounded-sm px-4 py-5" onClick={handleDeleteUser} disabled={isDeleting}>
+          <Button variant="outline" className="text-white border-red-500 bg-red-500/100 hover:bg-red-600 hover:text-white rounded-sm-sm px-4 py-5" onClick={handleDeleteUser} disabled={isDeleting}>
             {isDeleting ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Trash className="w-4 h-4 mr-0.5" />}
             Delete User
           </Button>
-          <Button onClick={handleSave} disabled={isSaving} className="bg-[#5A8DEE] hover:bg-[#477ae0] text-white shadow-sm py-5 px-6 rounded-sm">
+          <Button onClick={handleSave} disabled={isSaving} className="bg-[#5A8DEE] hover:bg-[#477ae0] text-white shadow-sm py-5 px-6 rounded-sm-sm">
             {isSaving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
             Save All Changes
           </Button>
-          <Button onClick={handleImpersonate} disabled={isImpersonating} className="bg-slate-800 hover:bg-slate-700 text-white shadow-sm py-5 px-6 rounded-sm border border-slate-700">
+          <Button onClick={handleImpersonate} disabled={isImpersonating} className="bg-slate-800 hover:bg-slate-700 text-white shadow-sm py-5 px-6 rounded-sm-sm border border-slate-700">
             {isImpersonating ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <UserCheck className="w-4 h-4 mr-2" />}
             Login As User
           </Button>
@@ -554,38 +554,38 @@ export default function CustomerDetailsPage() {
 
         {activeHistoryTab === 'transactions' && (
           <div className="overflow-x-auto p-0">
-            <Table>
-              <TableHeader className="bg-muted/30 border-b border-border">
-                <TableRow className="hover:bg-transparent border-none">
-                  <TableHead className="font-bold text-muted-foreground uppercase text-xs tracking-wider py-4">ID</TableHead>
-                  <TableHead className="font-bold text-muted-foreground uppercase text-xs tracking-wider py-4">TYPE</TableHead>
-                  <TableHead className="font-bold text-muted-foreground uppercase text-xs tracking-wider py-4">AMOUNT</TableHead>
-                  <TableHead className="font-bold text-muted-foreground uppercase text-xs tracking-wider py-4">DESCRIPTION</TableHead>
-                  <TableHead className="font-bold text-muted-foreground uppercase text-xs tracking-wider py-4">DATE</TableHead>
+            <Table className="min-w-[1000px] whitespace-nowrap">
+              <TableHeader className="bg-muted/30 border-b border-border min-w-[1000px] whitespace-nowrap">
+                <TableRow className="hover:bg-transparent border-none min-w-[1000px] whitespace-nowrap">
+                  <TableHead className="font-bold text-muted-foreground uppercase text-xs tracking-wider py-4 min-w-[1000px] whitespace-nowrap">ID</TableHead>
+                  <TableHead className="font-bold text-muted-foreground uppercase text-xs tracking-wider py-4 min-w-[1000px] whitespace-nowrap">TYPE</TableHead>
+                  <TableHead className="font-bold text-muted-foreground uppercase text-xs tracking-wider py-4 min-w-[1000px] whitespace-nowrap">AMOUNT</TableHead>
+                  <TableHead className="font-bold text-muted-foreground uppercase text-xs tracking-wider py-4 min-w-[1000px] whitespace-nowrap">DESCRIPTION</TableHead>
+                  <TableHead className="font-bold text-muted-foreground uppercase text-xs tracking-wider py-4 min-w-[1000px] whitespace-nowrap">DATE</TableHead>
                 </TableRow>
               </TableHeader>
-              <TableBody>
+              <TableBody className="min-w-[1000px] whitespace-nowrap">
                 {Array.isArray(user.transactions) && user.transactions.length > 0 ? (
                   user.transactions.map((tx) => (
-                    <TableRow key={tx.id} className="border-b border-border hover:bg-muted/20">
-                      <TableCell className="font-medium text-sm text-foreground">{(tx.id || "").substring(0, 8)}...</TableCell>
-                      <TableCell>
+                    <TableRow key={tx.id} className="border-b border-border hover:bg-muted/20 min-w-[1000px] whitespace-nowrap">
+                      <TableCell className="font-medium text-sm text-foreground min-w-[1000px] whitespace-nowrap">{(tx.id || "").substring(0, 8)}...</TableCell>
+                      <TableCell className="min-w-[1000px] whitespace-nowrap">
                         <Badge showDot={false} className="bg-muted text-foreground border border-border text-xs font-medium shadow-sm">{(tx.type || "").replace(/_/g, ' ')}</Badge>
                       </TableCell>
-                      <TableCell className={`font-bold text-sm ${tx.amount > 0 ? 'text-emerald-500' : 'text-foreground'}`}>
+                      <TableCell className={`font-bold text-sm ${tx.amount  className="min-w-[1000px] whitespace-nowrap"> 0 ? 'text-emerald-500' : 'text-foreground'}`}>
                         ${Math.abs(tx.amount).toFixed(2)}
                       </TableCell>
-                      <TableCell className="text-sm text-muted-foreground max-w-[250px] truncate" title={tx.description || "N/A"}>
+                      <TableCell className="text-sm text-muted-foreground max-w-[250px] truncate min-w-[1000px] whitespace-nowrap" title={tx.description || "N/A"}>
                         {tx.description || "N/A"}
                       </TableCell>
-                      <TableCell className="text-sm text-muted-foreground">
+                      <TableCell className="text-sm text-muted-foreground min-w-[1000px] whitespace-nowrap">
                         {safeFormatDate(tx.created_at, "MMM dd, yyyy HH:mm")}
                       </TableCell>
                     </TableRow>
                   ))
                 ) : (
-                  <TableRow>
-                    <TableCell colSpan={5} className="h-40 text-center text-muted-foreground text-sm border-none">
+                  <TableRow className="min-w-[1000px] whitespace-nowrap">
+                    <TableCell colSpan={5} className="h-40 text-center text-muted-foreground text-sm border-none min-w-[1000px] whitespace-nowrap">
                       No recent transactions
                     </TableCell>
                   </TableRow>
@@ -597,34 +597,34 @@ export default function CustomerDetailsPage() {
 
         {activeHistoryTab === 'investments' && (
           <div className="overflow-x-auto p-0">
-            <Table>
-              <TableHeader className="bg-muted/30 border-b border-border">
-                <TableRow className="hover:bg-transparent border-none">
-                  <TableHead className="font-bold text-muted-foreground uppercase text-xs tracking-wider py-4">PLAN ID</TableHead>
-                  <TableHead className="font-bold text-muted-foreground uppercase text-xs tracking-wider py-4">AMOUNT</TableHead>
-                  <TableHead className="font-bold text-muted-foreground uppercase text-xs tracking-wider py-4">STATUS</TableHead>
-                  <TableHead className="font-bold text-muted-foreground uppercase text-xs tracking-wider py-4">CREATED</TableHead>
+            <Table className="min-w-[1000px] whitespace-nowrap">
+              <TableHeader className="bg-muted/30 border-b border-border min-w-[1000px] whitespace-nowrap">
+                <TableRow className="hover:bg-transparent border-none min-w-[1000px] whitespace-nowrap">
+                  <TableHead className="font-bold text-muted-foreground uppercase text-xs tracking-wider py-4 min-w-[1000px] whitespace-nowrap">PLAN ID</TableHead>
+                  <TableHead className="font-bold text-muted-foreground uppercase text-xs tracking-wider py-4 min-w-[1000px] whitespace-nowrap">AMOUNT</TableHead>
+                  <TableHead className="font-bold text-muted-foreground uppercase text-xs tracking-wider py-4 min-w-[1000px] whitespace-nowrap">STATUS</TableHead>
+                  <TableHead className="font-bold text-muted-foreground uppercase text-xs tracking-wider py-4 min-w-[1000px] whitespace-nowrap">CREATED</TableHead>
                 </TableRow>
               </TableHeader>
-              <TableBody>
+              <TableBody className="min-w-[1000px] whitespace-nowrap">
                 {Array.isArray(user.investments) && user.investments.length > 0 ? (
                   user.investments.map((inv) => (
-                    <TableRow key={inv.id} className="border-b border-border hover:bg-muted/20">
-                      <TableCell className="font-medium text-sm text-foreground">{(inv.plan_id || "").substring(0, 8)}...</TableCell>
-                      <TableCell className="font-bold text-sm text-[#5A8DEE]">
+                    <TableRow key={inv.id} className="border-b border-border hover:bg-muted/20 min-w-[1000px] whitespace-nowrap">
+                      <TableCell className="font-medium text-sm text-foreground min-w-[1000px] whitespace-nowrap">{(inv.plan_id || "").substring(0, 8)}...</TableCell>
+                      <TableCell className="font-bold text-sm text-[#5A8DEE] min-w-[1000px] whitespace-nowrap">
                         ${Number(inv.amount).toFixed(2)}
                       </TableCell>
-                      <TableCell>
+                      <TableCell className="min-w-[1000px] whitespace-nowrap">
                         <Badge showDot={false} className="bg-[#5A8DEE]/10 text-[#5A8DEE] border border-[#5A8DEE]/20 text-xs font-medium shadow-sm">{inv.status}</Badge>
                       </TableCell>
-                      <TableCell className="text-sm text-muted-foreground">
+                      <TableCell className="text-sm text-muted-foreground min-w-[1000px] whitespace-nowrap">
                         {safeFormatDate(inv.created_at, "MMM dd, yyyy")}
                       </TableCell>
                     </TableRow>
                   ))
                 ) : (
-                  <TableRow>
-                    <TableCell colSpan={4} className="h-40 text-center text-muted-foreground text-sm border-none">
+                  <TableRow className="min-w-[1000px] whitespace-nowrap">
+                    <TableCell colSpan={4} className="h-40 text-center text-muted-foreground text-sm border-none min-w-[1000px] whitespace-nowrap">
                       No active investments
                     </TableCell>
                   </TableRow>

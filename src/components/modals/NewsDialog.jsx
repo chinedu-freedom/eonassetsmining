@@ -145,9 +145,9 @@ export default function NewsDialog({ open, setOpen, initialData }) {
               <Input
                 {...register("title")}
                 placeholder="e.g. Platform Upgrade Announcement"
-                className="border-green-400 focus-visible:ring-green-400 rounded-sm h-10"
+                className="border-blue-500 focus-visible:ring-blue-500 rounded-sm h-10"
               />
-              <p className="text-[11px] text-green-500 mt-1.5">● This will be displayed as the news title</p>
+              <p className="text-[11px] text-blue-500 mt-1.5">● This will be displayed as the news title</p>
               {errors.title && <p className="text-red-500 text-sm mt-1">{errors.title.message}</p>}
             </div>
 
@@ -157,7 +157,7 @@ export default function NewsDialog({ open, setOpen, initialData }) {
                 value={watch("category") || ""} 
                 onValueChange={(val) => setValue("category", val, { shouldValidate: true })}
               >
-                <SelectTrigger className="border-green-400 focus-visible:ring-green-400 rounded-sm h-10 bg-white">
+                <SelectTrigger className="border-blue-500 focus-visible:ring-blue-500 bg-white rounded-sm h-10">
                   <SelectValue placeholder="Select category" />
                 </SelectTrigger>
                 <SelectContent>
@@ -198,7 +198,7 @@ export default function NewsDialog({ open, setOpen, initialData }) {
                     placeholder="Choose file" 
                     value={imageName}
                     readOnly 
-                    className="border-0 bg-transparent rounded-none flex-1" 
+                    className="border-0 bg-transparent flex-1 rounded-sm h-10" 
                   />
                   <input
                     type="file"
@@ -218,7 +218,7 @@ export default function NewsDialog({ open, setOpen, initialData }) {
                   <Button 
                     type="button" 
                     variant="secondary" 
-                    className="rounded-none border-l h-10 px-6 bg-gray-100 hover:bg-gray-200 text-gray-700"
+                    className="rounded-sm-none border-l h-10 px-6 bg-gray-100 hover:bg-gray-200 text-gray-700"
                     onClick={() => fileInputRef.current?.click()}
                   >
                     Browse
@@ -243,7 +243,7 @@ export default function NewsDialog({ open, setOpen, initialData }) {
               <Textarea
                 {...register("description")}
                 placeholder="A brief summary of the news"
-                className="resize-none border-green-400 focus-visible:ring-green-400 rounded-sm"
+                className="resize-none border-blue-500 focus-visible:ring-blue-500 rounded-sm"
                 rows={2}
               />
               {errors.description && <p className="text-red-500 text-sm mt-1">{errors.description.message}</p>}
@@ -254,7 +254,7 @@ export default function NewsDialog({ open, setOpen, initialData }) {
               <Textarea
                 {...register("content")}
                 placeholder="Write the full details here..."
-                className="min-h-[150px] border-green-400 focus-visible:ring-green-400 rounded-sm"
+                className="min-h-[150px] border-blue-500 focus-visible:ring-blue-500 rounded-sm"
               />
               {errors.content && <p className="text-red-500 text-sm mt-1">{errors.content.message}</p>}
             </div>
@@ -279,7 +279,7 @@ export default function NewsDialog({ open, setOpen, initialData }) {
           <div className="flex justify-end pt-2 pb-6">
             <Button
               type="submit"
-              className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-2 h-auto text-base rounded-md"
+              className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-2 h-auto text-base rounded-sm-sm"
               disabled={isSubmitting}
             >
               {isSubmitting ? (

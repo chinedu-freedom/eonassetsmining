@@ -106,7 +106,7 @@ export default function WithdrawalTable({ searchTerm = "", statusFilter = "all" 
   const getStatusColor = (status) => {
     switch (status?.toLowerCase()) {
       case "successful":
-        return "bg-green-100 text-green-800";
+        return "bg-blue-100 text-green-800";
       case "pending":
         return "bg-yellow-100 text-yellow-800";
       case "failed":
@@ -271,7 +271,7 @@ export default function WithdrawalTable({ searchTerm = "", statusFilter = "all" 
                             className={`${
                               isApproved
                                 ? "opacity-50 cursor-not-allowed text-gray-400"
-                                : "text-green-600 hover:text-green-700 font-medium cursor-pointer"
+                                : "text-blue-600 hover:text-blue-700 font-medium cursor-pointer"
                             }`}
                             disabled={
                               isActionDisabled ||

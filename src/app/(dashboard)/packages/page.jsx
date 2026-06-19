@@ -58,7 +58,7 @@ export default function PlansManagementPage() {
   const getStatusColor = (status) => {
     switch (status.toLowerCase()) {
       case "active":
-        return "bg-green-100 text-green-800"
+        return "bg-blue-100 text-green-800"
       case "inactive":
         return "bg-yellow-100 text-yellow-800"
       default:
@@ -201,39 +201,39 @@ export default function PlansManagementPage() {
         </CardHeader>
         <CardContent>
           <div className="overflow-x-auto">
-            <Table className="min-w-[1000px]">
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Package ID</TableHead>
-                  <TableHead>Title</TableHead>
-                  <TableHead>Min - Max Deposit</TableHead>
-                  <TableHead>Daily Profit</TableHead>
-                  <TableHead>Duration</TableHead>
-                  <TableHead>Type</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Actions</TableHead>
+            <Table className="min-w-[1000px] whitespace-nowrap">
+              <TableHeader className="min-w-[1000px] whitespace-nowrap">
+                <TableRow className="min-w-[1000px] whitespace-nowrap">
+                  <TableHead className="min-w-[1000px] whitespace-nowrap">Package ID</TableHead>
+                  <TableHead className="min-w-[1000px] whitespace-nowrap">Title</TableHead>
+                  <TableHead className="min-w-[1000px] whitespace-nowrap">Min - Max Deposit</TableHead>
+                  <TableHead className="min-w-[1000px] whitespace-nowrap">Daily Profit</TableHead>
+                  <TableHead className="min-w-[1000px] whitespace-nowrap">Duration</TableHead>
+                  <TableHead className="min-w-[1000px] whitespace-nowrap">Type</TableHead>
+                  <TableHead className="min-w-[1000px] whitespace-nowrap">Status</TableHead>
+                  <TableHead className="min-w-[1000px] whitespace-nowrap">Actions</TableHead>
                 </TableRow>
               </TableHeader>
-              <TableBody>
+              <TableBody className="min-w-[1000px] whitespace-nowrap">
                 {isLoading ? (
-                  <TableRow>
-                    <TableCell colSpan={8} className="text-center py-10 text-gray-500 bg-gray-50/30">
+                  <TableRow className="min-w-[1000px] whitespace-nowrap">
+                    <TableCell colSpan={8} className="text-center py-10 text-gray-500 bg-gray-50/30 min-w-[1000px] whitespace-nowrap">
                       <Loader2 className="w-6 h-6 animate-spin mx-auto mb-2" />
                       Loading plans...
                     </TableCell>
                   </TableRow>
                 ) : filteredPlans.length === 0 ? (
-                  <TableRow>
-                    <TableCell colSpan={8} className="text-center py-12 text-gray-500 bg-gray-50/30">
+                  <TableRow className="min-w-[1000px] whitespace-nowrap">
+                    <TableCell colSpan={8} className="text-center py-12 text-gray-500 bg-gray-50/30 min-w-[1000px] whitespace-nowrap">
                       <Package className="w-10 h-10 mx-auto mb-3 text-gray-400" />
                       <p className="text-base font-medium text-gray-600 mb-1">No plans available</p>
                       <p className="text-sm text-gray-500">There are no packages matching your search criteria.</p>
                     </TableCell>
                   </TableRow>
                 ) : filteredPlans.map((plan) => (
-                  <TableRow key={plan.id}>
-                    <TableCell className="font-medium text-xs text-muted-foreground truncate max-w-[120px]">{plan.id}</TableCell>
-                    <TableCell>
+                  <TableRow key={plan.id} className="min-w-[1000px] whitespace-nowrap">
+                    <TableCell className="font-medium text-xs text-muted-foreground truncate max-w-[120px] min-w-[1000px] whitespace-nowrap">{plan.id}</TableCell>
+                    <TableCell className="min-w-[1000px] whitespace-nowrap">
                       <div className="flex items-center gap-3">
                         {plan.image ? (
                           <img src={plan.image} alt={plan.name} className="w-10 h-10 rounded-full object-cover border border-gray-100" />
@@ -248,22 +248,22 @@ export default function PlansManagementPage() {
                         </div>
                       </div>
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="min-w-[1000px] whitespace-nowrap">
                       <div className="font-medium text-foreground">${Number(plan.min_investment)} - ${Number(plan.max_investment)}</div>
                     </TableCell>
-                    <TableCell className="font-medium text-foreground">{Number(plan.daily_income)}%</TableCell>
-                    <TableCell className="font-medium">{plan.duration} Days</TableCell>
-                    <TableCell>
+                    <TableCell className="font-medium text-foreground min-w-[1000px] whitespace-nowrap">{Number(plan.daily_income)}%</TableCell>
+                    <TableCell className="font-medium min-w-[1000px] whitespace-nowrap">{plan.duration} Days</TableCell>
+                    <TableCell className="min-w-[1000px] whitespace-nowrap">
                       <Badge className={getTypeColor(plan.is_fixed_deposit)} variant="outline">
                         {plan.is_fixed_deposit ? "Fixed" : "Flexible"}
                       </Badge>
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="min-w-[1000px] whitespace-nowrap">
                       <Badge className={getStatusColor(plan.status ? "active" : "inactive")} variant="outline">
                         {plan.status ? "Active" : "Inactive"}
                       </Badge>
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="min-w-[1000px] whitespace-nowrap">
                       <div className="flex items-center space-x-2">
                         <Button 
                           variant="outline" 

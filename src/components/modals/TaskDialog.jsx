@@ -124,9 +124,9 @@ export default function TaskDialog({ open, setOpen, initialData }) {
                 <Input
                   {...register("name")}
                   placeholder="Task Name"
-                  className="border-green-400 focus-visible:ring-green-400"
+                  className="border-blue-500 focus-visible:ring-blue-500 rounded-sm h-10"
                 />
-                <p className="text-[11px] text-green-500 mt-1.5">● Enter a descriptive name for this task</p>
+                <p className="text-[11px] text-blue-500 mt-1.5">● Enter a descriptive name for this task</p>
                 {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>}
               </div>
 
@@ -135,9 +135,9 @@ export default function TaskDialog({ open, setOpen, initialData }) {
                 <Input
                   {...register("description")}
                   placeholder="Short Description"
-                  className="border-green-400 focus-visible:ring-green-400"
+                  className="border-blue-500 focus-visible:ring-blue-500 rounded-sm h-10"
                 />
-                <p className="text-[11px] text-green-500 mt-1.5">● Briefly describe what the user needs to do</p>
+                <p className="text-[11px] text-blue-500 mt-1.5">● Briefly describe what the user needs to do</p>
                 {errors.description && <p className="text-red-500 text-sm mt-1">{errors.description.message}</p>}
               </div>
             </div>
@@ -153,9 +153,9 @@ export default function TaskDialog({ open, setOpen, initialData }) {
                   type="number"
                   {...register("invitesRequired")}
                   placeholder="e.g. 10"
-                  className="border-green-400 focus-visible:ring-green-400"
+                  className="border-blue-500 focus-visible:ring-blue-500 rounded-sm h-10"
                 />
-                <p className="text-[11px] text-green-500 mt-1.5">● Number of successful referrals needed to complete the task</p>
+                <p className="text-[11px] text-blue-500 mt-1.5">● Number of successful referrals needed to complete the task</p>
                 {errors.invitesRequired && <p className="text-red-500 text-sm mt-1">{errors.invitesRequired.message}</p>}
               </div>
 
@@ -166,9 +166,9 @@ export default function TaskDialog({ open, setOpen, initialData }) {
                   step="0.01"
                   {...register("amount")}
                   placeholder="e.g. 5.00"
-                  className="border-green-400 focus-visible:ring-green-400"
+                  className="border-blue-500 focus-visible:ring-blue-500 rounded-sm h-10"
                 />
-                <p className="text-[11px] text-green-500 mt-1.5">● Amount to be credited upon task completion</p>
+                <p className="text-[11px] text-blue-500 mt-1.5">● Amount to be credited upon task completion</p>
                 {errors.amount && <p className="text-red-500 text-sm mt-1">{errors.amount.message}</p>}
               </div>
             </div>
@@ -181,7 +181,7 @@ export default function TaskDialog({ open, setOpen, initialData }) {
               <div className="flex items-center justify-between">
                 <div>
                   <Label className="text-gray-600 text-sm mb-1.5 block">Task Status</Label>
-                  <p className="text-[11px] text-green-500">● Determine if this task is currently visible to users</p>
+                  <p className="text-[11px] text-blue-500">● Determine if this task is currently visible to users</p>
                 </div>
                 <Switch
                   checked={status === "active"}
@@ -195,7 +195,7 @@ export default function TaskDialog({ open, setOpen, initialData }) {
           <div className="flex justify-end pt-2 pb-6">
             <Button
               type="submit"
-              className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-2 h-auto text-base rounded-md"
+              className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-2 h-auto text-base rounded-sm-sm"
               disabled={isSubmitting}
             >
               {isSubmitting ? (

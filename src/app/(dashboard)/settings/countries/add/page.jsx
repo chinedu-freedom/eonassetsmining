@@ -18,7 +18,7 @@ export default function AddCountryPage() {
           <div className="p-6 border-b border-gray-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <h2 className="text-[1.2rem] font-medium text-[#475f7b]">Add New Country</h2>
             <Link href="/settings/countries">
-              <Button className="bg-[#5A8DEE] hover:bg-[#4778d9] text-white px-4 h-9 text-[13px] font-medium rounded-[4px] shadow-sm border-0 flex items-center gap-1.5">
+              <Button className="bg-[#5A8DEE] hover:bg-[#4778d9] text-white px-4 h-9 text-[13px] font-medium rounded-sm-[4px] shadow-sm border-0 flex items-center gap-1.5">
                 <ChevronLeft className="w-4 h-4" />
                 , it 
               </Button>
@@ -88,7 +88,7 @@ export default function AddCountryPage() {
 
             {/* Submit Button */}
             <div className="pt-6">
-              <Button className="bg-[#39DA8A] hover:bg-[#2ebd75] text-white px-5 h-10 font-medium rounded-[4px] shadow-sm border-0 flex items-center gap-2">
+              <Button className="bg-blue-600 hover:bg-blue-700 text-white px-5 h-10 font-medium rounded-sm-[4px] shadow-sm border-0 flex items-center gap-2">
                 <Plus className="w-4 h-4" />
                 Add Country
               </Button>

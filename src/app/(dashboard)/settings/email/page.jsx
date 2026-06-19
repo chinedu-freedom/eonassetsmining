@@ -152,7 +152,7 @@ export default function EmailSettingsPage() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {/* Deposit */}
               <div className="space-y-4">
-                <h3 className="text-[13px] font-bold text-[#39DA8A] flex items-center gap-2 mb-4">
+                <h3 className="text-[13px] font-bold text-blue-600 flex items-center gap-2 mb-4">
                   <ArrowDownToLine className="w-4 h-4" />
                   Deposit Notifications
                 </h3>
@@ -215,7 +215,7 @@ export default function EmailSettingsPage() {
           <div className="h-px bg-gray-100 w-full mb-6 mt-8"></div>
 
           <div>
-            <Button className="bg-[#5A8DEE] hover:bg-[#4778d9] text-white px-6 py-2 h-10 font-medium rounded-md shadow-sm border-0 flex items-center gap-2">
+            <Button className="bg-[#5A8DEE] hover:bg-[#4778d9] text-white px-6 py-2 h-10 font-medium rounded-sm-sm shadow-sm border-0 flex items-center gap-2">
               <Save className="w-4 h-4" />
               Save Settings
             </Button>

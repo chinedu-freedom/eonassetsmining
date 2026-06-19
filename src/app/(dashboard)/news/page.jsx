@@ -105,8 +105,11 @@ export default function NewsManagementPage() {
             <RefreshCcw className={`w-4 h-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
             Refresh
           </Button>
-          <Button onClick={handleCreate} className="bg-[#5A8DEE] hover:bg-[#4778d9] text-white">
-            <Plus className="w-4 h-4 mr-2" />
+          <Button 
+            onClick={handleCreate}
+            className="bg-blue-600 hover:bg-blue-700 text-white rounded-sm-sm px-6 shadow-lg"
+          >
+            <Plus className="w-4 h-4 " />
             Add News
           </Button>
         </div>
@@ -155,23 +158,23 @@ export default function NewsManagementPage() {
       <Card className="border-none shadow-sm bg-card">
         <CardContent className="p-0">
           <div className="overflow-x-auto">
-            <Table>
-              <TableHeader className="bg-gray-50/50">
-                <TableRow>
-                  <TableHead className="font-bold text-gray-500 uppercase text-xs w-[100px] pl-6">IMAGE</TableHead>
-                  <TableHead className="font-bold text-gray-500 uppercase text-xs">TITLE</TableHead>
-                  <TableHead className="font-bold text-gray-500 uppercase text-xs">CATEGORY</TableHead>
-                  <TableHead className="font-bold text-gray-500 uppercase text-xs">VIEWS</TableHead>
-                  <TableHead className="font-bold text-gray-500 uppercase text-xs text-center">FEATURED</TableHead>
-                  <TableHead className="font-bold text-gray-500 uppercase text-xs">STATUS</TableHead>
-                  <TableHead className="font-bold text-gray-500 uppercase text-xs">DATE</TableHead>
-                  <TableHead className="font-bold text-gray-500 uppercase text-xs text-right pr-6">ACTIONS</TableHead>
+            <Table className="min-w-[1000px] whitespace-nowrap">
+              <TableHeader className="bg-gray-50/50 min-w-[1000px] whitespace-nowrap">
+                <TableRow className="min-w-[1000px] whitespace-nowrap">
+                  <TableHead className="font-bold text-gray-500 uppercase text-xs w-[100px] pl-6 min-w-[1000px] whitespace-nowrap">IMAGE</TableHead>
+                  <TableHead className="font-bold text-gray-500 uppercase text-xs min-w-[1000px] whitespace-nowrap">TITLE</TableHead>
+                  <TableHead className="font-bold text-gray-500 uppercase text-xs min-w-[1000px] whitespace-nowrap">CATEGORY</TableHead>
+                  <TableHead className="font-bold text-gray-500 uppercase text-xs min-w-[1000px] whitespace-nowrap">VIEWS</TableHead>
+                  <TableHead className="font-bold text-gray-500 uppercase text-xs text-center min-w-[1000px] whitespace-nowrap">FEATURED</TableHead>
+                  <TableHead className="font-bold text-gray-500 uppercase text-xs min-w-[1000px] whitespace-nowrap">STATUS</TableHead>
+                  <TableHead className="font-bold text-gray-500 uppercase text-xs min-w-[1000px] whitespace-nowrap">DATE</TableHead>
+                  <TableHead className="font-bold text-gray-500 uppercase text-xs text-right pr-6 min-w-[1000px] whitespace-nowrap">ACTIONS</TableHead>
                 </TableRow>
               </TableHeader>
-              <TableBody>
+              <TableBody className="min-w-[1000px] whitespace-nowrap">
                 {isLoading ? (
-                  <TableRow>
-                    <TableCell colSpan={8} className="text-center py-10">
+                  <TableRow className="min-w-[1000px] whitespace-nowrap">
+                    <TableCell colSpan={8} className="text-center py-10 min-w-[1000px] whitespace-nowrap">
                       <div className="flex items-center justify-center">
                         <Loader2 className="w-6 h-6 animate-spin text-gray-400" />
                         <span className="ml-2 text-gray-500">Loading news...</span>
@@ -180,8 +183,8 @@ export default function NewsManagementPage() {
                   </TableRow>
                 ) : newsData.length > 0 ? (
                   newsData.map((news) => (
-                    <TableRow key={news.id} className="hover:bg-gray-50/50">
-                      <TableCell className="pl-6">
+                    <TableRow key={news.id} className="hover:bg-gray-50/50 min-w-[1000px] whitespace-nowrap">
+                      <TableCell className="pl-6 min-w-[1000px] whitespace-nowrap">
                         <div className="w-[60px] h-[40px] rounded overflow-hidden shadow-sm bg-gray-100 flex items-center justify-center">
                           {news.image ? (
                             <img src={news.image} alt="News thumbnail" className="w-full h-full object-cover" />
@@ -190,16 +193,16 @@ export default function NewsManagementPage() {
                           )}
                         </div>
                       </TableCell>
-                      <TableCell>
+                      <TableCell className="min-w-[1000px] whitespace-nowrap">
                         <span className="font-bold text-gray-800 text-[14px] line-clamp-1">{news.title}</span>
                       </TableCell>
-                      <TableCell>
+                      <TableCell className="min-w-[1000px] whitespace-nowrap">
                         <Badge className="bg-[#e5edff] hover:bg-[#d4e0ff] text-[#5A8DEE] border-0 px-3 py-1 font-semibold rounded-[4px]">
                           {news.category || "GENERAL"}
                         </Badge>
                       </TableCell>
-                      <TableCell className="text-gray-700 font-medium">{news.views}</TableCell>
-                      <TableCell className="text-center">
+                      <TableCell className="text-gray-700 font-medium min-w-[1000px] whitespace-nowrap">{news.views}</TableCell>
+                      <TableCell className="text-center min-w-[1000px] whitespace-nowrap">
                         {news.is_featured ? (
                           <div className="inline-flex w-7 h-7 bg-[#f59e0b] rounded items-center justify-center shadow-sm">
                             <Star className="w-4 h-4 text-white fill-white" />
@@ -208,21 +211,21 @@ export default function NewsManagementPage() {
                           <span className="text-gray-400">-</span>
                         )}
                       </TableCell>
-                      <TableCell>
-                        <Badge className={`${news.status ? 'bg-[#39DA8A]/10 text-[#39DA8A]' : 'bg-red-100 text-red-600'} hover:opacity-80 border-0 text-[11px] tracking-wider uppercase px-3 py-1 rounded-[4px] font-bold`}>
+                      <TableCell className="min-w-[1000px] whitespace-nowrap">
+                        <Badge className={`${news.status ? 'bg-blue-600/10 text-blue-600' : 'bg-red-100 text-red-600'} hover:opacity-80 border-0 text-[11px] tracking-wider uppercase px-3 py-1 rounded-[4px] font-bold`}>
                           {news.status ? "ACTIVE" : "HIDDEN"}
                         </Badge>
                       </TableCell>
-                      <TableCell className="text-gray-700 text-sm whitespace-nowrap">
+                      <TableCell className="text-gray-700 text-sm whitespace-nowrap min-w-[1000px] whitespace-nowrap">
                         {new Date(news.published_at).toLocaleDateString()}
                       </TableCell>
-                      <TableCell className="text-right pr-6">
+                      <TableCell className="text-right pr-6 min-w-[1000px] whitespace-nowrap">
                         <div className="flex items-center justify-end space-x-1.5">
                           <Link href={`/news/${news.id}`}>
                             <Button 
                               variant="default" 
                               size="icon" 
-                              className="h-8 w-8 bg-blue-500 hover:bg-blue-600 text-white border-0 rounded-[4px]"
+                              className="h-8 w-8 bg-blue-500 hover:bg-blue-600 text-white border-0 rounded-sm-[4px]"
                               title="View"
                             >
                               <Eye className="w-4 h-4" />
@@ -231,7 +234,7 @@ export default function NewsManagementPage() {
                           <Button 
                             variant="default" 
                             size="icon" 
-                            className="h-8 w-8 bg-[#f59e0b] hover:bg-[#d97706] text-white border-0 rounded-[4px]"
+                            className="h-8 w-8 bg-[#f59e0b] hover:bg-[#d97706] text-white border-0 rounded-sm-[4px]"
                             title="Edit"
                             onClick={() => handleEdit(news)}
                           >
@@ -240,7 +243,7 @@ export default function NewsManagementPage() {
                           <Button 
                             variant="default" 
                             size="icon" 
-                            className="h-8 w-8 bg-[#ff5b5c] hover:bg-red-500 text-white border-0 rounded-[4px]"
+                            className="h-8 w-8 bg-[#ff5b5c] hover:bg-red-500 text-white border-0 rounded-sm-[4px]"
                             title="Delete"
                             onClick={() => handleDeleteClick(news.id)}
                           >
@@ -251,8 +254,8 @@ export default function NewsManagementPage() {
                     </TableRow>
                   ))
                 ) : (
-                  <TableRow>
-                    <TableCell colSpan={8} className="text-center py-10 text-gray-500">
+                  <TableRow className="min-w-[1000px] whitespace-nowrap">
+                    <TableCell colSpan={8} className="text-center py-10 text-gray-500 min-w-[1000px] whitespace-nowrap">
                       No news found
                     </TableCell>
                   </TableRow>

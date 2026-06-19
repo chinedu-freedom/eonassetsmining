@@ -169,9 +169,9 @@ export default function PlanDialog({ open, setOpen, initialData }) {
               <Input
                 {...register("title")}
                 placeholder="e.g. USDT, BTC, ETH"
-                className="border-green-400 focus-visible:ring-green-400 rounded-sm h-10"
+                className="border-blue-500 focus-visible:ring-blue-500 rounded-sm h-10"
               />
-              <p className="text-[11px] text-green-500 mt-1.5">● This will be displayed as the plan title</p>
+              <p className="text-[11px] text-blue-500 mt-1.5">● This will be displayed as the plan title</p>
               {errors.title && <p className="text-red-500 text-sm mt-1">{errors.title.message}</p>}
             </div>
             <div>
@@ -195,9 +195,9 @@ export default function PlanDialog({ open, setOpen, initialData }) {
                   type="number"
                   {...register("duration")}
                   placeholder="e.g. 30, 60, 90"
-                  className="border-green-400 focus-visible:ring-green-400 rounded-sm h-10"
+                  className="border-blue-500 focus-visible:ring-blue-500 rounded-sm h-10"
                 />
-                <p className="text-[11px] text-green-500 mt-1.5">● Investment period in days</p>
+                <p className="text-[11px] text-blue-500 mt-1.5">● Investment period in days</p>
                 {errors.duration && <p className="text-red-500 text-sm mt-1">{errors.duration.message}</p>}
               </div>
               <div>
@@ -207,9 +207,9 @@ export default function PlanDialog({ open, setOpen, initialData }) {
                   step="0.01"
                   {...register("dailyReturn")}
                   placeholder="e.g. 0.5, 1.2"
-                  className="border-green-400 focus-visible:ring-green-400 rounded-sm h-10"
+                  className="border-blue-500 focus-visible:ring-blue-500 rounded-sm h-10"
                 />
-                <p className="text-[11px] text-green-500 mt-1.5">● Daily percentage return on investment</p>
+                <p className="text-[11px] text-blue-500 mt-1.5">● Daily percentage return on investment</p>
                 {errors.dailyReturn && <p className="text-red-500 text-sm mt-1">{errors.dailyReturn.message}</p>}
               </div>
               <div>
@@ -234,9 +234,9 @@ export default function PlanDialog({ open, setOpen, initialData }) {
                   type="number"
                   {...register("minInvestment")}
                   placeholder="10"
-                  className="border-green-400 focus-visible:ring-green-400 rounded-sm h-10"
+                  className="border-blue-500 focus-visible:ring-blue-500 rounded-sm h-10"
                 />
-                <p className="text-[11px] text-green-500 mt-1.5">● Minimum amount user can invest</p>
+                <p className="text-[11px] text-blue-500 mt-1.5">● Minimum amount user can invest</p>
                 {errors.minInvestment && <p className="text-red-500 text-sm mt-1">{errors.minInvestment.message}</p>}
               </div>
               <div>
@@ -245,9 +245,9 @@ export default function PlanDialog({ open, setOpen, initialData }) {
                   type="number"
                   {...register("maxInvestment")}
                   placeholder="10000"
-                  className="border-green-400 focus-visible:ring-green-400 rounded-sm h-10"
+                  className="border-blue-500 focus-visible:ring-blue-500 rounded-sm h-10"
                 />
-                <p className="text-[11px] text-green-500 mt-1.5">● Maximum amount user can invest</p>
+                <p className="text-[11px] text-blue-500 mt-1.5">● Maximum amount user can invest</p>
                 {errors.maxInvestment && <p className="text-red-500 text-sm mt-1">{errors.maxInvestment.message}</p>}
               </div>
             </div>
@@ -267,7 +267,7 @@ export default function PlanDialog({ open, setOpen, initialData }) {
                     placeholder="Choose file" 
                     value={imageName}
                     readOnly 
-                    className="border-0 bg-transparent rounded-none flex-1" 
+                    className="border-0 bg-transparent flex-1 rounded-sm h-10" 
                   />
                   <input
                     type="file"
@@ -289,7 +289,7 @@ export default function PlanDialog({ open, setOpen, initialData }) {
                   <Button 
                     type="button" 
                     variant="secondary" 
-                    className="rounded-none border-l h-10 px-6 bg-gray-100 hover:bg-gray-200 text-gray-700"
+                    className="rounded-sm-none border-l h-10 px-6 bg-gray-100 hover:bg-gray-200 text-gray-700"
                     onClick={() => fileInputRef.current?.click()}
                   >
                     Browse
@@ -349,7 +349,7 @@ export default function PlanDialog({ open, setOpen, initialData }) {
           <div className="flex justify-end pt-2 pb-6">
             <Button
               type="submit"
-              className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-2 h-auto text-base rounded-md"
+              className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-2 h-auto text-base rounded-sm-sm"
               disabled={isSubmitting}
             >
               {isSubmitting ? (

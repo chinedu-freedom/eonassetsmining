@@ -71,8 +71,8 @@ export default function TasksPage() {
       title: "Active Tasks",
       value: activeTasks.toString(),
       icon: CheckCircle,
-      color: "text-green-600",
-      bg: "bg-green-100",
+      color: "text-blue-600",
+      bg: "bg-blue-100",
     },
     {
       title: "Inactive Tasks",
@@ -84,7 +84,7 @@ export default function TasksPage() {
   ]
 
   const getStatusColor = (status) => {
-    if (status) return "bg-green-100 text-green-800"
+    if (status) return "bg-blue-100 text-green-800"
     return "bg-yellow-100 text-yellow-800"
   }
 
@@ -96,8 +96,11 @@ export default function TasksPage() {
           <p className="text-muted-foreground text-sm">Manage and track user invitation tasks</p>
         </div>
         <div className="flex items-center space-x-2">
-          <Button onClick={() => { setSelectedTask(null); setIsTaskDialogOpen(true); }}>
-            <Plus className="w-4 h-4 mr-2" />
+          <Button 
+            onClick={() => { setSelectedTask(null); setIsTaskDialogOpen(true); }}
+            className="bg-blue-600 hover:bg-blue-700 text-white rounded-sm px-6 shadow-lg"
+          >
+            <Plus className="w-4 h-4 " />
             Add Task
           </Button>
         </div>
@@ -155,56 +158,56 @@ export default function TasksPage() {
       <Card className="border-none shadow-sm bg-white rounded-md">
         <CardContent className="p-0">
           <div className="overflow-x-auto">
-            <Table>
-              <TableHeader className="bg-gray-50/50 border-b">
-                <TableRow className="hover:bg-transparent">
-                  <TableHead className="w-[60px] font-bold text-gray-600 uppercase text-[12px] tracking-wider py-4 pl-6">#</TableHead>
-                  <TableHead className="font-bold text-gray-600 uppercase text-[12px] tracking-wider py-4">NAME</TableHead>
-                  <TableHead className="font-bold text-gray-600 uppercase text-[12px] tracking-wider py-4">INVITES REQUIRED</TableHead>
-                  <TableHead className="font-bold text-gray-600 uppercase text-[12px] tracking-wider py-4">AMOUNT</TableHead>
-                  <TableHead className="font-bold text-gray-600 uppercase text-[12px] tracking-wider py-4 max-w-[300px]">DESCRIPTION</TableHead>
-                  <TableHead className="font-bold text-gray-600 uppercase text-[12px] tracking-wider py-4">STATUS</TableHead>
-                  <TableHead className="font-bold text-gray-600 uppercase text-[12px] tracking-wider py-4 text-right pr-6 w-[120px]">ACTIONS</TableHead>
+            <Table className="min-w-[1000px] whitespace-nowrap">
+              <TableHeader className="bg-gray-50/50 border-b min-w-[1000px] whitespace-nowrap">
+                <TableRow className="hover:bg-transparent min-w-[1000px] whitespace-nowrap">
+                  <TableHead className="w-[60px] font-bold text-gray-600 uppercase text-[12px] tracking-wider py-4 pl-6 min-w-[1000px] whitespace-nowrap">#</TableHead>
+                  <TableHead className="font-bold text-gray-600 uppercase text-[12px] tracking-wider py-4 min-w-[1000px] whitespace-nowrap">NAME</TableHead>
+                  <TableHead className="font-bold text-gray-600 uppercase text-[12px] tracking-wider py-4 min-w-[1000px] whitespace-nowrap">INVITES REQUIRED</TableHead>
+                  <TableHead className="font-bold text-gray-600 uppercase text-[12px] tracking-wider py-4 min-w-[1000px] whitespace-nowrap">AMOUNT</TableHead>
+                  <TableHead className="font-bold text-gray-600 uppercase text-[12px] tracking-wider py-4 max-w-[300px] min-w-[1000px] whitespace-nowrap">DESCRIPTION</TableHead>
+                  <TableHead className="font-bold text-gray-600 uppercase text-[12px] tracking-wider py-4 min-w-[1000px] whitespace-nowrap">STATUS</TableHead>
+                  <TableHead className="font-bold text-gray-600 uppercase text-[12px] tracking-wider py-4 text-right pr-6 w-[120px] min-w-[1000px] whitespace-nowrap">ACTIONS</TableHead>
                 </TableRow>
               </TableHeader>
-              <TableBody>
+              <TableBody className="min-w-[1000px] whitespace-nowrap">
                 {isLoading ? (
-                  <TableRow>
-                    <TableCell colSpan={7} className="text-center py-10 text-gray-500">
+                  <TableRow className="min-w-[1000px] whitespace-nowrap">
+                    <TableCell colSpan={7} className="text-center py-10 text-gray-500 min-w-[1000px] whitespace-nowrap">
                       Loading...
                     </TableCell>
                   </TableRow>
                 ) : filteredTasks.length > 0 ? (
                   filteredTasks.map((task, index) => (
-                    <TableRow key={task.id} className="hover:bg-gray-50 border-b last:border-0">
-                      <TableCell className="font-medium text-gray-700 text-[13px] py-4 pl-6">{index + 1}</TableCell>
-                      <TableCell className="py-4">
+                    <TableRow key={task.id} className="hover:bg-gray-50 border-b last:border-0 min-w-[1000px] whitespace-nowrap">
+                      <TableCell className="font-medium text-gray-700 text-[13px] py-4 pl-6 min-w-[1000px] whitespace-nowrap">{index + 1}</TableCell>
+                      <TableCell className="py-4 min-w-[1000px] whitespace-nowrap">
                         <span className="font-medium text-gray-700 text-[13px]">{task.task_name}</span>
                       </TableCell>
-                      <TableCell className="py-4">
+                      <TableCell className="py-4 min-w-[1000px] whitespace-nowrap">
                         <span className="font-medium text-gray-700 text-[13px]">{task.required_referrals}</span>
                       </TableCell>
-                      <TableCell className="py-4">
+                      <TableCell className="py-4 min-w-[1000px] whitespace-nowrap">
                         <span className="font-medium text-gray-700 text-[13px]">${Number(task.reward_amount || 0).toFixed(2)}</span>
                       </TableCell>
-                      <TableCell className="py-4 max-w-[300px] truncate text-gray-500 text-[13px]" title={task.description}>
+                      <TableCell className="py-4 max-w-[300px] truncate text-gray-500 text-[13px] min-w-[1000px] whitespace-nowrap" title={task.description}>
                         {task.description}
                       </TableCell>
-                      <TableCell className="py-4">
+                      <TableCell className="py-4 min-w-[1000px] whitespace-nowrap">
                         <span className={`text-[12px] px-2.5 py-1 rounded-md font-medium ${
                           task.status
-                            ? 'bg-[#39DA8A]/10 text-[#39DA8A]' 
+                            ? 'bg-blue-600/10 text-blue-600' 
                             : 'bg-yellow-50 text-yellow-600'
                         }`}>
                           {task.status ? "Active" : "Inactive"}
                         </span>
                       </TableCell>
-                      <TableCell className="py-4 text-right pr-6">
+                      <TableCell className="py-4 text-right pr-6 min-w-[1000px] whitespace-nowrap">
                         <div className="flex items-center justify-end space-x-2">
                           <Button 
                             variant="default" 
                             size="icon" 
-                            className="h-8 w-8 bg-[#ffb822] hover:bg-[#e5a51f] text-white border-0 shadow-sm rounded-md"
+                            className="h-8 w-8 bg-[#ffb822] hover:bg-[#e5a51f] text-white border-0 shadow-sm rounded-sm-sm"
                             title="Edit"
                             onClick={() => { setSelectedTask(task); setIsTaskDialogOpen(true); }}
                           >
@@ -213,7 +216,7 @@ export default function TasksPage() {
                           <Button 
                             variant="default" 
                             size="icon" 
-                            className="h-8 w-8 bg-[#ff5b5c] hover:bg-[#e55253] text-white border-0 shadow-sm rounded-md"
+                            className="h-8 w-8 bg-[#ff5b5c] hover:bg-[#e55253] text-white border-0 shadow-sm rounded-sm-sm"
                             title="Delete"
                             onClick={() => handleDeleteClick(task)}
                           >
@@ -224,8 +227,8 @@ export default function TasksPage() {
                     </TableRow>
                   ))
                 ) : (
-                  <TableRow>
-                    <TableCell colSpan={7} className="text-center py-10 text-gray-500 bg-gray-50/30">
+                  <TableRow className="min-w-[1000px] whitespace-nowrap">
+                    <TableCell colSpan={7} className="text-center py-10 text-gray-500 bg-gray-50/30 min-w-[1000px] whitespace-nowrap">
                       No tasks found
                     </TableCell>
                   </TableRow>

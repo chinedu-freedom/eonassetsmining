@@ -18,7 +18,7 @@ export function Header() {
           <div className="hidden md:flex flex-col items-end">
             <span className="text-[14px] font-medium text-[#828d99]">eonassets</span>
           </div>
-          <Avatar.Root className="inline-flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-[#39DA8A] border-none shadow-sm">
+          <Avatar.Root className="inline-flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-blue-600 border-none shadow-sm">
             <Avatar.Fallback className="text-xl font-bold text-white leading-1 font-sans">
               K
             </Avatar.Fallback>

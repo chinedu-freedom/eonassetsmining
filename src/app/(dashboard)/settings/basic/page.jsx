@@ -15,15 +15,15 @@ const ValidatedInput = ({ label, value, requiredNote, subText, icon: Icon }) => 
     <div className="relative">
       <Input 
         defaultValue={value}
-        className="border-[#39DA8A] focus-visible:ring-0 focus-visible:border-[#39DA8A] h-10 pr-10 text-gray-700"
+        className="border-blue-500 focus-visible:ring-0 focus-visible:border-blue-500 h-10 pr-10 text-gray-700"
       />
       <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center space-x-1">
         {Icon && <Icon className="w-4 h-4 text-gray-400" />}
-        <Check className="w-5 h-5 text-[#39DA8A]" />
+        <Check className="w-5 h-5 text-blue-600" />
       </div>
     </div>
     {requiredNote && (
-      <p className="text-[11px] text-[#39DA8A] mt-1">○ Note: This is filed is required</p>
+      <p className="text-[11px] text-blue-600 mt-1">○ Note: This is filed is required</p>
     )}
     {subText && (
       <p className="text-[11px] text-gray-400 mt-1">{subText}</p>
@@ -49,7 +49,7 @@ const RichTextEditor = ({ label, defaultValue }) => (
         defaultValue={defaultValue}
       />
     </div>
-    <p className="text-[11px] text-[#39DA8A] mt-1">○ Note: This is filed is optional</p>
+    <p className="text-[11px] text-blue-600 mt-1">○ Note: This is filed is optional</p>
   </div>
 )
 
@@ -101,7 +101,7 @@ export default function BasicSettingsPage() {
             <div className="flex flex-col space-y-1">
               <label className="text-[13px] font-medium text-[#475f7b]">Timezone</label>
               <Select defaultValue="utc">
-                <SelectTrigger className="border-[#39DA8A] focus:ring-0 h-10">
+                <SelectTrigger className="border-blue-500 focus:ring-0 h-10">
                   <SelectValue placeholder="Select Timezone" />
                 </SelectTrigger>
                 <SelectContent>
@@ -109,7 +109,7 @@ export default function BasicSettingsPage() {
                   <SelectItem value="est">EST</SelectItem>
                 </SelectContent>
               </Select>
-              <p className="text-[11px] text-[#39DA8A] mt-1">○ Note: This is filed is required</p>
+              <p className="text-[11px] text-blue-600 mt-1">○ Note: This is filed is required</p>
             </div>
 
             <ValidatedInput label="Registration Bonus" value="5.00" requiredNote={false} />
@@ -117,7 +117,7 @@ export default function BasicSettingsPage() {
             <div className="flex flex-col space-y-1">
               <label className="text-[13px] font-medium text-[#475f7b]">Welcome Bonus Balance Destination</label>
               <Select defaultValue="gift">
-                <SelectTrigger className="border-[#39DA8A] focus:ring-0 h-10">
+                <SelectTrigger className="border-blue-500 focus:ring-0 h-10">
                   <SelectValue placeholder="Select Destination" />
                 </SelectTrigger>
                 <SelectContent>
@@ -242,7 +242,7 @@ export default function BasicSettingsPage() {
             <div className="flex flex-col space-y-1">
               <label className="text-[13px] font-medium text-[#475f7b]">Require Investment to Withdraw</label>
               <Select defaultValue="yes">
-                <SelectTrigger className="border-[#39DA8A] focus:ring-0 h-10">
+                <SelectTrigger className="border-blue-500 focus:ring-0 h-10">
                   <SelectValue placeholder="Select Requirement" />
                 </SelectTrigger>
                 <SelectContent>
@@ -261,7 +261,7 @@ export default function BasicSettingsPage() {
           </div>
 
           <div className="mt-10">
-            <Button className="bg-[#5A8DEE] hover:bg-[#4778d9] text-white px-8 py-2 h-10 font-medium rounded-md shadow-sm border-0">
+            <Button className="bg-[#5A8DEE] hover:bg-[#4778d9] text-white px-8 py-2 h-10 font-medium rounded-sm-sm shadow-sm border-0">
               Save
             </Button>
           </div>
