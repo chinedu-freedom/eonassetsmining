@@ -14,12 +14,16 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Loader2, ArrowLeft, Gift, Tag, Key, DollarSign, UserCheck, Save, Check } from "lucide-react";
+import { usePost, usePut } from "@/hooks/useApi";
+import { toast } from "sonner";
+import { Switch } from "@/components/ui/switch";
 
 const giftCodeSchema = z.object({
   codeName: z.string().min(2, "Code name is required"),
   giftCode: z.string().min(4, "Gift code is required"),
   amount: z.coerce.number().min(0.01, "Amount must be greater than 0"),
   maxUses: z.coerce.number().min(1, "Max uses must be at least 1"),
+  status: z.boolean(),
 });
 
 export default function GiftCodeDialog({ open, setOpen, initialData }) {
@@ -30,6 +34,7 @@ export default function GiftCodeDialog({ open, setOpen, initialData }) {
     handleSubmit,
     setValue,
     reset,
+    watch,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(giftCodeSchema),
@@ -38,16 +43,18 @@ export default function GiftCodeDialog({ open, setOpen, initialData }) {
       giftCode: "",
       amount: "",
       maxUses: "",
+      status: true,
     },
   });
 
   useEffect(() => {
     if (initialData) {
       reset({
-        codeName: initialData.codeName || "",
-        giftCode: initialData.giftCode || "",
-        amount: initialData.amount || "",
-        maxUses: initialData.maxUses || "",
+        codeName: initialData.code_name || "",
+        giftCode: initialData.code || "",
+        amount: initialData.reward_amount || "",
+        maxUses: initialData.max_uses || "",
+        status: initialData.status !== undefined ? initialData.status : true,
       });
     } else {
       reset({
@@ -55,18 +62,39 @@ export default function GiftCodeDialog({ open, setOpen, initialData }) {
         giftCode: "",
         amount: "",
         maxUses: "",
+        status: true,
       });
     }
   }, [initialData, reset]);
 
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const isStatus = watch("status");
+
+  const createMutation = usePost("/admin/rewards/gift-codes", ["admin-gift-codes"]);
+  const editMutation = usePut(initialData?.id ? `/admin/rewards/gift-codes/${initialData.id}` : "", ["admin-gift-codes"]);
+  
+  const isSubmitting = createMutation.isPending || editMutation.isPending;
 
   const onSubmit = async (data) => {
-    setIsSubmitting(true);
-    await new Promise((resolve) => setTimeout(resolve, 800));
-    setIsSubmitting(false);
-    setOpen(false);
-    reset();
+    const payload = {
+      code_name: data.codeName,
+      code: data.giftCode,
+      reward_type: "bonus", // Default reward type
+      reward_amount: Number(data.amount),
+      max_uses: Number(data.maxUses),
+      status: data.status,
+    };
+
+    try {
+      if (isEdit) {
+        await editMutation.mutateAsync(payload);
+      } else {
+        await createMutation.mutateAsync(payload);
+      }
+      setOpen(false);
+      reset();
+    } catch (error) {
+      // Error handled by useApi
+    }
   };
 
   const generateCode = () => {
@@ -89,12 +117,6 @@ export default function GiftCodeDialog({ open, setOpen, initialData }) {
               {isEdit ? "Edit Gift Code" : "Create New Gift Code"}
             </DialogTitle>
           </div>
-          <DialogClose asChild>
-            <Button variant="default" className="bg-[#5A8DEE] hover:bg-[#4778d9] text-white flex items-center gap-2 px-4 py-2 h-auto">
-              <ArrowLeft className="w-4 h-4" />
-              Back To List
-            </Button>
-          </DialogClose>
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="px-8 py-6 space-y-6">
@@ -170,6 +192,21 @@ export default function GiftCodeDialog({ open, setOpen, initialData }) {
               />
               <p className="text-[12px] text-gray-400 mt-1.5">How many times this code can be used in total</p>
               {errors.maxUses && <p className="text-red-500 text-xs mt-1">{errors.maxUses.message}</p>}
+            </div>
+
+            {/* Status Section */}
+            <div className="md:col-span-2 mt-2">
+              <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-100">
+                <div>
+                  <Label className="text-gray-700 text-sm mb-1.5 block font-medium">Gift Code Status</Label>
+                  <p className="text-[12px] text-gray-500">Enable or disable this gift code for users</p>
+                </div>
+                <Switch
+                  checked={isStatus}
+                  onCheckedChange={(val) => setValue("status", val)}
+                  className="data-[state=checked]:bg-green-500"
+                />
+              </div>
             </div>
           </div>
 

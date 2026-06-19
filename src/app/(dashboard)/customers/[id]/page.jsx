@@ -17,6 +17,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 import { toast } from "sonner"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 
 const safeFormatDate = (dateStr, formatStr) => {
   if (!dateStr) return "N/A"
@@ -75,7 +76,6 @@ export default function CustomerDetailsPage() {
 
   const executeSave = async () => {
     setIsSaving(true)
-    setShowSaveConfirm(false)
     try {
       const token = document.cookie.split("; ").find(row => row.startsWith("satrixnow-admin-token="))?.split("=")[1];
       const res = await fetch(`http://localhost:3001/api/admin/users/${id}`, {
@@ -98,6 +98,7 @@ export default function CustomerDetailsPage() {
       toast.error("Failed to connect to server")
     } finally {
       setIsSaving(false)
+      setShowSaveConfirm(false)
     }
   }
 
@@ -151,7 +152,6 @@ export default function CustomerDetailsPage() {
 
   const executeDeleteUser = async () => {
     setIsDeleting(true)
-    setShowDeleteConfirm(false)
     try {
       const token = document.cookie.split("; ").find(row => row.startsWith("satrixnow-admin-token="))?.split("=")[1];
       const res = await fetch(`http://localhost:3001/api/admin/users/${id}`, {
@@ -167,11 +167,12 @@ export default function CustomerDetailsPage() {
       } else {
         const data = await res.json()
         toast.error(data.error || "Failed to delete user")
-        setIsDeleting(false)
       }
     } catch (error) {
       toast.error("Failed to connect to server")
+    } finally {
       setIsDeleting(false)
+      setShowDeleteConfirm(false)
     }
   }
 
@@ -635,52 +636,48 @@ export default function CustomerDetailsPage() {
       </Card>
       
       {/* Delete Confirmation Modal */}
-      {showDeleteConfirm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-          <Card className="w-full max-w-md shadow-lg border-border bg-card">
-            <CardHeader className="border-b border-border bg-muted/20 pb-4">
-              <h2 className="text-xl font-bold text-foreground flex items-center gap-2">
-                <AlertTriangle className="w-5 h-5 text-red-500" />
-                Confirm Deletion
-              </h2>
-            </CardHeader>
-            <CardContent className="pt-6 pb-6">
-              <p className="text-muted-foreground">Are you absolutely sure you want to delete this user? This action cannot be undone and will remove all associated data including transactions and investments.</p>
-              <div className="flex justify-end gap-3 mt-6">
-                <Button variant="outline" onClick={() => setShowDeleteConfirm(false)} className="border-border">Cancel</Button>
-                <Button onClick={executeDeleteUser} disabled={isDeleting} className="bg-red-500 hover:bg-red-600 text-white">
-                  {isDeleting ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Trash className="w-4 h-4 mr-2" />}
-                  Yes, Delete User
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      )}
+      <Dialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
+        <DialogContent className="sm:max-w-[425px] border-border bg-card">
+          <DialogHeader className="border-b border-border bg-muted/20 pb-4">
+            <DialogTitle className="text-xl font-bold text-foreground flex items-center gap-2">
+              <AlertTriangle className="w-5 h-5 text-red-500" />
+              Confirm Deletion
+            </DialogTitle>
+          </DialogHeader>
+          <div className="pt-6 pb-6">
+            <p className="text-muted-foreground">Are you absolutely sure you want to delete this user? This action cannot be undone and will remove all associated data including transactions and investments.</p>
+            <div className="flex justify-end gap-3 mt-6">
+              <Button variant="outline" onClick={() => setShowDeleteConfirm(false)} className="border-border">Cancel</Button>
+              <Button onClick={executeDeleteUser} disabled={isDeleting} className="bg-red-500 hover:bg-red-600 text-white">
+                {isDeleting ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Trash className="w-4 h-4 mr-2" />}
+                Yes, Delete User
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {/* Save Confirmation Modal */}
-      {showSaveConfirm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-          <Card className="w-full max-w-md shadow-lg border-border bg-card">
-            <CardHeader className="border-b border-border bg-muted/20 pb-4">
-              <h2 className="text-xl font-bold text-foreground flex items-center gap-2">
-                <Save className="w-5 h-5 text-[#5A8DEE]" />
-                Confirm Changes
-              </h2>
-            </CardHeader>
-            <CardContent className="pt-6 pb-6">
-              <p className="text-muted-foreground">Are you sure you want to save these changes to the user's profile and permissions?</p>
-              <div className="flex justify-end gap-3 mt-6">
-                <Button variant="outline" onClick={() => setShowSaveConfirm(false)} className="border-border bg-background">Cancel</Button>
-                <Button onClick={executeSave} disabled={isSaving} className="bg-[#5A8DEE] hover:bg-[#477ae0] text-white">
-                  {isSaving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
-                  Save Changes
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      )}
+      <Dialog open={showSaveConfirm} onOpenChange={setShowSaveConfirm}>
+        <DialogContent className="sm:max-w-[425px] border-border bg-card">
+          <DialogHeader className="border-b border-border bg-muted/20 pb-4">
+            <DialogTitle className="text-xl font-bold text-foreground flex items-center gap-2">
+              <Save className="w-5 h-5 text-[#5A8DEE]" />
+              Confirm Changes
+            </DialogTitle>
+          </DialogHeader>
+          <div className="pt-6 pb-6">
+            <p className="text-muted-foreground">Are you sure you want to save these changes to the user's profile and permissions?</p>
+            <div className="flex justify-end gap-3 mt-6">
+              <Button variant="outline" onClick={() => setShowSaveConfirm(false)} className="border-border bg-background">Cancel</Button>
+              <Button onClick={executeSave} disabled={isSaving} className="bg-[#5A8DEE] hover:bg-[#477ae0] text-white">
+                {isSaving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
+                Save Changes
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

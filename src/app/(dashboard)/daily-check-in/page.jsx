@@ -1,7 +1,7 @@
 "use client"
 
-import { useState } from "react"
-import { Save, ChevronLeft, Calendar } from "lucide-react"
+import { useState, useEffect } from "react"
+import { Save, ChevronLeft } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -9,34 +9,69 @@ import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
 import { useRouter } from "next/navigation"
+import { useFetchData, usePut } from "@/hooks/useApi"
+import { toast } from "sonner"
 
 export default function DailyCheckInPage() {
   const router = useRouter()
   const [isSystemEnabled, setIsSystemEnabled] = useState(true)
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [rewards, setRewards] = useState([])
 
-  const [rewards, setRewards] = useState([
-    { day: 1, amount: "0.10", description: "First check-in reward" },
-    { day: 2, amount: "0.20", description: "Day 2 reward" },
-    { day: 3, amount: "0.30", description: "Day 3 reward" },
-    { day: 4, amount: "0.40", description: "Day 4 reward" },
-    { day: 5, amount: "0.50", description: "Day 5 reward" },
-    { day: 6, amount: "0.60", description: "Day 6 reward" },
-    { day: 7, amount: "1.00", description: "Maximum reward - Complete 7 days!" },
-  ])
+  const { data: settingsData } = useFetchData("/admin/settings/platform", ["admin-platform-settings"])
+  const { data: checkinsData } = useFetchData("/admin/rewards/check-ins", ["admin-checkins"])
+
+  const updateSettingsMutation = usePut("/admin/settings/platform", ["admin-platform-settings"])
+  const updateCheckinsMutation = usePut("/admin/rewards/check-ins/bulk", ["admin-checkins"])
+
+  useEffect(() => {
+    if (settingsData) {
+      setIsSystemEnabled(settingsData.daily_checkin_enabled ?? true)
+    }
+  }, [settingsData])
+
+  useEffect(() => {
+    if (checkinsData && Array.isArray(checkinsData)) {
+      // Sort by day number
+      const sorted = [...checkinsData].sort((a, b) => a.day_number - b.day_number)
+      setRewards(sorted)
+    }
+  }, [checkinsData])
 
   const handleAmountChange = (index, value) => {
     const newRewards = [...rewards]
-    newRewards[index].amount = value
+    newRewards[index].reward_amount = value
+    setRewards(newRewards)
+  }
+
+  const handleDescriptionChange = (index, value) => {
+    const newRewards = [...rewards]
+    newRewards[index].description = value
     setRewards(newRewards)
   }
 
   const handleSave = async () => {
-    setIsSubmitting(true)
-    // Simulate API delay
-    await new Promise((resolve) => setTimeout(resolve, 800))
-    setIsSubmitting(false)
+    try {
+      // Save global setting
+      await updateSettingsMutation.mutateAsync({
+        daily_checkin_enabled: isSystemEnabled
+      })
+
+      // Prepare payload and update check-ins
+      const checkinsPayload = {
+        checkins: rewards.map(r => ({
+          id: r.id,
+          reward_amount: Number(r.reward_amount),
+          description: r.description
+        }))
+      }
+      await updateCheckinsMutation.mutateAsync(checkinsPayload)
+      
+    } catch (error) {
+      // Errors handled by useApi
+    }
   }
+
+  const isSubmitting = updateSettingsMutation.isPending || updateCheckinsMutation.isPending
 
   return (
     <div className="space-y-6 pb-12 max-w-6xl mx-auto">
@@ -82,18 +117,18 @@ export default function DailyCheckInPage() {
           <table className="w-full text-sm text-left">
             <thead className="text-xs text-gray-500 font-bold tracking-wider uppercase border-b bg-gray-50/50">
               <tr>
-                <th scope="col" className="px-6 py-4 w-[20%]">DAY</th>
-                <th scope="col" className="px-6 py-4 w-[40%]">REWARD AMOUNT</th>
-                <th scope="col" className="px-6 py-4 w-[40%]">DESCRIPTION</th>
+                <th scope="col" className="px-6 py-4 w-[30%]">DAY</th>
+                <th scope="col" className="px-6 py-4 w-[35%]">REWARD AMOUNT</th>
+                <th scope="col" className="px-6 py-4 w-[35%]">DESCRIPTION</th>
               </tr>
             </thead>
             <tbody>
               {rewards.map((reward, index) => (
-                <tr key={reward.day} className="border-b last:border-0 hover:bg-gray-50/30 transition-colors">
+                <tr key={reward.day_number} className="border-b last:border-0 hover:bg-gray-50/30 transition-colors">
                   <td className="px-6 py-5">
                     <div className="flex items-center gap-3">
-                      <span className="font-bold text-gray-800">Day {reward.day}</span>
-                      {reward.day === 7 && (
+                      <span className="font-bold text-gray-800">Day {reward.day_number}</span>
+                      {reward.day_number === 7 && (
                         <Badge className="bg-[#39DA8A] hover:bg-[#2bbd74] text-white border-0 text-[10px] uppercase tracking-wider px-2 py-0.5 font-bold">
                           Final Reward
                         </Badge>
@@ -101,48 +136,46 @@ export default function DailyCheckInPage() {
                     </div>
                   </td>
                   <td className="px-6 py-5">
-                    <div className="relative max-w-[280px]">
-                      <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                        <span className="text-gray-500 sm:text-sm">$</span>
+                    <div className="flex max-w-[280px] rounded-md border border-gray-200 overflow-hidden">
+                      <div className="flex items-center justify-center bg-slate-50 px-4 border-r border-gray-200 text-slate-600 font-medium">
+                        $
                       </div>
-                      <Input
+                      <input
                         type="number"
                         step="0.01"
-                        value={reward.amount}
+                        value={reward.reward_amount}
                         onChange={(e) => handleAmountChange(index, e.target.value)}
-                        className="pl-8 border-gray-200 focus-visible:ring-blue-500 bg-white"
+                        className="flex-1 px-3 py-2 outline-none text-slate-700 bg-white"
                       />
                     </div>
                   </td>
                   <td className="px-6 py-5">
-                    <span className="text-[#00cfdd] font-medium">{reward.description}</span>
+                    <input
+                      type="text"
+                      value={reward.description || ""}
+                      onChange={(e) => handleDescriptionChange(index, e.target.value)}
+                      className={`w-full outline-none bg-transparent ${index === 0 ? "text-[#00cfdd]" : index === 6 ? "text-[#39DA8A]" : "text-gray-400"} font-medium`}
+                    />
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
+        <div className="border-t p-4 flex justify-end gap-3">
+    <Button 
+      onClick={handleSave} 
+      disabled={isSubmitting}
+      className="bg-[#39DA8A] hover:bg-[#2bbd74] text-white font-medium px-6 shadow-sm rounded-sm py-4.5"
+    >
+      <Save className="w-4 h-4 mr-2" />
+      {isSubmitting ? "Saving..." : "Save Settings"}
+    </Button>
+  </div>  
       </Card>
 
       {/* Action Buttons */}
-      <div className="flex items-center gap-3 pt-2">
-        <Button 
-          onClick={handleSave} 
-          disabled={isSubmitting}
-          className="bg-[#39DA8A] hover:bg-[#2bbd74] text-white font-medium px-6 shadow-sm"
-        >
-          <Save className="w-4 h-4 mr-2" />
-          {isSubmitting ? "Saving..." : "Save Settings"}
-        </Button>
-        
-        <Button 
-          onClick={() => router.push('/dashboard')}
-          className="bg-[#475f7b] hover:bg-[#34465b] text-white font-medium px-6 shadow-sm"
-        >
-          <ChevronLeft className="w-4 h-4 mr-2" />
-          Back to Dashboard
-        </Button>
-      </div>
+    
     </div>
   )
 }

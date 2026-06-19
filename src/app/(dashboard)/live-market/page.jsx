@@ -7,20 +7,54 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Switch } from "@/components/ui/switch"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-
-const cryptoData = [
-  { id: 1, logo: "https://cryptologos.cc/logos/bitcoin-btc-logo.png?v=029", symbol: "BTC", name: "Bitcoin", binanceSymbol: "BTCUSDT", status: "ACTIVE" },
-  { id: 2, logo: "https://cryptologos.cc/logos/ethereum-eth-logo.png?v=029", symbol: "ETH", name: "Ethereum", binanceSymbol: "ETHUSDT", status: "ACTIVE" },
-  { id: 3, logo: "https://cryptologos.cc/logos/bnb-bnb-logo.png?v=029", symbol: "BNB", name: "BNB", binanceSymbol: "BNBUSDT", status: "ACTIVE" },
-  { id: 4, logo: "https://cryptologos.cc/logos/solana-sol-logo.png?v=029", symbol: "SOL", name: "Solana", binanceSymbol: "SOLUSDT", status: "ACTIVE" },
-  { id: 5, logo: "https://cryptologos.cc/logos/xrp-xrp-logo.png?v=029", symbol: "XRP", name: "Ripple", binanceSymbol: "XRPUSDT", status: "ACTIVE" },
-  { id: 6, logo: "https://cryptologos.cc/logos/dogecoin-doge-logo.png?v=029", symbol: "DOGE", name: "Dogecoin", binanceSymbol: "DOGEUSDT", status: "ACTIVE" },
-  { id: 7, logo: "https://cryptologos.cc/logos/cardano-ada-logo.png?v=029", symbol: "ADA", name: "Cardano", binanceSymbol: "ADAUSDT", status: "ACTIVE" },
-  { id: 8, logo: "https://cryptologos.cc/logos/avalanche-avax-logo.png?v=029", symbol: "AVAX", name: "Avalanche", binanceSymbol: "AVAXUSDT", status: "ACTIVE" },
-]
+import { useFetchData, usePut, useDelete } from "@/hooks/useApi"
+import LiveMarketDialog from "@/components/modals/LiveMarketDialog"
+import DeleteConfirmationDialog from "@/components/modals/DeleteConfirmationDialog"
+import { toast } from "sonner"
 
 export default function LiveMarketPage() {
-  const [isVisible, setIsVisible] = useState(true)
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
+  const [cryptoToEdit, setCryptoToEdit] = useState(null)
+  const [cryptoToDelete, setCryptoToDelete] = useState(null)
+
+  const { data, isLoading, refetch } = useFetchData("/admin/live-market", ["admin-live-market"])
+  
+  const visibilityMutation = usePut("/admin/live-market/settings/visibility", ["admin-live-market"])
+  
+  const deleteMutation = useDelete(
+    cryptoToDelete ? `/admin/live-market/${cryptoToDelete.id}` : null,
+    ["admin-live-market"]
+  )
+
+  const handleVisibilityChange = async (checked) => {
+    try {
+      await visibilityMutation.mutateAsync({ isVisible: checked })
+    } catch (error) {
+      // Revert if error (toast handled in usePut)
+    }
+  }
+
+  const handleDeleteClick = (crypto) => {
+    setCryptoToDelete(crypto)
+    setIsDeleteDialogOpen(true)
+  }
+
+  const confirmDelete = async () => {
+    if (!cryptoToDelete) return
+    try {
+      await deleteMutation.mutateAsync()
+      refetch()
+    } catch (error) {
+      // toast handled
+    } finally {
+      setIsDeleteDialogOpen(false)
+      setCryptoToDelete(null)
+    }
+  }
+
+  const assets = data?.assets || []
+  const isVisible = data?.isVisible ?? true
 
   return (
     <div className="space-y-6">
@@ -36,8 +70,9 @@ export default function LiveMarketPage() {
           </div>
           <Switch 
             checked={isVisible} 
-            onCheckedChange={setIsVisible} 
+            onCheckedChange={handleVisibilityChange} 
             className="data-[state=checked]:bg-[#5A8DEE]"
+            disabled={visibilityMutation.isPending || isLoading}
           />
         </CardContent>
       </Card>
@@ -51,7 +86,13 @@ export default function LiveMarketPage() {
               <h2 className="text-lg font-semibold text-gray-700">Market Cryptocurrencies</h2>
               <p className="text-[13px] text-gray-500">Manage cryptocurrencies displayed in the live market section. Prices are fetched live from Binance API.</p>
             </div>
-            <Button className="bg-[#5A8DEE] hover:bg-[#4778d9] text-white h-9 px-4 shrink-0">
+            <Button 
+              className="bg-[#5A8DEE] hover:bg-[#4778d9] text-white h-9 px-4 shrink-0"
+              onClick={() => {
+                setCryptoToEdit(null)
+                setIsDialogOpen(true)
+              }}
+            >
               <Plus className="w-4 h-4 mr-1.5" />
               Add Crypto
             </Button>
@@ -71,60 +112,104 @@ export default function LiveMarketPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {cryptoData.map((crypto) => (
-                  <TableRow key={crypto.id} className="hover:bg-gray-50/50 border-b last:border-0">
-                    <TableCell className="font-medium text-gray-700 text-sm">
-                      {crypto.id}
-                    </TableCell>
-                    <TableCell>
-                      <div className="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center">
-                        <img src={crypto.logo} alt={crypto.name} className="w-full h-full object-contain" />
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <span className="font-bold text-gray-800 text-[14px]">{crypto.symbol}</span>
-                    </TableCell>
-                    <TableCell>
-                      <span className="text-gray-600 text-[14px]">{crypto.name}</span>
-                    </TableCell>
-                    <TableCell>
-                      <Badge className="bg-[#ff5b5c]/10 hover:bg-[#ff5b5c]/20 text-[#ff5b5c] border-0 px-2 py-0.5 rounded-[4px] text-[10px] font-bold tracking-wider uppercase">
-                        {crypto.binanceSymbol}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>
-                      <Badge className="bg-[#39DA8A]/10 hover:bg-[#39DA8A]/20 text-[#39DA8A] border-0 px-3 py-1 rounded-[4px] text-[10px] font-bold tracking-widest uppercase">
-                        {crypto.status}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex items-center space-x-2">
-                        <Button 
-                          variant="default" 
-                          size="icon" 
-                          className="h-8 w-8 bg-[#5A8DEE] hover:bg-[#4778d9] text-white border-0 rounded-[4px]"
-                          title="Edit"
-                        >
-                          <Edit className="w-3.5 h-3.5" />
-                        </Button>
-                        <Button 
-                          variant="default" 
-                          className="h-8 px-3 bg-[#ff9f43] hover:bg-[#e68f3c] text-white border-0 rounded-[4px] text-[13px] font-medium"
-                          title="Disable"
-                        >
-                          <EyeOff className="w-3.5 h-3.5 mr-1.5" />
-                          Disable
-                        </Button>
-                      </div>
+                {isLoading ? (
+                  <TableRow>
+                    <TableCell colSpan={7} className="text-center py-8 text-gray-500">
+                      Loading data...
                     </TableCell>
                   </TableRow>
-                ))}
+                ) : assets.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={7} className="text-center py-8 text-gray-500">
+                      No cryptocurrencies added yet.
+                    </TableCell>
+                  </TableRow>
+                ) : (
+                  assets.map((crypto, index) => (
+                    <TableRow key={crypto.id} className="hover:bg-gray-50/50 border-b last:border-0">
+                      <TableCell className="font-medium text-gray-700 text-sm">
+                        {index + 1}
+                      </TableCell>
+                      <TableCell>
+                        <div className="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center bg-gray-50">
+                          {crypto.logo_url ? (
+                            <img src={crypto.logo_url} alt={crypto.name} className="w-full h-full object-contain" />
+                          ) : (
+                            <span className="text-xs font-bold text-gray-400">{crypto.symbol.slice(0,2)}</span>
+                          )}
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <span className="font-bold text-gray-800 text-[14px]">{crypto.symbol}</span>
+                      </TableCell>
+                      <TableCell>
+                        <span className="text-gray-600 text-[14px]">{crypto.name}</span>
+                      </TableCell>
+                      <TableCell>
+                        <Badge className="bg-[#ff5b5c]/10 hover:bg-[#ff5b5c]/20 text-[#ff5b5c] border-0 px-2 py-0.5 rounded-[4px] text-[10px] font-bold tracking-wider uppercase">
+                          {crypto.trading_pair}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        {crypto.status ? (
+                          <Badge className="bg-[#39DA8A]/10 hover:bg-[#39DA8A]/20 text-[#39DA8A] border-0 px-3 py-1 rounded-[4px] text-[10px] font-bold tracking-widest uppercase">
+                            ACTIVE
+                          </Badge>
+                        ) : (
+                          <Badge className="bg-gray-100 hover:bg-gray-200 text-gray-500 border-0 px-3 py-1 rounded-[4px] text-[10px] font-bold tracking-widest uppercase">
+                            INACTIVE
+                          </Badge>
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center space-x-2">
+                          <Button 
+                            variant="default" 
+                            size="icon" 
+                            className="h-8 w-8 bg-[#5A8DEE] hover:bg-[#4778d9] text-white border-0 rounded-[4px]"
+                            title="Edit"
+                            onClick={() => {
+                              setCryptoToEdit(crypto)
+                              setIsDialogOpen(true)
+                            }}
+                          >
+                            <Edit className="w-3.5 h-3.5" />
+                          </Button>
+                          <Button 
+                            variant="default" 
+                            className="h-8 px-3 bg-[#ff9f43] hover:bg-[#e68f3c] text-white border-0 rounded-[4px] text-[13px] font-medium"
+                            title="Delete"
+                            onClick={() => handleDeleteClick(crypto)}
+                          >
+                            <EyeOff className="w-3.5 h-3.5 mr-1.5" />
+                            Delete
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
               </TableBody>
             </Table>
           </div>
           
         </CardContent>
       </Card>
+
+      <LiveMarketDialog 
+        open={isDialogOpen} 
+        setOpen={setIsDialogOpen} 
+        initialData={cryptoToEdit} 
+        onSuccess={refetch} 
+      />
+
+      <DeleteConfirmationDialog 
+        isOpen={isDeleteDialogOpen}
+        onClose={() => setIsDeleteDialogOpen(false)}
+        onConfirm={confirmDelete}
+        title="Delete Cryptocurrency"
+        description="Are you sure you want to delete this cryptocurrency? It will be removed from the live market display."
+      />
     </div>
   )
 }

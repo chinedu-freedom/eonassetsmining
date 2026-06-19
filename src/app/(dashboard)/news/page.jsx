@@ -1,45 +1,46 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Search, Edit, Trash2, Plus, Star, Newspaper, Eye, CheckCircle } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Badge } from "@/components/ui/badge"
-
-const newsData = [
-  { 
-    id: "1", 
-    sn: 1, 
-    image: "https://via.placeholder.com/60x40/e2e8f0/94a3b8?text=News", 
-    title: "Security Tips for Your Account", 
-    category: "TIPS", 
-    views: 12, 
-    featured: true, 
-    status: "ACTIVE", 
-    date: "Dec 16, 2025" 
-  },
-  { 
-    id: "2", 
-    sn: 2, 
-    image: "https://via.placeholder.com/60x40/e2e8f0/94a3b8?text=Update", 
-    title: "Platform Upgrade Announcement", 
-    category: "UPDATE", 
-    views: 84, 
-    featured: false, 
-    status: "ACTIVE", 
-    date: "Dec 12, 2025" 
-  },
-]
+import { useState } from "react";
+import { Search, Edit, Trash2, Plus, Star, Newspaper, Eye, RefreshCcw, Loader2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
+import { useFetchData, useDelete } from "@/hooks/useApi";
+import Pagination from "@/components/Pagination";
+import NewsDialog from "@/components/modals/NewsDialog";
+import Link from "next/link";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 
 export default function NewsManagementPage() {
-  const [searchTerm, setSearchTerm] = useState("")
+  const [searchTerm, setSearchTerm] = useState("");
+  const [page, setPage] = useState(1);
 
-  // Calculated Stats
-  const totalNews = newsData.length
-  const totalViews = newsData.reduce((acc, curr) => acc + curr.views, 0)
-  const featuredNews = newsData.filter(n => n.featured).length
+  // Dialog States
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [selectedNews, setSelectedNews] = useState(null);
+
+  const [confirmDialog, setConfirmDialog] = useState({
+    isOpen: false,
+    newsId: null,
+  });
+
+  // Fetch News Data
+  const { data, isLoading, refetch } = useFetchData(
+    `/admin/news?page=${page}&limit=10&search=${searchTerm}`,
+    ["news", page, searchTerm]
+  );
+
+  const deleteMutation = useDelete((id) => `/admin/news/${id}`, ["news"]);
+
+  const newsData = data?.news || [];
+  const meta = data?.meta || null;
+
+  // Calculated Stats (From visible data or meta if available, ideally from an aggregate endpoint but using available data here)
+  const totalNews = meta?.total || 0;
+  const totalViews = newsData.reduce((acc, curr) => acc + curr.views, 0);
+  const featuredNews = newsData.filter(n => n.is_featured).length;
 
   const stats = [
     {
@@ -50,25 +51,46 @@ export default function NewsManagementPage() {
       bg: "bg-blue-100",
     },
     {
-      title: "Total Views",
+      title: "Page Views (Current)",
       value: totalViews.toString(),
       icon: Eye,
       color: "text-purple-600",
       bg: "bg-purple-100",
     },
     {
-      title: "Featured News",
+      title: "Featured (Current)",
       value: featuredNews.toString(),
       icon: Star,
       color: "text-orange-600",
       bg: "bg-orange-100",
     }
-  ]
+  ];
 
-  const filteredNews = newsData.filter((item) => {
-    return item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-           item.category.toLowerCase().includes(searchTerm.toLowerCase())
-  })
+  const handleEdit = (newsItem) => {
+    setSelectedNews(newsItem);
+    setIsDialogOpen(true);
+  };
+
+  const handleCreate = () => {
+    setSelectedNews(null);
+    setIsDialogOpen(true);
+  };
+
+  const handleDeleteClick = (id) => {
+    setConfirmDialog({ isOpen: true, newsId: id });
+  };
+
+  const executeDelete = async () => {
+    if (confirmDialog.newsId) {
+      try {
+        await deleteMutation.mutateAsync(confirmDialog.newsId);
+      } catch (error) {
+        console.error("Delete failed", error);
+      } finally {
+        setConfirmDialog({ isOpen: false, newsId: null });
+      }
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -79,7 +101,11 @@ export default function NewsManagementPage() {
           <p className="text-muted-foreground text-sm">Manage system news, updates, and announcements</p>
         </div>
         <div className="flex items-center space-x-3">
-          <Button className="bg-[#5A8DEE] hover:bg-[#4778d9] text-white">
+          <Button onClick={() => refetch()} variant="outline" className="bg-white">
+            <RefreshCcw className={`w-4 h-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
+            Refresh
+          </Button>
+          <Button onClick={handleCreate} className="bg-[#5A8DEE] hover:bg-[#4778d9] text-white">
             <Plus className="w-4 h-4 mr-2" />
             Add News
           </Button>
@@ -114,7 +140,10 @@ export default function NewsManagementPage() {
               <Input
                 placeholder="Search news..."
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={(e) => {
+                  setSearchTerm(e.target.value);
+                  setPage(1);
+                }}
                 className="pl-9 bg-background"
               />
             </div>
@@ -129,8 +158,7 @@ export default function NewsManagementPage() {
             <Table>
               <TableHeader className="bg-gray-50/50">
                 <TableRow>
-                  <TableHead className="w-[60px] font-bold text-gray-500 uppercase text-xs">S.N</TableHead>
-                  <TableHead className="font-bold text-gray-500 uppercase text-xs w-[100px]">IMAGE</TableHead>
+                  <TableHead className="font-bold text-gray-500 uppercase text-xs w-[100px] pl-6">IMAGE</TableHead>
                   <TableHead className="font-bold text-gray-500 uppercase text-xs">TITLE</TableHead>
                   <TableHead className="font-bold text-gray-500 uppercase text-xs">CATEGORY</TableHead>
                   <TableHead className="font-bold text-gray-500 uppercase text-xs">VIEWS</TableHead>
@@ -141,26 +169,38 @@ export default function NewsManagementPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredNews.length > 0 ? (
-                  filteredNews.map((news) => (
+                {isLoading ? (
+                  <TableRow>
+                    <TableCell colSpan={8} className="text-center py-10">
+                      <div className="flex items-center justify-center">
+                        <Loader2 className="w-6 h-6 animate-spin text-gray-400" />
+                        <span className="ml-2 text-gray-500">Loading news...</span>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ) : newsData.length > 0 ? (
+                  newsData.map((news) => (
                     <TableRow key={news.id} className="hover:bg-gray-50/50">
-                      <TableCell className="font-medium text-gray-700">{news.sn}</TableCell>
-                      <TableCell>
+                      <TableCell className="pl-6">
                         <div className="w-[60px] h-[40px] rounded overflow-hidden shadow-sm bg-gray-100 flex items-center justify-center">
-                          <img src={news.image} alt="News thumbnail" className="w-full h-full object-cover" />
+                          {news.image ? (
+                            <img src={news.image} alt="News thumbnail" className="w-full h-full object-cover" />
+                          ) : (
+                            <Newspaper className="w-5 h-5 text-gray-400" />
+                          )}
                         </div>
                       </TableCell>
                       <TableCell>
-                        <span className="font-bold text-gray-800 text-[14px]">{news.title}</span>
+                        <span className="font-bold text-gray-800 text-[14px] line-clamp-1">{news.title}</span>
                       </TableCell>
                       <TableCell>
                         <Badge className="bg-[#e5edff] hover:bg-[#d4e0ff] text-[#5A8DEE] border-0 px-3 py-1 font-semibold rounded-[4px]">
-                          {news.category}
+                          {news.category || "GENERAL"}
                         </Badge>
                       </TableCell>
                       <TableCell className="text-gray-700 font-medium">{news.views}</TableCell>
                       <TableCell className="text-center">
-                        {news.featured ? (
+                        {news.is_featured ? (
                           <div className="inline-flex w-7 h-7 bg-[#f59e0b] rounded items-center justify-center shadow-sm">
                             <Star className="w-4 h-4 text-white fill-white" />
                           </div>
@@ -169,20 +209,31 @@ export default function NewsManagementPage() {
                         )}
                       </TableCell>
                       <TableCell>
-                        <Badge className="bg-[#39DA8A]/10 hover:bg-[#39DA8A]/20 text-[#39DA8A] border-0 text-[11px] tracking-wider uppercase px-3 py-1 rounded-[4px] font-bold">
-                          {news.status}
+                        <Badge className={`${news.status ? 'bg-[#39DA8A]/10 text-[#39DA8A]' : 'bg-red-100 text-red-600'} hover:opacity-80 border-0 text-[11px] tracking-wider uppercase px-3 py-1 rounded-[4px] font-bold`}>
+                          {news.status ? "ACTIVE" : "HIDDEN"}
                         </Badge>
                       </TableCell>
                       <TableCell className="text-gray-700 text-sm whitespace-nowrap">
-                        {news.date}
+                        {new Date(news.published_at).toLocaleDateString()}
                       </TableCell>
                       <TableCell className="text-right pr-6">
                         <div className="flex items-center justify-end space-x-1.5">
+                          <Link href={`/news/${news.id}`}>
+                            <Button 
+                              variant="default" 
+                              size="icon" 
+                              className="h-8 w-8 bg-blue-500 hover:bg-blue-600 text-white border-0 rounded-[4px]"
+                              title="View"
+                            >
+                              <Eye className="w-4 h-4" />
+                            </Button>
+                          </Link>
                           <Button 
                             variant="default" 
                             size="icon" 
                             className="h-8 w-8 bg-[#f59e0b] hover:bg-[#d97706] text-white border-0 rounded-[4px]"
                             title="Edit"
+                            onClick={() => handleEdit(news)}
                           >
                             <Edit className="w-4 h-4" />
                           </Button>
@@ -191,6 +242,7 @@ export default function NewsManagementPage() {
                             size="icon" 
                             className="h-8 w-8 bg-[#ff5b5c] hover:bg-red-500 text-white border-0 rounded-[4px]"
                             title="Delete"
+                            onClick={() => handleDeleteClick(news.id)}
                           >
                             <Trash2 className="w-4 h-4" />
                           </Button>
@@ -200,7 +252,7 @@ export default function NewsManagementPage() {
                   ))
                 ) : (
                   <TableRow>
-                    <TableCell colSpan={9} className="text-center py-10 text-gray-500">
+                    <TableCell colSpan={8} className="text-center py-10 text-gray-500">
                       No news found
                     </TableCell>
                   </TableRow>
@@ -208,8 +260,43 @@ export default function NewsManagementPage() {
               </TableBody>
             </Table>
           </div>
+          {meta && <Pagination meta={meta} onPageChange={setPage} />}
         </CardContent>
       </Card>
+
+      {/* Modals */}
+      <NewsDialog 
+        open={isDialogOpen} 
+        setOpen={setIsDialogOpen} 
+        initialData={selectedNews} 
+      />
+
+      <Dialog open={confirmDialog.isOpen} onOpenChange={(open) => setConfirmDialog(prev => ({ ...prev, isOpen: open }))}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Confirm News Deletion</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to delete this news article? This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="mt-4 gap-2 sm:gap-0">
+            <Button
+              variant="outline"
+              onClick={() => setConfirmDialog(prev => ({ ...prev, isOpen: false }))}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="default"
+              onClick={executeDelete}
+              className="bg-red-600 hover:bg-red-700 text-white"
+              disabled={deleteMutation.isPending}
+            >
+              {deleteMutation.isPending ? "Deleting..." : "Confirm Delete"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
-  )
+  );
 }

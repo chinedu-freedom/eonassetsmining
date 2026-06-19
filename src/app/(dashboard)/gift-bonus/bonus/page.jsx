@@ -8,22 +8,51 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-
-const giftCodesData = [
-  // { id: "1", sn: 1, codeName: "New Year Promo", giftCode: "NY2024", amount: 50.00, usage: 10, maxUses: 100, status: "Active" },
-]
+import { useFetchData, useDelete } from "@/hooks/useApi"
+import { toast } from "sonner"
+import DeleteConfirmationDialog from "@/components/modals/DeleteConfirmationDialog"
+import Link from "next/link"
 
 export default function GiftBonusPage() {
   const [searchTerm, setSearchTerm] = useState("")
   const [statusFilter, setStatusFilter] = useState("all")
   const [isDialogOpen, setDialogOpen] = useState(false)
   const [editingGiftCode, setEditingGiftCode] = useState(null)
+  
+  // Delete dialog state
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
+  const [itemToDelete, setItemToDelete] = useState(null)
+
+  const { data: giftCodes, isLoading } = useFetchData("/admin/rewards/gift-codes", ["admin-gift-codes"])
+  const deleteMutation = useDelete((id) => `/admin/rewards/gift-codes/${id}`, ["admin-gift-codes"])
+
+  const handleDeleteClick = (item) => {
+    setItemToDelete(item)
+    setDeleteDialogOpen(true)
+  }
+
+  const handleConfirmDelete = async () => {
+    if (itemToDelete) {
+      try {
+        await deleteMutation.mutateAsync(itemToDelete.id)
+        setDeleteDialogOpen(false)
+        setItemToDelete(null)
+      } catch (error) {
+        // Handled by useApi
+      }
+    }
+  }
+
+  const giftCodesData = Array.isArray(giftCodes) ? giftCodes : []
 
   const filteredData = giftCodesData.filter((item) => {
     const matchesSearch = 
-      item.codeName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.giftCode.toLowerCase().includes(searchTerm.toLowerCase())
-    const matchesStatus = statusFilter === "all" || item.status.toLowerCase() === statusFilter
+      (item.code_name || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (item.code || "").toLowerCase().includes(searchTerm.toLowerCase())
+    
+    const itemStatus = item.status ? "active" : "inactive"
+    const matchesStatus = statusFilter === "all" || itemStatus === statusFilter
+    
     return matchesSearch && matchesStatus
   })
 
@@ -36,10 +65,12 @@ export default function GiftBonusPage() {
           <h1 className="text-2xl font-bold text-gray-800">Gift Codes Management</h1>
         </div>
         <div className="flex items-center space-x-3 w-full md:w-auto">
-          <Button className="flex-1 md:flex-none bg-[#00CFDD] hover:bg-[#00b5c2] text-white h-10 px-4 rounded-md shadow-sm border-0">
-            <History className="w-4 h-4 mr-2" />
-            Redemption History
-          </Button>
+          <Link href="/gift-bonus/uses-list" className="flex-1 md:flex-none">
+            <Button className="w-full md:w-auto bg-[#00CFDD] hover:bg-[#00b5c2] text-white h-10 px-4 rounded-md shadow-sm border-0">
+              <History className="w-4 h-4 mr-2" />
+              Redemption History
+            </Button>
+          </Link>
           <Button 
             className="flex-1 md:flex-none bg-[#5A8DEE] hover:bg-[#4778d9] text-white h-10 px-4 rounded-md shadow-sm border-0"
             onClick={() => {
@@ -100,34 +131,40 @@ export default function GiftBonusPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredData.length > 0 ? (
-                  filteredData.map((item) => (
+                {isLoading ? (
+                  <TableRow>
+                    <TableCell colSpan={8} className="text-center py-10 text-gray-500 bg-gray-50/30">
+                      Loading...
+                    </TableCell>
+                  </TableRow>
+                ) : filteredData.length > 0 ? (
+                  filteredData.map((item, index) => (
                     <TableRow key={item.id} className="hover:bg-gray-50 border-b last:border-0">
                       <TableCell className="font-medium text-gray-700 text-[13px] py-4 pl-6">
-                        {item.sn}
+                        {index + 1}
                       </TableCell>
                       <TableCell className="py-4">
-                        <span className="font-medium text-gray-700 text-[13px]">{item.codeName}</span>
+                        <span className="font-medium text-gray-700 text-[13px]">{item.code_name}</span>
                       </TableCell>
                       <TableCell className="py-4">
-                        <span className="font-medium text-[#5A8DEE] text-[13px] bg-blue-50 px-2 py-1 rounded-sm">{item.giftCode}</span>
+                        <span className="font-medium text-[#5A8DEE] text-[13px] bg-blue-50 px-2 py-1 rounded-sm">{item.code}</span>
                       </TableCell>
                       <TableCell className="py-4">
-                        <span className="font-medium text-gray-700 text-[13px]">${item.amount.toFixed(2)}</span>
+                        <span className="font-medium text-gray-700 text-[13px]">${Number(item.reward_amount).toFixed(2)}</span>
                       </TableCell>
                       <TableCell className="py-4">
-                        <span className="font-medium text-gray-700 text-[13px]">{item.usage}</span>
+                        <span className="font-medium text-gray-700 text-[13px]">{item.used_count || 0}</span>
                       </TableCell>
                       <TableCell className="py-4">
-                        <span className="font-medium text-gray-700 text-[13px]">{item.maxUses}</span>
+                        <span className="font-medium text-gray-700 text-[13px]">{item.max_uses}</span>
                       </TableCell>
                       <TableCell className="py-4">
                         <span className={`text-[12px] px-2.5 py-1 rounded-md font-medium ${
-                          item.status.toLowerCase() === 'active' 
+                          item.status
                             ? 'bg-[#39DA8A]/10 text-[#39DA8A]' 
                             : 'bg-yellow-50 text-yellow-600'
                         }`}>
-                          {item.status}
+                          {item.status ? "Active" : "Inactive"}
                         </span>
                       </TableCell>
                       <TableCell className="py-4 text-right pr-6">
@@ -149,6 +186,7 @@ export default function GiftBonusPage() {
                             size="icon" 
                             className="h-8 w-8 bg-[#ff5b5c] hover:bg-[#e55253] text-white border-0 shadow-sm rounded-md"
                             title="Delete"
+                            onClick={() => handleDeleteClick(item)}
                           >
                             <Trash2 className="w-[14px] h-[14px]" />
                           </Button>
@@ -173,6 +211,14 @@ export default function GiftBonusPage() {
         open={isDialogOpen} 
         setOpen={setDialogOpen} 
         initialData={editingGiftCode} 
+      />
+
+      <DeleteConfirmationDialog 
+        isOpen={deleteDialogOpen}
+        onClose={() => setDeleteDialogOpen(false)}
+        onConfirm={handleConfirmDelete}
+        title="Delete Gift Code"
+        description={`Are you sure you want to delete the gift code "${itemToDelete?.code_name}"? This action cannot be undone.`}
       />
     </div>
   )

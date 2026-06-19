@@ -21,6 +21,8 @@ import {
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Loader2 } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
+import { usePost, usePut } from "@/hooks/useApi";
 
 const taskSchema = z.object({
   name: z.string().min(3, "Name is required"),
@@ -54,11 +56,11 @@ export default function TaskDialog({ open, setOpen, initialData }) {
   useEffect(() => {
     if (initialData) {
       reset({
-        name: initialData.name || "",
-        invitesRequired: initialData.invitesRequired || "",
-        amount: initialData.amount || "",
+        name: initialData.task_name || "",
+        invitesRequired: initialData.required_referrals || "",
+        amount: initialData.reward_amount || "",
         description: initialData.description || "",
-        status: initialData.status?.toLowerCase() === "inactive" ? "inactive" : "active",
+        status: initialData.status === false ? "inactive" : "active",
       });
     } else {
       reset({
@@ -72,14 +74,32 @@ export default function TaskDialog({ open, setOpen, initialData }) {
   }, [initialData, reset, open]);
 
   const status = watch("status");
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  const createMutation = usePost("/admin/rewards/tasks", ["admin-tasks"]);
+  const editMutation = usePut(initialData?.id ? `/admin/rewards/tasks/${initialData.id}` : "", ["admin-tasks"]);
+
+  const isSubmitting = createMutation.isPending || editMutation.isPending;
 
   const onSubmit = async (data) => {
-    setIsSubmitting(true);
-    // Simulate API delay
-    await new Promise((resolve) => setTimeout(resolve, 800));
-    setIsSubmitting(false);
-    setOpen(false);
+    const payload = {
+      task_name: data.name,
+      description: data.description,
+      required_referrals: Number(data.invitesRequired),
+      reward_amount: Number(data.amount),
+      status: data.status === "active",
+    };
+
+    try {
+      if (isEdit) {
+        await editMutation.mutateAsync(payload);
+      } else {
+        await createMutation.mutateAsync(payload);
+      }
+      setOpen(false);
+      reset();
+    } catch (error) {
+      // Error is handled by useApi
+    }
   };
 
   return (
@@ -90,11 +110,7 @@ export default function TaskDialog({ open, setOpen, initialData }) {
           <DialogTitle className="text-xl font-medium text-gray-700">
             {isEdit ? "Edit Task" : "Create New Task"}
           </DialogTitle>
-          <DialogClose asChild>
-            <Button variant="default" className="bg-[#4f46e5] hover:bg-[#4338ca] text-white flex items-center gap-2">
-              <span className="text-lg leading-none">&lt;</span> Tasks List
-            </Button>
-          </DialogClose>
+        
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="px-8 py-6 space-y-8">
@@ -162,18 +178,16 @@ export default function TaskDialog({ open, setOpen, initialData }) {
           <div className="bg-white p-6 rounded-lg border shadow-sm space-y-4">
             <h3 className="text-lg font-medium text-blue-500">Settings</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <Label className="text-gray-600 text-sm mb-1.5 block">Task Status</Label>
-                <Select value={status} onValueChange={(val) => setValue("status", val)}>
-                  <SelectTrigger className="border-green-400 focus:ring-green-400">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="active">Active</SelectItem>
-                    <SelectItem value="inactive">Inactive</SelectItem>
-                  </SelectContent>
-                </Select>
-                <p className="text-[11px] text-green-500 mt-1.5">● Determine if this task is currently visible to users</p>
+              <div className="flex items-center justify-between">
+                <div>
+                  <Label className="text-gray-600 text-sm mb-1.5 block">Task Status</Label>
+                  <p className="text-[11px] text-green-500">● Determine if this task is currently visible to users</p>
+                </div>
+                <Switch
+                  checked={status === "active"}
+                  onCheckedChange={(val) => setValue("status", val ? "active" : "inactive")}
+                  className="data-[state=checked]:bg-blue-600"
+                />
               </div>
             </div>
           </div>

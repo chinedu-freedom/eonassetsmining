@@ -1,116 +1,136 @@
 "use client"
 
-import { useState } from "react"
-import { History, Search, RotateCcw, Filter, LogIn, UserPlus, Dices, CalendarCheck, Maximize, Database } from "lucide-react"
+import { useState, useMemo } from "react"
+import { History, Search, RotateCcw, Filter, LogIn, UserPlus, Dices, CalendarCheck, Maximize, Database, RefreshCw, Loader2, Key, Wallet, Gift, Settings, ShieldAlert, CreditCard, UserX, UserCheck, Shield } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { useFetchData } from "@/hooks/useApi"
+import Pagination from "@/components/Pagination"
 
-const stats = [
-  { title: "ACTIVITIES TODAY", value: "0", bg: "bg-gradient-to-r from-[#7367F0] to-[#9E95F5]" },
-  { title: "ACTIVE USERS", value: "0", bg: "bg-gradient-to-r from-[#28C76F] to-[#48DA89]" },
-  { title: "LOGINS TODAY", value: "0", bg: "bg-gradient-to-r from-[#00CFE8] to-[#2BD9F0]" },
-  { title: "DEPOSITS TODAY", value: "0", bg: "bg-gradient-to-r from-[#EA5455] to-[#F08182]" }, // actually pink
-  { title: "WITHDRAWALS", value: "0", bg: "bg-gradient-to-r from-[#FF9F43] to-[#FFB76B]" }, // orange/red
-  { title: "REGISTRATIONS", value: "0", bg: "bg-gradient-to-r from-[#4B4B4B] to-[#7A7A7A]" }, // dark blue/grey
-]
+// Predefined actions map for colors and icons
+const ACTION_MAP = {
+  "user login": { color: "bg-[#00cfe8] hover:bg-[#00cfe8]/90", icon: LogIn },
+  "user registered": { color: "bg-[#28c76f] hover:bg-[#28c76f]/90", icon: UserPlus },
+  "password reset": { color: "bg-[#ff9f43] hover:bg-[#ff9f43]/90", icon: Key },
+  "deposit initiated": { color: "bg-[#ea5455] hover:bg-[#ea5455]/90", icon: CreditCard },
+  "deposit completed": { color: "bg-[#28c76f] hover:bg-[#28c76f]/90", icon: CreditCard },
+  "withdrawal requested": { color: "bg-[#ff9f43] hover:bg-[#ff9f43]/90", icon: Wallet },
+  "bonus claimed": { color: "bg-[#7367f0] hover:bg-[#7367f0]/90", icon: Gift },
+  "spin wheel": { color: "bg-[#00cfe8] hover:bg-[#00cfe8]/90", icon: Dices },
+  "daily check in": { color: "bg-[#28c76f] hover:bg-[#28c76f]/90", icon: CalendarCheck },
+  "package purchase": { color: "bg-[#7367f0] hover:bg-[#7367f0]/90", icon: Database },
+  "profile updated": { color: "bg-[#4cc5d9] hover:bg-[#4cc5d9]/90", icon: Settings },
+  "admin credit": { color: "bg-[#28c76f] hover:bg-[#28c76f]/90", icon: Shield },
+  "admin debit": { color: "bg-[#ea5455] hover:bg-[#ea5455]/90", icon: ShieldAlert },
+  "user banned": { color: "bg-[#ea5455] hover:bg-[#ea5455]/90", icon: UserX },
+  "user unbanned": { color: "bg-[#28c76f] hover:bg-[#28c76f]/90", icon: UserCheck },
+  "default": { color: "bg-gray-500 hover:bg-gray-600", icon: History }
+}
 
-// Overriding some exact colors to match the image better based on visual check
-const customStats = [
-  { title: "ACTIVITIES TODAY", value: "0", bg: "bg-[#7e56c5]" },
-  { title: "ACTIVE USERS", value: "0", bg: "bg-[#29d378]" },
-  { title: "LOGINS TODAY", value: "0", bg: "bg-[#4cc5d9]" },
-  { title: "DEPOSITS TODAY", value: "0", bg: "bg-[#f2639b]" },
-  { title: "WITHDRAWALS", value: "0", bg: "bg-[#f45c43]" },
-  { title: "REGISTRATIONS", value: "0", bg: "bg-[#354877]" },
-]
-
-const activityData = [
-  {
-    id: "#361",
-    time: { date: "Jun 05, 2026", time: "21:01:34", ago: "17 hours ago" },
-    user: { email: "chinedufreedom10@gmail.com", id: "34" },
-    action: "USER LOGIN",
-    actionColor: "bg-[#00cfe8] hover:bg-[#00cfe8]/90",
-    icon: LogIn,
-    ip: "102.90.99.105",
-    admin: "-",
-  },
-  {
-    id: "#360",
-    time: { date: "May 27, 2026", time: "14:24:26", ago: "1 week ago" },
-    user: { email: "balleryoung88@gmail.com", id: "35" },
-    action: "USER REGISTERED",
-    actionColor: "bg-[#28c76f] hover:bg-[#28c76f]/90",
-    icon: UserPlus,
-    ip: "102.90.102.152",
-    admin: "-",
-  },
-  {
-    id: "#359",
-    time: { date: "May 27, 2026", time: "10:15:55", ago: "1 week ago" },
-    user: { email: "chinedufreedom10@gmail.com", id: "34" },
-    action: "USER LOGIN",
-    actionColor: "bg-[#00cfe8] hover:bg-[#00cfe8]/90",
-    icon: LogIn,
-    ip: "102.90.101.127",
-    admin: "-",
-  },
-  {
-    id: "#358",
-    time: { date: "May 27, 2026", time: "10:13:22", ago: "1 week ago" },
-    user: { email: "chinedufreedom10@gmail.com", id: "34" },
-    action: "SPIN WHEEL",
-    actionColor: "bg-[#00cfe8] hover:bg-[#00cfe8]/90",
-    icon: Dices,
-    ip: "102.90.101.127",
-    admin: "-",
-  },
-  {
-    id: "#357",
-    time: { date: "May 27, 2026", time: "10:12:20", ago: "1 week ago" },
-    user: { email: "chinedufreedom10@gmail.com", id: "34" },
-    action: "DAILY CHECK-IN",
-    actionColor: "bg-[#28c76f] hover:bg-[#28c76f]/90",
-    icon: CalendarCheck,
-    ip: "102.90.101.127",
-    admin: "-",
-  },
-]
+const getActionDetails = (actionStr) => {
+  if (!actionStr) return ACTION_MAP.default;
+  const lowerAction = actionStr.toLowerCase();
+  
+  for (const [key, value] of Object.entries(ACTION_MAP)) {
+    if (lowerAction.includes(key.replace('-', ' '))) {
+      return value;
+    }
+  }
+  
+  return ACTION_MAP.default;
+}
 
 export default function ActivityMonitorPage() {
   const [searchTerm, setSearchTerm] = useState("")
+  const [debouncedSearch, setDebouncedSearch] = useState("")
   const [ipTerm, setIpTerm] = useState("")
+  const [debouncedIp, setDebouncedIp] = useState("")
   const [actionType, setActionType] = useState("all")
   const [dateFrom, setDateFrom] = useState("")
   const [dateTo, setDateTo] = useState("")
+  const [page, setPage] = useState(1)
 
-  const filteredData = activityData.filter((record) => {
-    const matchesSearch = record.user.email.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                          record.user.id.toLowerCase().includes(searchTerm.toLowerCase())
-    const matchesIp = record.ip.toLowerCase().includes(ipTerm.toLowerCase())
-    
-    let matchesAction = true
-    if (actionType !== "all") {
-      const actionName = record.action.toLowerCase()
-      if (actionType === "login" && !actionName.includes("login")) matchesAction = false
-      if (actionType === "register" && !actionName.includes("registered")) matchesAction = false
-      if (actionType === "spin" && !actionName.includes("spin")) matchesAction = false
-      if (actionType === "checkin" && !actionName.includes("check-in")) matchesAction = false
-    }
+  // Use debounce for inputs
+  useMemo(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(searchTerm)
+      setDebouncedIp(ipTerm)
+      setPage(1)
+    }, 500)
+    return () => clearTimeout(timer)
+  }, [searchTerm, ipTerm])
 
-    let matchesDate = true
-    if (dateFrom || dateTo) {
-      const recordDate = new Date(record.time.date)
-      if (dateFrom && recordDate < new Date(dateFrom)) matchesDate = false
-      if (dateTo && recordDate > new Date(dateTo)) matchesDate = false
-    }
-
-    return matchesSearch && matchesIp && matchesAction && matchesDate
+  // Build query string
+  const queryParams = new URLSearchParams({
+    page: page.toString(),
+    limit: "20"
   })
+
+  if (debouncedSearch) queryParams.append("search", debouncedSearch)
+  if (debouncedIp) queryParams.append("ip", debouncedIp)
+  if (actionType !== "all") queryParams.append("action", actionType)
+  if (dateFrom) queryParams.append("dateFrom", dateFrom)
+  if (dateTo) queryParams.append("dateTo", dateTo)
+
+  const { data, isLoading, refetch } = useFetchData(`/admin/activities?${queryParams.toString()}`, [
+    "admin-activities", 
+    page, 
+    debouncedSearch, 
+    debouncedIp, 
+    actionType, 
+    dateFrom, 
+    dateTo
+  ])
+
+  const activities = data?.activities || []
+  const stats = data?.stats || {
+    activitiesToday: 0,
+    activeUsers: 0,
+    loginsToday: 0,
+    depositsToday: 0,
+    withdrawalsToday: 0,
+    registrationsToday: 0
+  }
+  const meta = data?.meta || { total: 0, page: 1, pages: 1 }
+
+  const customStats = [
+    { title: "ACTIVITIES TODAY", value: stats.activitiesToday, bg: "bg-[#7e56c5]" },
+    { title: "ACTIVE USERS", value: stats.activeUsers, bg: "bg-[#29d378]" },
+    { title: "LOGINS TODAY", value: stats.loginsToday, bg: "bg-[#4cc5d9]" },
+    { title: "DEPOSITS TODAY", value: stats.depositsToday, bg: "bg-[#f2639b]" },
+    { title: "WITHDRAWALS", value: stats.withdrawalsToday, bg: "bg-[#f45c43]" },
+    { title: "REGISTRATIONS", value: stats.registrationsToday, bg: "bg-[#354877]" },
+  ]
+
+  const handleResetFilters = () => {
+    setSearchTerm("")
+    setDebouncedSearch("")
+    setIpTerm("")
+    setDebouncedIp("")
+    setActionType("all")
+    setDateFrom("")
+    setDateTo("")
+    setPage(1)
+  }
+
+  const handleActionChange = (val) => {
+    setActionType(val)
+    setPage(1)
+  }
+
+  const handleDateFromChange = (e) => {
+    setDateFrom(e.target.value)
+    setPage(1)
+  }
+
+  const handleDateToChange = (e) => {
+    setDateTo(e.target.value)
+    setPage(1)
+  }
 
   return (
     <div className="space-y-6">
@@ -118,7 +138,7 @@ export default function ActivityMonitorPage() {
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
         {customStats.map((stat, index) => (
           <div key={index} className={`${stat.bg} rounded-xl p-4 text-white shadow-sm flex flex-col items-center justify-center min-h-[90px]`}>
-            <div className="text-2xl md:text-3xl font-bold mb-1">{stat.value}</div>
+            <div className="text-2xl md:text-3xl font-bold mb-1">{stat.value.toLocaleString()}</div>
             <div className="text-[10px] md:text-[11px] font-semibold tracking-wider uppercase text-white/90 text-center leading-tight">{stat.title}</div>
           </div>
         ))}
@@ -134,17 +154,22 @@ export default function ActivityMonitorPage() {
               <History className="w-5 h-5 text-gray-500" />
               <h2 className="text-[18px] font-semibold text-gray-800">Activity Monitor</h2>
             </div>
-            <Button className="bg-[#94a3b8] hover:bg-[#8292a8] text-white h-9 px-4 rounded-md pointer-events-none">
-              <Database className="w-4 h-4 mr-2" />
-              TOTAL: 23 RECORDS
-            </Button>
+            <div className="flex items-center gap-3">
+              <Button onClick={() => refetch()} variant="outline" className="h-9 px-3 rounded-md text-gray-600">
+                <RefreshCw className="w-4 h-4" />
+              </Button>
+              <Button className="bg-[#94a3b8] hover:bg-[#8292a8] text-white h-9 px-4 rounded-md pointer-events-none">
+                <Database className="w-4 h-4 mr-2" />
+                TOTAL: {meta.total.toLocaleString()} RECORDS
+              </Button>
+            </div>
           </div>
 
           {/* Filters Row */}
           <div className="bg-[#f8f9fa] p-4 rounded-md flex flex-wrap gap-4 items-end">
             <div className="flex-1 min-w-[150px]">
               <label className="text-[11px] font-semibold text-gray-500 mb-1.5 block">Action Type</label>
-              <Select value={actionType} onValueChange={setActionType}>
+              <Select value={actionType} onValueChange={handleActionChange}>
                 <SelectTrigger className="bg-white border-gray-200 h-9 text-gray-600">
                   <SelectValue placeholder="All Actions" />
                 </SelectTrigger>
@@ -152,13 +177,17 @@ export default function ActivityMonitorPage() {
                   <SelectItem value="all">All Actions</SelectItem>
                   <SelectItem value="login">User Login</SelectItem>
                   <SelectItem value="register">User Registered</SelectItem>
+                  <SelectItem value="deposit">Deposits</SelectItem>
+                  <SelectItem value="withdrawal">Withdrawals</SelectItem>
                   <SelectItem value="spin">Spin Wheel</SelectItem>
                   <SelectItem value="checkin">Daily Check-in</SelectItem>
+                  <SelectItem value="password">Password Resets</SelectItem>
+                  <SelectItem value="package">Package Purchases</SelectItem>
                 </SelectContent>
               </Select>
             </div>
             <div className="flex-1 min-w-[200px]">
-              <label className="text-[11px] font-semibold text-gray-500 mb-1.5 block">User (ID/Username/Email)</label>
+              <label className="text-[11px] font-semibold text-gray-500 mb-1.5 block">User (Email / ID)</label>
               <Input
                 placeholder="Search user..."
                 value={searchTerm}
@@ -180,7 +209,7 @@ export default function ActivityMonitorPage() {
               <Input
                 type="date"
                 value={dateFrom}
-                onChange={(e) => setDateFrom(e.target.value)}
+                onChange={handleDateFromChange}
                 className="bg-white border-gray-200 h-9 text-gray-500"
               />
             </div>
@@ -189,70 +218,104 @@ export default function ActivityMonitorPage() {
               <Input
                 type="date"
                 value={dateTo}
-                onChange={(e) => setDateTo(e.target.value)}
+                onChange={handleDateToChange}
                 className="bg-white border-gray-200 h-9 text-gray-500"
               />
             </div>
-
+            <Button onClick={handleResetFilters} variant="ghost" className="h-9 px-3 text-gray-500 hover:text-gray-800">
+              Clear Filters
+            </Button>
           </div>
         </div>
 
         {/* Table Section */}
-        <div className="overflow-x-auto">
-          <Table>
-            <TableHeader className="bg-gray-50/50 border-y">
-              <TableRow className="hover:bg-transparent">
-                <TableHead className="font-bold text-gray-500 uppercase text-[11px] tracking-wider py-4 w-[60px] pl-6">ID</TableHead>
-                <TableHead className="font-bold text-gray-500 uppercase text-[11px] tracking-wider py-4 min-w-[140px]">TIME</TableHead>
-                <TableHead className="font-bold text-gray-500 uppercase text-[11px] tracking-wider py-4 min-w-[250px]">USER</TableHead>
-                <TableHead className="font-bold text-gray-500 uppercase text-[11px] tracking-wider py-4 min-w-[180px]">ACTION</TableHead>
-                <TableHead className="font-bold text-gray-500 uppercase text-[11px] tracking-wider py-4 min-w-[140px]">DETAILS</TableHead>
-                <TableHead className="font-bold text-gray-500 uppercase text-[11px] tracking-wider py-4 min-w-[130px]">IP ADDRESS</TableHead>
-                <TableHead className="font-bold text-gray-500 uppercase text-[11px] tracking-wider py-4">ADMIN</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredData.map((record, index) => (
-                <TableRow key={index} className="hover:bg-gray-50 border-b last:border-0">
-                  <TableCell className="font-medium text-gray-500 text-[13px] py-4 pl-6">
-                    {record.id}
-                  </TableCell>
-                  <TableCell className="py-4">
-                    <div className="font-bold text-gray-800 text-[12px]">{record.time.date}</div>
-                    <div className="text-[11px] text-gray-500 my-0.5">{record.time.time}</div>
-                    <div className="text-[11px] text-gray-400">{record.time.ago}</div>
-                  </TableCell>
-                  <TableCell className="py-4">
-                    <div className="font-bold text-[#5A8DEE] text-[13px] hover:underline cursor-pointer">{record.user.email}</div>
-                    <div className="text-[12px] text-gray-500 mt-1">ID: {record.user.id}</div>
-                  </TableCell>
-                  <TableCell className="py-4">
-                    <Badge className={`${record.actionColor} text-white border-0 px-3 py-1 rounded-full font-bold text-[10px] tracking-wide uppercase flex items-center w-fit gap-1.5`}>
-                      <record.icon className="w-3.5 h-3.5" />
-                      {record.action}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="py-4">
-                    <Button variant="outline" className="border-cyan-400 text-cyan-500 hover:bg-cyan-50 h-8 px-3 rounded text-xs font-medium bg-transparent">
-                      <Maximize className="w-3.5 h-3.5 mr-1.5" />
-                      View Details
-                    </Button>
-                  </TableCell>
-                  <TableCell className="py-4">
-                    <Badge className="bg-gray-100 text-gray-700 hover:bg-gray-200 border-0 px-2 py-1 rounded-[4px] font-bold text-[11px]">
-                      {record.ip}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="py-4 text-gray-400 font-medium">
-                    {record.admin}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+        <div className="overflow-x-auto min-h-[400px]">
+          {isLoading ? (
+            <div className="flex flex-col items-center justify-center py-20 text-gray-400">
+              <Loader2 className="w-8 h-8 animate-spin mb-3 text-blue-500" />
+              <p className="text-sm font-medium">Loading activities...</p>
+            </div>
+          ) : activities.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-20 text-gray-400">
+              <History className="w-12 h-12 mb-3 text-gray-300" />
+              <p className="text-sm font-medium">No activity records found matching filters</p>
+            </div>
+          ) : (
+            <>
+              <Table>
+                <TableHeader className="bg-gray-50/50 border-y">
+                  <TableRow className="hover:bg-transparent">
+                    <TableHead className="font-bold text-gray-500 uppercase text-[11px] tracking-wider py-4 w-[60px] pl-6">ID</TableHead>
+                    <TableHead className="font-bold text-gray-500 uppercase text-[11px] tracking-wider py-4 min-w-[140px]">TIME</TableHead>
+                    <TableHead className="font-bold text-gray-500 uppercase text-[11px] tracking-wider py-4 min-w-[250px]">USER</TableHead>
+                    <TableHead className="font-bold text-gray-500 uppercase text-[11px] tracking-wider py-4 min-w-[180px]">ACTION</TableHead>
+                    <TableHead className="font-bold text-gray-500 uppercase text-[11px] tracking-wider py-4 min-w-[140px]">DETAILS</TableHead>
+                    <TableHead className="font-bold text-gray-500 uppercase text-[11px] tracking-wider py-4 min-w-[130px]">IP ADDRESS</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {activities.map((record, index) => {
+                    const actionInfo = getActionDetails(record.action)
+                    const dateObj = new Date(record.created_at)
+                    
+                    return (
+                      <TableRow key={record.id} className="hover:bg-gray-50 border-b last:border-0">
+                        <TableCell className="font-medium text-gray-500 text-[13px] py-4 pl-6">
+                          #{record.id.substring(0, 5)}...
+                        </TableCell>
+                        <TableCell className="py-4">
+                          <div className="font-bold text-gray-800 text-[12px]">
+                            {dateObj.toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' })}
+                          </div>
+                          <div className="text-[11px] text-gray-500 my-0.5">
+                            {dateObj.toLocaleTimeString()}
+                          </div>
+                        </TableCell>
+                        <TableCell className="py-4">
+                          <div className="font-bold text-[#5A8DEE] text-[13px] hover:underline cursor-pointer">
+                            {record.user?.email || "Unknown User"}
+                          </div>
+                          <div className="text-[12px] text-gray-500 mt-1">ID: {record.user?.id || "-"}</div>
+                        </TableCell>
+                        <TableCell className="py-4">
+                          <Badge className={`${actionInfo.color} text-white border-0 px-3 py-1 rounded-full font-bold text-[10px] tracking-wide uppercase flex items-center w-fit gap-1.5`}>
+                            <actionInfo.icon className="w-3.5 h-3.5" />
+                            {record.action}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="py-4">
+                          <div className="text-[11px] text-gray-600 max-w-[200px] truncate" title={record.details ? JSON.stringify(record.details) : "No specific details"}>
+                            {record.details ? (
+                              <span className="font-mono bg-gray-100 px-1 rounded">JSON</span>
+                            ) : (
+                              "-"
+                            )}
+                          </div>
+                        </TableCell>
+                        <TableCell className="py-4">
+                          <Badge className="bg-gray-100 text-gray-700 hover:bg-gray-200 border-0 px-2 py-1 rounded-[4px] font-bold text-[11px]">
+                            {record.ip_address || "Unknown IP"}
+                          </Badge>
+                        </TableCell>
+                      </TableRow>
+                    )
+                  })}
+                </TableBody>
+              </Table>
+              
+              <div className="p-4 border-t">
+                <Pagination
+                  currentPage={meta.page}
+                  totalPages={meta.pages}
+                  onPageChange={setPage}
+                />
+              </div>
+            </>
+          )}
         </div>
         
       </Card>
     </div>
   )
 }
+

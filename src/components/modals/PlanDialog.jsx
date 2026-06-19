@@ -4,6 +4,7 @@ import { useEffect, useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import { toast } from "sonner";
 import {
   Dialog,
   DialogContent,
@@ -26,16 +27,18 @@ import { Label } from "@/components/ui/label";
 import { Loader2, Camera } from "lucide-react";
 import { usePost, usePut } from "@/hooks/useApi";
 import { useQueryClient } from "@tanstack/react-query";
+import { Switch } from "@/components/ui/switch";
 
 // ✅ Schema matching the image
 const planSchema = z.object({
   title: z.string().min(3, "Plan name is required"),
-  description: z.string().optional(),
+  description: z.string().min(3, "Description is required"),
   duration: z.coerce.number().min(1, "Duration must be at least 1 day"),
   dailyReturn: z.coerce.number().min(0.01, "Daily return is required"),
   minInvestment: z.coerce.number().min(1, "Min investment is required"),
   maxInvestment: z.coerce.number().min(1, "Max investment is required"),
   returnCapital: z.enum(["yes", "no"]),
+  isFixedDeposit: z.enum(["yes", "no"]),
   status: z.enum(["active", "inactive"]),
 });
 
@@ -106,6 +109,11 @@ export default function PlanDialog({ open, setOpen, initialData }) {
   const isSubmitting = createMutation.isPending || editMutation.isPending;
 
   const onSubmit = async (data) => {
+    if (!imagePreview) {
+      toast.error("Please upload an image for the package");
+      return;
+    }
+
     if (data.maxInvestment < data.minInvestment) {
       setError("maxInvestment", {
         type: "manual",
@@ -167,12 +175,13 @@ export default function PlanDialog({ open, setOpen, initialData }) {
               {errors.title && <p className="text-red-500 text-sm mt-1">{errors.title.message}</p>}
             </div>
             <div>
-              <Label className="text-gray-600 text-sm mb-1.5 block">Description (Optional)</Label>
+              <Label className="text-gray-600 text-sm mb-1.5 block">Description</Label>
               <Input
                 {...register("description")}
                 placeholder="Short description"
                 className="border-gray-200 rounded-sm h-10"
               />
+              {errors.description && <p className="text-red-500 text-sm mt-1">{errors.description.message}</p>}
             </div>
           </div>
 
@@ -189,6 +198,7 @@ export default function PlanDialog({ open, setOpen, initialData }) {
                   className="border-green-400 focus-visible:ring-green-400 rounded-sm h-10"
                 />
                 <p className="text-[11px] text-green-500 mt-1.5">● Investment period in days</p>
+                {errors.duration && <p className="text-red-500 text-sm mt-1">{errors.duration.message}</p>}
               </div>
               <div>
                 <Label className="text-gray-600 text-sm mb-1.5 block">Daily Return (%)</Label>
@@ -200,6 +210,7 @@ export default function PlanDialog({ open, setOpen, initialData }) {
                   className="border-green-400 focus-visible:ring-green-400 rounded-sm h-10"
                 />
                 <p className="text-[11px] text-green-500 mt-1.5">● Daily percentage return on investment</p>
+                {errors.dailyReturn && <p className="text-red-500 text-sm mt-1">{errors.dailyReturn.message}</p>}
               </div>
               <div>
                 <Label className="text-gray-600 text-sm mb-1.5 block">Total Yield (%)</Label>
@@ -226,6 +237,7 @@ export default function PlanDialog({ open, setOpen, initialData }) {
                   className="border-green-400 focus-visible:ring-green-400 rounded-sm h-10"
                 />
                 <p className="text-[11px] text-green-500 mt-1.5">● Minimum amount user can invest</p>
+                {errors.minInvestment && <p className="text-red-500 text-sm mt-1">{errors.minInvestment.message}</p>}
               </div>
               <div>
                 <Label className="text-gray-600 text-sm mb-1.5 block">Maximum Investment</Label>
@@ -298,46 +310,38 @@ export default function PlanDialog({ open, setOpen, initialData }) {
           <div className="bg-white p-6 rounded-lg border shadow-sm space-y-4">
             <h3 className="text-lg font-medium text-blue-500">Capital, Deposit Type & Status</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div>
-                <Label className="text-gray-600 text-sm mb-1.5 block">Return Capital?</Label>
-                <Select value={returnCapital} onValueChange={(val) => setValue("returnCapital", val)}>
-                  <SelectTrigger className="border-green-400 focus:ring-green-400">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="yes">Yes - Return invested capital</SelectItem>
-                    <SelectItem value="no">No - Do not return capital</SelectItem>
-                  </SelectContent>
-                </Select>
-                <p className="text-[11px] text-gray-500 mt-1.5">● Yes: Initial capital returned after plan ends</p>
+              <div className="flex items-center justify-between gap-6">
+                <div>
+                  <Label className="text-gray-600 text-sm mb-1.5 block">Return Capital?</Label>
+                  <p className="text-[11px] text-gray-500">● Yes: Initial capital returned after plan ends</p>
+                </div>
+                <Switch
+                  checked={returnCapital === "yes"}
+                  onCheckedChange={(val) => setValue("returnCapital", val ? "yes" : "no")}
+                  className="data-[state=checked]:bg-blue-600"
+                />
               </div>
-              <div>
-                <Label className="text-gray-600 text-sm mb-1.5 block">Is Fixed Deposit?</Label>
-                <Select
-                  value={watch("isFixedDeposit") || "no"}
-                  onValueChange={(val) => setValue("isFixedDeposit", val)}
-                >
-                  <SelectTrigger className="border-green-400 focus:ring-green-400 bg-white rounded-sm h-10">
-                    <SelectValue placeholder="Select type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="yes">Yes (Locked)</SelectItem>
-                    <SelectItem value="no">No (Flexible)</SelectItem>
-                  </SelectContent>
-                </Select>
-                <p className="text-[11px] text-gray-500 mt-1.5">● Yes: Earnings locked until plan expires</p>
+              <div className="flex items-center justify-between gap-6">
+                <div>
+                  <Label className="text-gray-600 text-sm mb-1.5 block">Is Fixed Deposit?</Label>
+                  <p className="text-[11px] text-gray-500">● Yes: Earnings locked until plan expires</p>
+                </div>
+                <Switch
+                  checked={watch("isFixedDeposit") === "yes"}
+                  onCheckedChange={(val) => setValue("isFixedDeposit", val ? "yes" : "no")}
+                  className="data-[state=checked]:bg-blue-600"
+                />
               </div>
-              <div>
-                <Label className="text-gray-600 text-sm mb-1.5 block">Plan Status</Label>
-                <Select value={status} onValueChange={(val) => setValue("status", val)}>
-                  <SelectTrigger className="border-green-400 focus:ring-green-400">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="active">Active</SelectItem>
-                    <SelectItem value="inactive">Inactive</SelectItem>
-                  </SelectContent>
-                </Select>
+              <div className="flex items-center justify-between gap-6">
+                <div>
+                  <Label className="text-gray-600 text-sm mb-1.5 block">Plan Status</Label>
+                  <p className="text-[11px] text-gray-500">● Active plans will be visible to users</p>
+                </div>
+                <Switch
+                  checked={status === "active"}
+                  onCheckedChange={(val) => setValue("status", val ? "active" : "inactive")}
+                  className="data-[state=checked]:bg-blue-600"
+                />
               </div>
             </div>
           </div>

@@ -6,20 +6,26 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-
-const usesData = [
-  // Empty data to reflect the "No data available in table" state shown in the screenshot
-]
+import { useFetchData } from "@/hooks/useApi"
+import { format } from "date-fns"
 
 export default function BonusUsesListPage() {
   const [searchTerm, setSearchTerm] = useState("")
   const [statusFilter, setStatusFilter] = useState("all")
 
+  const { data: claimsData, isLoading } = useFetchData("/admin/rewards/gift-code-claims", ["admin-gift-claims"])
+
+  const usesData = Array.isArray(claimsData) ? claimsData : []
+
   const filteredData = usesData.filter((item) => {
     const matchesSearch = 
-      item.customerInfo?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.bonusInfo?.code?.toLowerCase().includes(searchTerm.toLowerCase())
-    const matchesStatus = statusFilter === "all" || item.status.toLowerCase() === statusFilter
+      (item.user?.full_name || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (item.gift_code?.code || "").toLowerCase().includes(searchTerm.toLowerCase())
+    
+    // For now we'll assume a successful claim as status "successful"
+    const itemStatus = "successful"
+    const matchesStatus = statusFilter === "all" || itemStatus === statusFilter
+    
     return matchesSearch && matchesStatus
   })
 
@@ -77,34 +83,38 @@ export default function BonusUsesListPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredData.length > 0 ? (
-                  filteredData.map((item) => (
+                {isLoading ? (
+                  <TableRow>
+                    <TableCell colSpan={5} className="text-center py-10 text-gray-500 bg-gray-50/30">
+                      Loading...
+                    </TableCell>
+                  </TableRow>
+                ) : filteredData.length > 0 ? (
+                  filteredData.map((item, index) => (
                     <TableRow key={item.id} className="hover:bg-gray-50 border-b last:border-0">
                       <TableCell className="font-medium text-gray-700 text-[13px] py-4 pl-6">
-                        {item.sn}
+                        {index + 1}
                       </TableCell>
                       <TableCell className="py-4">
-                        <span className="font-medium text-gray-700 text-[13px]">{item.date}</span>
+                        <span className="font-medium text-gray-700 text-[13px]">
+                          {item.claimed_at ? format(new Date(item.claimed_at), "MMM dd, yyyy HH:mm") : "N/A"}
+                        </span>
                       </TableCell>
                       <TableCell className="py-4">
                         <div className="flex flex-col">
-                          <span className="font-medium text-[#5A8DEE] text-[13px]">{item.customerInfo.name}</span>
-                          <span className="text-gray-500 text-[12px]">{item.customerInfo.email}</span>
+                          <span className="font-medium text-[#5A8DEE] text-[13px]">{item.user?.full_name || "Unknown"}</span>
+                          <span className="text-gray-500 text-[12px]">{item.user?.email}</span>
                         </div>
                       </TableCell>
                       <TableCell className="py-4">
                         <div className="flex flex-col">
-                          <span className="font-medium text-gray-700 text-[13px]">{item.bonusInfo.code}</span>
-                          <span className="text-gray-500 text-[12px]">${item.bonusInfo.amount.toFixed(2)}</span>
+                          <span className="font-medium text-gray-700 text-[13px]">{item.gift_code?.code || "N/A"}</span>
+                          <span className="text-gray-500 text-[12px]">${Number(item.reward_amount || 0).toFixed(2)}</span>
                         </div>
                       </TableCell>
                       <TableCell className="py-4 pr-6">
-                        <span className={`text-[12px] px-2.5 py-1 rounded-md font-medium ${
-                          item.status.toLowerCase() === 'successful' 
-                            ? 'bg-[#39DA8A]/10 text-[#39DA8A]' 
-                            : 'bg-[#ff5b5c]/10 text-[#ff5b5c]'
-                        }`}>
-                          {item.status}
+                        <span className="text-[12px] px-2.5 py-1 rounded-md font-medium bg-[#39DA8A]/10 text-[#39DA8A]">
+                          Successful
                         </span>
                       </TableCell>
                     </TableRow>

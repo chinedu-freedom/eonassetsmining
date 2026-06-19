@@ -45,8 +45,13 @@ export default function PlansManagementPage() {
 
   const executeDelete = async () => {
     if (confirmDialog.planId) {
-      await deleteMutation.mutateAsync(confirmDialog.planId);
-      setConfirmDialog({ isOpen: false, planId: null });
+      try {
+        await deleteMutation.mutateAsync(confirmDialog.planId);
+      } catch (error) {
+        console.error("Failed to delete plan", error);
+      } finally {
+        setConfirmDialog({ isOpen: false, planId: null });
+      }
     }
   };
 

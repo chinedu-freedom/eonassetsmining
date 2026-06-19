@@ -106,7 +106,7 @@ export const usePut = (endpoint, queryKey) => {
     mutationFn: async (data) => {
       const res = await updateData(endpoint, data);
 
-      if (!res?.success) throw new Error(res.message || "Update failed");
+      if (res?.success === false) throw new Error(res.message || "Update failed");
 
       return res;
     },
@@ -194,7 +194,7 @@ export const useDelete = (endpoint, queryKey) => {
 
       const res = await deleteData(url);
 
-      if (!res?.success) {
+      if (res?.success === false) {
         throw new Error(res.message || "Delete failed");
       }
 
