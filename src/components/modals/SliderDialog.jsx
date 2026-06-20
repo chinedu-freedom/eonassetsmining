@@ -82,7 +82,7 @@ export default function SliderDialog({ open, setOpen, initialData, onSuccess }) 
 
   const onSubmit = async (data) => {
     if (!imagePreview) {
-      toast.error("Please upload an image for the slider");
+      /* toast.error("Please upload an image for the slider") (removed per user) */;
       return;
     }
 

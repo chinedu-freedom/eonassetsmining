@@ -53,13 +53,13 @@ export default function DepositsPage() {
       
       const data = await res.json();
       if (res.ok) {
-        toast.success(`Deposit ${type.toLowerCase()} successfully`);
+        /* toast.success(`Deposit ${type.toLowerCase() (removed per user) */} successfully`);
         mutate();
       } else {
-        toast.error(data.error || `Failed to ${type.toLowerCase()} deposit`);
+        /* toast.error(data.error || `Failed to ${type.toLowerCase() (removed per user) */} deposit`);
       }
     } catch (error) {
-      toast.error("Network error processing request");
+      /* toast.error("Network error processing request") (removed per user) */;
     } finally {
       setIsProcessing(false);
       setConfirmModal({ show: false, type: "", depositId: null });

@@ -79,7 +79,7 @@ export default function PartnerDialog({ open, setOpen, initialData }) {
 
   const onSubmit = async (data) => {
     if (!imagePreview) {
-      toast.error("Please upload a logo for the partner");
+      /* toast.error("Please upload a logo for the partner") (removed per user) */;
       return;
     }
 

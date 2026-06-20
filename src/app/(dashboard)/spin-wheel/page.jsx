@@ -195,24 +195,24 @@ export default function SpinWheelPage() {
       <Card className="border-none shadow-sm bg-card">
         <CardContent className="p-0">
           <div className="overflow-x-auto">
-            <Table className="min-w-[1000px] whitespace-nowrap">
-              <TableHeader className="bg-gray-50/50 min-w-[1000px] whitespace-nowrap">
-                <TableRow className="min-w-[1000px] whitespace-nowrap">
-                  <TableHead className="w-[80px] font-bold text-gray-500 uppercase text-xs min-w-[1000px] whitespace-nowrap">POS</TableHead>
-                  <TableHead className="font-bold text-gray-500 uppercase text-xs w-[80px] min-w-[1000px] whitespace-nowrap">COLOR</TableHead>
-                  <TableHead className="font-bold text-gray-500 uppercase text-xs min-w-[1000px] whitespace-nowrap">NAME</TableHead>
-                  <TableHead className="font-bold text-gray-500 uppercase text-xs min-w-[1000px] whitespace-nowrap">VALUE</TableHead>
-                  <TableHead className="font-bold text-gray-500 uppercase text-xs min-w-[1000px] whitespace-nowrap">WEIGHT</TableHead>
-                  <TableHead className="font-bold text-gray-500 uppercase text-xs min-w-[1000px] whitespace-nowrap">PROBABILITY</TableHead>
-                  <TableHead className="font-bold text-gray-500 uppercase text-xs text-center min-w-[1000px] whitespace-nowrap">JACKPOT</TableHead>
-                  <TableHead className="font-bold text-gray-500 uppercase text-xs min-w-[1000px] whitespace-nowrap">STATUS</TableHead>
-                  <TableHead className="font-bold text-gray-500 uppercase text-xs text-right pr-6 min-w-[1000px] whitespace-nowrap">ACTIONS</TableHead>
+            <Table className="min-w-[1000px]">
+              <TableHeader className="bg-gray-50/50">
+                <TableRow>
+                  <TableHead className="w-[80px] font-bold text-gray-500 uppercase text-xs whitespace-nowrap">POS</TableHead>
+                  <TableHead className="w-[80px] font-bold text-gray-500 uppercase text-xs whitespace-nowrap">COLOR</TableHead>
+                  <TableHead className="font-bold text-gray-500 uppercase text-xs whitespace-nowrap">NAME</TableHead>
+                  <TableHead className="font-bold text-gray-500 uppercase text-xs whitespace-nowrap">VALUE</TableHead>
+                  <TableHead className="font-bold text-gray-500 uppercase text-xs whitespace-nowrap">WEIGHT</TableHead>
+                  <TableHead className="font-bold text-gray-500 uppercase text-xs whitespace-nowrap">PROBABILITY</TableHead>
+                  <TableHead className="font-bold text-gray-500 uppercase text-xs text-center whitespace-nowrap">JACKPOT</TableHead>
+                  <TableHead className="font-bold text-gray-500 uppercase text-xs whitespace-nowrap">STATUS</TableHead>
+                  <TableHead className="font-bold text-gray-500 uppercase text-xs text-right pr-6 whitespace-nowrap">ACTIONS</TableHead>
                 </TableRow>
               </TableHeader>
-              <TableBody className="min-w-[1000px] whitespace-nowrap">
+              <TableBody>
                 {loadingPrizes ? (
-                  <TableRow className="min-w-[1000px] whitespace-nowrap">
-                    <TableCell colSpan={9} className="text-center py-10 text-gray-500 min-w-[1000px] whitespace-nowrap">
+                  <TableRow>
+                    <TableCell colSpan={9} className="text-center py-10 text-gray-500">
                       Loading prizes...
                     </TableCell>
                   </TableRow>
@@ -222,16 +222,16 @@ export default function SpinWheelPage() {
                     const calcProb = totalWeight > 0 ? ((prize.weight / totalWeight) * 100).toFixed(2) : 0
                     
                     return (
-                      <TableRow key={prize.id} className="hover:bg-gray-50/50 min-w-[1000px] whitespace-nowrap">
-                        <TableCell className="font-medium text-gray-700 min-w-[1000px] whitespace-nowrap">{prize.position}</TableCell>
-                        <TableCell className="min-w-[1000px] whitespace-nowrap">
+                      <TableRow key={prize.id} className="hover:bg-gray-50/50">
+                        <TableCell className="font-medium text-gray-700">{prize.position}</TableCell>
+                        <TableCell>
                           <div 
                             className="w-6 h-6 rounded-sm shadow-sm border border-gray-200" 
                             style={{ backgroundColor: prize.color }}
                             title={prize.color}
                           />
                         </TableCell>
-                        <TableCell className="min-w-[1000px] whitespace-nowrap">
+                        <TableCell>
                           <div className="flex items-center space-x-2">
                             {prize.icon && <Icon icon={prize.icon} className="w-5 h-5 text-gray-500" />}
                             <div className="flex flex-col">
@@ -240,7 +240,7 @@ export default function SpinWheelPage() {
                             </div>
                           </div>
                         </TableCell>
-                        <TableCell className="min-w-[1000px] whitespace-nowrap">
+                        <TableCell>
                           <Badge 
                             className={Number(prize.value) > 0 ? "bg-blue-600 text-white hover:bg-blue-700 border-0" : "bg-[#475f7b] text-white hover:bg-[#34465b] border-0"} 
                             variant="outline"
@@ -248,13 +248,13 @@ export default function SpinWheelPage() {
                             ${Number(prize.value).toFixed(2)}
                           </Badge>
                         </TableCell>
-                        <TableCell className="text-gray-700 font-medium min-w-[1000px] whitespace-nowrap">{prize.weight}</TableCell>
-                        <TableCell className="min-w-[1000px] whitespace-nowrap">
+                        <TableCell className="text-gray-700 font-medium">{prize.weight}</TableCell>
+                        <TableCell>
                           <Badge className="bg-gray-200 text-gray-600 hover:bg-gray-300 border-0" variant="secondary">
                             {calcProb}%
                           </Badge>
                         </TableCell>
-                        <TableCell className="text-center min-w-[1000px] whitespace-nowrap">
+                        <TableCell className="text-center">
                           {prize.is_jackpot ? (
                             <Badge className="bg-[#f59e0b] hover:bg-[#d97706] text-white border-0 px-3 py-0.5">
                               ★ JACKPOT
@@ -263,12 +263,12 @@ export default function SpinWheelPage() {
                             <span className="text-gray-400">-</span>
                           )}
                         </TableCell>
-                        <TableCell className="min-w-[1000px] whitespace-nowrap">
+                        <TableCell>
                           <Badge className={prize.status ? "bg-blue-600 hover:bg-blue-700 text-white border-0 text-[10px] tracking-wider uppercase px-2 py-0.5" : "bg-gray-400 hover:bg-gray-500 text-white border-0 text-[10px] tracking-wider uppercase px-2 py-0.5"}>
                             {prize.status ? "ACTIVE" : "INACTIVE"}
                           </Badge>
                         </TableCell>
-                        <TableCell className="text-right pr-6 min-w-[1000px] whitespace-nowrap">
+                        <TableCell className="text-right pr-6">
                           <div className="flex items-center justify-end space-x-1.5">
                             <Button 
                               variant="default" 
@@ -294,8 +294,8 @@ export default function SpinWheelPage() {
                     )
                   })
                 ) : (
-                  <TableRow className="min-w-[1000px] whitespace-nowrap">
-                    <TableCell colSpan={9} className="text-center py-10 text-gray-500 min-w-[1000px] whitespace-nowrap">
+                  <TableRow>
+                    <TableCell colSpan={9} className="text-center py-10 text-gray-500">
                       No prizes found
                     </TableCell>
                   </TableRow>

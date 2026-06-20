@@ -33,13 +33,13 @@ export default function LoginPage() {
         CookieManager.set("satrixnow-admin-token", data.token);
         localStorage.setItem("adminToken", data.token);
         localStorage.setItem("adminUser", JSON.stringify(data.admin));
-        toast.success("Login successful!");
+        /* toast.success("Login successful!") (removed per user) */;
         router.push("/dashboard"); // Redirects to the dashboard root
       } else {
-        toast.error(data.error || "Invalid email or password");
+        /* toast.error(data.error || "Invalid email or password") (removed per user) */;
       }
     } catch (err) {
-      toast.error("Failed to connect to the backend server.");
+      /* toast.error("Failed to connect to the backend server.") (removed per user) */;
     } finally {
       setIsLoading(false);
     }

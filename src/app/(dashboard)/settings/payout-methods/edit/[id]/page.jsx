@@ -1,17 +1,17 @@
 "use client"
 
+import { useEffect, useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useForm, Controller } from "react-hook-form"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Info, Save, ArrowLeft, Loader2 } from "lucide-react"
+import { Save, ArrowLeft, Loader2 } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
-import { usePost } from "@/hooks/useApi"
-import { toast } from "sonner"
+import { useFetchData, usePut } from "@/hooks/useApi"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 const schema = z.object({
@@ -21,17 +21,19 @@ const schema = z.object({
   max_amount: z.coerce.number().min(0, "Maximum amount must be positive"),
   charges: z.coerce.number().min(0, "Charges must be positive"),
   status: z.boolean().default(true),
-  instructions: z.string().optional()
+  instructions: z.string().optional().nullable()
 }).refine(data => data.max_amount > data.min_amount, {
   message: "Max amount must be greater than min amount",
   path: ["max_amount"]
 })
 
-export default function AddPayoutMethodPage() {
+export default function EditPayoutMethodPage({ params }) {
   const router = useRouter()
-  const createMethodMutation = usePost("/admin/settings/payment-methods", "/admin/settings/payment-methods")
+  const id = params.id
+  const { data: method, isLoading: isFetching } = useFetchData(id ? `/admin/settings/payment-methods/${id}` : null)
+  const updateMethodMutation = usePut(`/admin/settings/payment-methods/${id}`, "/admin/settings/payment-methods")
 
-  const { register, handleSubmit, control, formState: { errors } } = useForm({
+  const { register, handleSubmit, control, reset, formState: { errors } } = useForm({
     resolver: zodResolver(schema),
     defaultValues: {
       name: "",
@@ -44,20 +46,42 @@ export default function AddPayoutMethodPage() {
     }
   })
 
+  useEffect(() => {
+    if (method) {
+      reset({
+        name: method.name,
+        type: method.type,
+        min_amount: method.min_amount,
+        max_amount: method.max_amount,
+        charges: method.charges,
+        status: String(method.status) === 'true',
+        instructions: method.instructions || ""
+      })
+    }
+  }, [method, reset])
+
   const onSubmit = async (data) => {
     try {
-      await createMethodMutation.mutateAsync(data)
+      await updateMethodMutation.mutateAsync(data)
       router.push("/settings/payout-methods")
     } catch (error) {
-      // Error handled by usePost
+      // Error handled by usePut
     }
+  }
+
+  if (isFetching) {
+    return (
+      <div className="flex justify-center items-center py-20">
+        <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
+      </div>
+    )
   }
 
   return (
     <div className="space-y-6 pb-10">
       <Card className="border-none shadow-sm bg-white rounded-md">
         <CardContent className="p-8">
-          <h2 className="text-[1.2rem] font-medium text-[#475f7b] mb-8">Create New Payout Method</h2>
+          <h2 className="text-[1.2rem] font-medium text-[#475f7b] mb-8">Edit Payout Method</h2>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -161,9 +185,9 @@ export default function AddPayoutMethodPage() {
 
             {/* Actions */}
             <div className="flex items-center gap-2 pt-8 pb-4">
-              <Button disabled={createMethodMutation.isPending} type="submit" className="bg-blue-600 hover:bg-blue-700 text-white px-6 h-10 font-medium rounded-sm-sm shadow-sm border-0 flex items-center gap-2">
-                {createMethodMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-                Create Payout Method
+              <Button disabled={updateMethodMutation.isPending} type="submit" className="bg-blue-600 hover:bg-blue-700 text-white px-6 h-10 font-medium rounded-sm-sm shadow-sm border-0 flex items-center gap-2">
+                {updateMethodMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                Update Payout Method
               </Button>
               <Link href="/settings/payout-methods">
                 <Button type="button" className="bg-[#475f7b] hover:bg-[#394c63] text-white px-6 h-10 font-medium rounded-sm-sm shadow-sm border-0 flex items-center gap-2">

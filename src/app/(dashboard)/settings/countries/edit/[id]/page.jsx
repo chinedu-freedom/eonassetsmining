@@ -1,23 +1,26 @@
 "use client"
 
 import Link from "next/link"
-import { ChevronLeft, Plus } from "lucide-react"
+import { ChevronLeft, Save, Loader2 } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Checkbox } from "@/components/ui/checkbox"
 import { useForm, Controller } from "react-hook-form"
-import { usePost } from "@/hooks/useApi"
+import { useFetchData, usePut } from "@/hooks/useApi"
 import { toast } from "sonner"
-import { useRouter } from "next/navigation"
-import { Loader2 } from "lucide-react"
+import { useRouter, useParams } from "next/navigation"
+import { useEffect } from "react"
 
-export default function AddCountryPage() {
+export default function EditCountryPage() {
   const router = useRouter()
-  const createCountryMutation = usePost("/admin/countries")
+  const { id } = useParams()
   
-  const { register, handleSubmit, control, formState: { errors } } = useForm({
+  const { data: countryData, isLoading: isLoadingData } = useFetchData(`/admin/countries/${id}`)
+  const updateCountryMutation = usePut(`/admin/countries/${id}`)
+  
+  const { register, handleSubmit, control, reset, formState: { errors } } = useForm({
     defaultValues: {
       country_code: "",
       country_name: "",
@@ -29,15 +32,38 @@ export default function AddCountryPage() {
     }
   })
 
+  useEffect(() => {
+    if (countryData) {
+      reset({
+        country_code: countryData.country_code,
+        country_name: countryData.country_name,
+        currency_symbol: countryData.currency_symbol,
+        currency_code: countryData.currency_code,
+        exchange_rate: Number(countryData.exchange_rate),
+        status: countryData.status ? "active" : "inactive",
+        auto_update: countryData.auto_update
+      })
+    }
+  }, [countryData, reset])
+
   const onSubmit = async (data) => {
     try {
-      await createCountryMutation.mutateAsync(data)
-      /* toast.success("Country added successfully") (removed per user) */
+      await updateCountryMutation.mutateAsync(data)
+      /* toast.success("Country updated successfully") (removed per user) */
       router.push("/settings/countries")
     } catch (error) {
       // Handled by useApi
     }
   }
+
+  if (isLoadingData) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+      </div>
+    )
+  }
+
   return (
     <div className="space-y-6 pb-10">
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -46,11 +72,11 @@ export default function AddCountryPage() {
           
           {/* Header Section */}
           <div className="p-6 border-b border-gray-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-            <h2 className="text-[1.2rem] font-medium text-[#475f7b]">Add New Country</h2>
+            <h2 className="text-[1.2rem] font-medium text-[#475f7b]">Edit Country</h2>
             <Link href="/settings/countries">
-              <Button className="bg-[#5A8DEE] hover:bg-[#4778d9] text-white px-4 h-9 text-[13px] font-medium rounded-sm-[4px] shadow-sm border-0 flex items-center gap-1.5">
+              <Button type="button" className="bg-[#5A8DEE] hover:bg-[#4778d9] text-white px-4 h-9 text-[13px] font-medium rounded-sm-[4px] shadow-sm border-0 flex items-center gap-1.5">
                 <ChevronLeft className="w-4 h-4" />
-                , it 
+                Back
               </Button>
             </Link>
           </div>
@@ -135,9 +161,9 @@ export default function AddCountryPage() {
 
             {/* Submit Button */}
             <div className="pt-6">
-              <Button disabled={createCountryMutation.isPending} type="submit" className="bg-blue-600 hover:bg-blue-700 text-white px-5 h-10 font-medium rounded-sm-[4px] shadow-sm border-0 flex items-center gap-2">
-                {createCountryMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
-                Add Country
+              <Button disabled={updateCountryMutation.isPending} type="submit" className="bg-blue-600 hover:bg-blue-700 text-white px-5 h-10 font-medium rounded-sm-[4px] shadow-sm border-0 flex items-center gap-2">
+                {updateCountryMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                Update Country
               </Button>
             </div>
 

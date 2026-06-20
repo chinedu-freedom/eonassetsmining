@@ -1,11 +1,13 @@
 "use client"
 
-import { Info, User, Users, Check, Plus } from "lucide-react"
+import { useEffect, useState } from "react"
+import { Info, User, Users, Check, Plus, Loader2, Save } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
+import { useFetchData, usePut } from "@/hooks/useApi"
 
-const ValidatedInput = ({ label, value, subText, icon: Icon, iconColor }) => (
+const ValidatedInput = ({ label, value, onChange, subText, icon: Icon, iconColor }) => (
   <div className="flex flex-col space-y-1">
     <label className="text-[12px] font-bold text-[#475f7b] flex items-center gap-1.5 mb-1">
       {Icon && <Icon className={`w-4 h-4 ${iconColor}`} />}
@@ -13,7 +15,9 @@ const ValidatedInput = ({ label, value, subText, icon: Icon, iconColor }) => (
     </label>
     <div className="relative">
       <Input 
-        defaultValue={value}
+        type="number"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
         className="border-blue-500 focus-visible:ring-0 focus-visible:border-blue-500 h-10 pr-10 text-gray-700 text-[13px]"
       />
       <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center space-x-1">
@@ -27,6 +31,41 @@ const ValidatedInput = ({ label, value, subText, icon: Icon, iconColor }) => (
 )
 
 export default function CommissionSettingsPage() {
+  const { data: settings, isLoading } = useFetchData("/admin/settings/platform", "platformSettings")
+  const updateSettingsMutation = usePut("/admin/settings/platform", "platformSettings")
+
+  const [formData, setFormData] = useState({
+    level1_commission: "0",
+    level2_commission: "0",
+    level3_commission: "0",
+  })
+
+  useEffect(() => {
+    if (settings) {
+      setFormData({
+        level1_commission: settings.level1_commission || "0",
+        level2_commission: settings.level2_commission || "0",
+        level3_commission: settings.level3_commission || "0",
+      })
+    }
+  }, [settings])
+
+  const handleUpdate = () => {
+    updateSettingsMutation.mutate({
+      level1_commission: parseFloat(formData.level1_commission),
+      level2_commission: parseFloat(formData.level2_commission),
+      level3_commission: parseFloat(formData.level3_commission),
+    })
+  }
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+      </div>
+    )
+  }
+
   return (
     <div className="space-y-6 pb-10">
       {/* Update Commission Card */}
@@ -45,21 +84,24 @@ export default function CommissionSettingsPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <ValidatedInput 
               label="Level 1 Commission (%)" 
-              value="10" 
+              value={formData.level1_commission} 
+              onChange={(val) => setFormData(f => ({ ...f, level1_commission: val }))}
               subText="Direct referrals" 
               icon={User}
               iconColor="text-[#5A8DEE]"
             />
             <ValidatedInput 
               label="Level 2 Commission (%)" 
-              value="2" 
+              value={formData.level2_commission} 
+              onChange={(val) => setFormData(f => ({ ...f, level2_commission: val }))}
               subText="Referrals of referrals" 
               icon={Users}
               iconColor="text-blue-600"
             />
             <ValidatedInput 
               label="Level 3 Commission (%)" 
-              value="1" 
+              value={formData.level3_commission} 
+              onChange={(val) => setFormData(f => ({ ...f, level3_commission: val }))}
               subText="Third level referrals" 
             />
           </div>
@@ -70,8 +112,16 @@ export default function CommissionSettingsPage() {
       <Card className="border-none shadow-sm bg-white rounded-md">
         <CardContent className="p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <h2 className="text-[1.1rem] font-medium text-[#475f7b]">Submit Your Information</h2>
-          <Button className="bg-blue-600 hover:bg-blue-700 text-white px-5 h-10 font-medium rounded-sm-sm shadow-sm border-0 flex items-center gap-2">
-            <Plus className="w-4 h-4" />
+          <Button 
+            onClick={handleUpdate}
+            disabled={updateSettingsMutation.isPending}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-5 h-10 font-medium rounded-sm shadow-sm border-0 flex items-center gap-2"
+          >
+            {updateSettingsMutation.isPending ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              <Save className="w-4 h-4" />
+            )}
             Update
           </Button>
         </CardContent>

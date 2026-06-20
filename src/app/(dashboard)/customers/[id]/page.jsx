@@ -89,13 +89,13 @@ export default function CustomerDetailsPage() {
       
       const data = await res.json()
       if (res.ok) {
-        toast.success("User profile updated successfully")
+        /* toast.success("User profile updated successfully") (removed per user) */
         mutate()
       } else {
-        toast.error(data.error || "Failed to update user")
+        /* toast.error(data.error || "Failed to update user") (removed per user) */
       }
     } catch (error) {
-      toast.error("Failed to connect to server")
+      /* toast.error("Failed to connect to server") (removed per user) */
     } finally {
       setIsSaving(false)
       setShowSaveConfirm(false)
@@ -107,7 +107,7 @@ export default function CustomerDetailsPage() {
     const setProcessing = actionType === 'credit' ? setIsCreditProcessing : setIsDebitProcessing;
     
     if (!dataObj.amount || Number(dataObj.amount) <= 0) {
-      toast.error("Please enter a valid amount")
+      /* toast.error("Please enter a valid amount") (removed per user) */
       return;
     }
     
@@ -129,7 +129,7 @@ export default function CustomerDetailsPage() {
       
       const resData = await res.json()
       if (res.ok) {
-        toast.success(`Successfully ${actionType}ed ${dataObj.balance_type} balance.`)
+        /* toast.success(`Successfully ${actionType}ed ${dataObj.balance_type} balance.`) (removed per user) */
         if (actionType === 'credit') {
           setCreditData({ balance_type: "main", amount: "", reason: "" })
         } else {
@@ -137,10 +137,10 @@ export default function CustomerDetailsPage() {
         }
         mutate()
       } else {
-        toast.error(resData.error || `Failed to process ${actionType}`)
+        /* toast.error(resData.error || `Failed to process ${actionType}`) (removed per user) */
       }
     } catch (error) {
-      toast.error("Failed to connect to server")
+      /* toast.error("Failed to connect to server") (removed per user) */
     } finally {
       setProcessing(false)
     }
@@ -162,14 +162,14 @@ export default function CustomerDetailsPage() {
       })
       
       if (res.ok) {
-        toast.success("User deleted successfully")
+        /* toast.success("User deleted successfully") (removed per user) */
         router.push("/customers")
       } else {
         const data = await res.json()
-        toast.error(data.error || "Failed to delete user")
+        /* toast.error(data.error || "Failed to delete user") (removed per user) */
       }
     } catch (error) {
-      toast.error("Failed to connect to server")
+      /* toast.error("Failed to connect to server") (removed per user) */
     } finally {
       setIsDeleting(false)
       setShowDeleteConfirm(false)
@@ -189,13 +189,13 @@ export default function CustomerDetailsPage() {
       const data = await res.json()
       if (res.ok && data.token) {
         document.cookie = `sec-prd-token=${data.token}; path=/; max-age=7200; SameSite=Lax`
-        toast.success("Impersonating user...")
+        /* toast.success("Impersonating user...") (removed per user) */
         window.open('http://localhost:3002/dashboard', '_blank')
       } else {
-        toast.error(data.error || "Failed to impersonate user")
+        /* toast.error(data.error || "Failed to impersonate user") (removed per user) */
       }
     } catch (error) {
-      toast.error("Failed to connect to server")
+      /* toast.error("Failed to connect to server") (removed per user) */
     } finally {
       setIsImpersonating(false)
     }

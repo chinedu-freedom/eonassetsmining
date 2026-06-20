@@ -62,7 +62,7 @@ export const useFetchData = (endpoint, queryKey, options = {}) => {
 };
 
 /* ================= POST ================= */
-export const usePost = (endpoint, queryKey, isFormData = false) => {
+export const usePost = (endpoint, queryKey, isFormData = false, options = { showToast: true }) => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -89,22 +89,43 @@ export const usePost = (endpoint, queryKey, isFormData = false) => {
         });
       }
 
-      toast.success(res?.message || "Request successful");
+      if (options.showToast) toast.success(res?.message || "Request successful");
     },
 
     onError: (error) => {
-      toast.error(getErrorMessage(error));
+      if (options.showToast) toast.error(getErrorMessage(error));
     },
   });
 };
 
 /* ================= PUT ================= */
-export const usePut = (endpoint, queryKey) => {
+export const usePut = (endpoint, queryKey, options = { showToast: true }) => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (data) => {
-      const res = await updateData(endpoint, data);
+    mutationFn: async (payload) => {
+      let url;
+      let dataToSend;
+
+      if (payload?.id && payload?.data) {
+        url =
+          typeof endpoint === "function"
+            ? endpoint(payload.id)
+            : endpoint;
+        dataToSend = payload.data;
+      } else if (payload?.id) {
+        url =
+          typeof endpoint === "function"
+            ? endpoint(payload.id)
+            : endpoint;
+        dataToSend = { ...payload };
+        delete dataToSend.id;
+      } else {
+        url = endpoint;
+        dataToSend = payload;
+      }
+
+      const res = await updateData(url, dataToSend);
 
       if (res?.success === false) throw new Error(res.message || "Update failed");
 
@@ -128,7 +149,7 @@ export const usePut = (endpoint, queryKey) => {
 };
 
 /* ================= PATCH ================= */
-export const usePatch = (endpoint, queryKey, isFormData = false) => {
+export const usePatch = (endpoint, queryKey, isFormData = false, options = { showToast: true }) => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -182,7 +203,7 @@ export const usePatch = (endpoint, queryKey, isFormData = false) => {
 };
 
 /* ================= DELETE ================= */
-export const useDelete = (endpoint, queryKey) => {
+export const useDelete = (endpoint, queryKey, options = { showToast: true }) => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -208,11 +229,11 @@ export const useDelete = (endpoint, queryKey) => {
         });
       }
 
-      toast.success(res?.message || "Deleted successfully");
+      if (options.showToast) toast.success(res?.message || "Deleted successfully");
     },
 
     onError: (error) => {
-      toast.error(getErrorMessage(error));
+      if (options.showToast) toast.error(getErrorMessage(error));
     },
   });
 };

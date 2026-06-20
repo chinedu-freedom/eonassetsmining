@@ -100,7 +100,7 @@ export default function NewsDialog({ open, setOpen, initialData }) {
 
   const onSubmit = async (data) => {
     if (!imagePreview) {
-      toast.error("Please upload an image for the news");
+      /* toast.error("Please upload an image for the news") (removed per user) */;
       return;
     }
 

@@ -1,20 +1,29 @@
 "use client"
 
-import { useState } from "react"
-import { HeadphonesIcon, Settings2, Check, Clock } from "lucide-react"
+import { useState, useEffect } from "react"
+import { HeadphonesIcon, Settings2, Check, Clock, Loader2, Save, Camera } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 import { Switch } from "@/components/ui/switch"
+import { useForm, Controller } from "react-hook-form"
+import { useFetchData, usePut } from "@/hooks/useApi"
+import { toast } from "sonner"
+import dynamic from "next/dynamic"
+import "react-quill/dist/quill.snow.css"
 
-const ValidatedInput = ({ label, value, requiredNote, subText, icon: Icon }) => (
+const ReactQuill = dynamic(() => import("react-quill"), { ssr: false })
+
+const ValidatedInput = ({ label, requiredNote, subText, icon: Icon, register, name, type="text" }) => (
   <div className="flex flex-col space-y-1">
     <label className="text-[13px] font-medium text-[#475f7b]">{label}</label>
     <div className="relative">
       <Input 
-        defaultValue={value}
+        type={type}
+        step={type === 'number' ? 'any' : undefined}
+        {...register(name)}
         className="border-blue-500 focus-visible:ring-0 focus-visible:border-blue-500 h-10 pr-10 text-gray-700"
       />
       <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center space-x-1">
@@ -23,7 +32,7 @@ const ValidatedInput = ({ label, value, requiredNote, subText, icon: Icon }) => 
       </div>
     </div>
     {requiredNote && (
-      <p className="text-[11px] text-blue-600 mt-1">○ Note: This is filed is required</p>
+      <p className="text-[11px] text-blue-600 mt-1">○ Note: This field is required</p>
     )}
     {subText && (
       <p className="text-[11px] text-gray-400 mt-1">{subText}</p>
@@ -31,33 +40,130 @@ const ValidatedInput = ({ label, value, requiredNote, subText, icon: Icon }) => 
   </div>
 )
 
-const RichTextEditor = ({ label, defaultValue }) => (
+const RichTextEditor = ({ label, control, name }) => (
   <div className="flex flex-col space-y-1 h-full">
     <label className="text-[13px] font-medium text-[#475f7b]">{label}</label>
-    <div className="border border-gray-200 rounded-sm flex-1 flex flex-col">
-      <div className="bg-gray-100 border-b border-gray-200 p-2 flex flex-wrap gap-2 items-center text-gray-500 text-sm">
-        <span className="font-bold px-1 cursor-pointer">B</span>
-        <span className="italic px-1 cursor-pointer">I</span>
-        <span className="underline px-1 cursor-pointer">U</span>
-        <span className="line-through px-1 cursor-pointer">S</span>
-        <div className="w-px h-4 bg-gray-300 mx-1"></div>
-        <span className="text-xs px-1 cursor-pointer">Font Size...</span>
-        <span className="text-xs px-1 cursor-pointer">Font Family</span>
-      </div>
-      <Textarea 
-        className="border-0 focus-visible:ring-0 resize-none rounded-none flex-1 min-h-[120px] p-4 text-[13px] text-gray-600 leading-relaxed"
-        defaultValue={defaultValue}
+    <div className="rounded-sm flex-1 flex flex-col bg-white">
+      <Controller
+        name={name}
+        control={control}
+        render={({ field }) => (
+          <ReactQuill 
+            theme="snow"
+            value={field.value || ''} 
+            onChange={field.onChange} 
+            className="h-[150px] pb-10"
+          />
+        )}
       />
     </div>
-    <p className="text-[11px] text-blue-600 mt-1">○ Note: This is filed is optional</p>
+    <p className="text-[11px] text-blue-600 mt-1">○ Note: This field is optional</p>
   </div>
 )
 
 export default function BasicSettingsPage() {
-  const [autoWithdraw, setAutoWithdraw] = useState(false)
+  const [fileName, setFileName] = useState("");
+  const [previewUrl, setPreviewUrl] = useState("");
+  const [logoFile, setLogoFile] = useState(null);
+  const { data: settingsData, isLoading } = useFetchData("/admin/settings/platform", ["admin-platform-settings"])
+  const updateSettingsMutation = usePut("/admin/settings/platform", ["admin-platform-settings"])
+  
+  const { register, handleSubmit, control, reset } = useForm({
+    defaultValues: {
+      site_name: "",
+      site_title: "",
+      currency_name: "",
+      currency_symbol: "",
+      timezone: "UTC",
+      registration_bonus: 0,
+      welcome_bonus_destination: "deposit",
+      telegram_support: "",
+      whatsapp_support: "",
+      telegram_community: "",
+      telegram_group: "",
+      deposit_notice: "",
+      withdrawal_notice: "",
+      auto_withdrawal: false,
+      deposit_bonus: 0,
+      daily_withdrawal_limit: 0,
+      withdrawal_open_time: "",
+      withdrawal_close_time: "",
+      require_investment_to_withdraw: false,
+      min_investment_to_withdraw: 1,
+    }
+  });
+
+  useEffect(() => {
+    if (settingsData) {
+      reset({
+        site_name: settingsData.site_name || "",
+        site_title: settingsData.site_title || "",
+        currency_name: settingsData.currency_name || "",
+        currency_symbol: settingsData.currency_symbol || "",
+        timezone: settingsData.timezone || "UTC",
+        registration_bonus: Number(settingsData.registration_bonus) || 0,
+        welcome_bonus_destination: settingsData.welcome_bonus_destination || "deposit",
+        telegram_support: settingsData.telegram_support || "",
+        whatsapp_support: settingsData.whatsapp_support || "",
+        telegram_community: settingsData.telegram_community || "",
+        telegram_group: settingsData.telegram_group || "",
+        deposit_notice: settingsData.deposit_notice || "",
+        withdrawal_notice: settingsData.withdrawal_notice || "",
+        auto_withdrawal: settingsData.auto_withdrawal ?? false,
+        deposit_bonus: Number(settingsData.deposit_bonus) || 0,
+        daily_withdrawal_limit: Number(settingsData.daily_withdrawal_limit) || 0,
+        withdrawal_open_time: settingsData.withdrawal_open_time || "",
+        withdrawal_close_time: settingsData.withdrawal_close_time || "",
+        require_investment_to_withdraw: settingsData.require_investment_to_withdraw ?? false,
+        min_investment_to_withdraw: settingsData.min_investment_to_withdraw || 1,
+        min_withdrawal: Number(settingsData.min_withdrawal) || 10,
+        max_deposit: Number(settingsData.max_deposit) || 10000,
+        min_deposit: Number(settingsData.min_deposit) || 10
+      })
+    }
+  }, [settingsData, reset])
+
+  const onSubmit = async (formData) => {
+    try {
+      let base64Logo = settingsData?.platform_logo || "";
+      
+      if (logoFile) {
+        const reader = new FileReader();
+        const base64Promise = new Promise((resolve) => {
+          reader.onload = () => resolve(reader.result);
+          reader.readAsDataURL(logoFile);
+        });
+        base64Logo = await base64Promise;
+      }
+
+      const payload = {
+        ...formData,
+        platform_logo: base64Logo,
+        registration_bonus: Number(formData.registration_bonus),
+        deposit_bonus: Number(formData.deposit_bonus),
+        daily_withdrawal_limit: Number(formData.daily_withdrawal_limit),
+        min_investment_to_withdraw: Number(formData.min_investment_to_withdraw)
+      }
+      await updateSettingsMutation.mutateAsync(payload)
+      // /* toast.success("Settings updated successfully") (removed per user) */
+    } catch (error) {
+      // Error handled by useApi
+    }
+  }
+
+  const isSubmitting = updateSettingsMutation.isPending
+
+  if (isLoading) {
+    return (
+      <div className="min-h-[60vh] flex flex-col items-center justify-center space-y-4">
+        <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
+        <p className="text-muted-foreground text-sm">Loading basic settings...</p>
+      </div>
+    )
+  }
 
   return (
-    <div className="space-y-6 pb-10">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 pb-10">
       
       {/* Section 1: Update Settings */}
       <Card className="border-none shadow-sm bg-white rounded-md">
@@ -70,61 +176,93 @@ export default function BasicSettingsPage() {
               <label className="text-[13px] font-medium text-[#475f7b] flex items-center gap-1 mb-1">
                 Platform Logo <span className="text-[11px] font-normal text-gray-400">(For header display)</span>
               </label>
-              <div className="border border-gray-200 rounded-sm flex items-center h-10 w-full overflow-hidden">
-                <button className="bg-gray-100 border-r border-gray-200 px-4 h-full text-sm font-medium text-gray-700 hover:bg-gray-200 transition-colors">
+              <div className="border border-gray-200 rounded-sm flex items-center h-10 w-full overflow-hidden relative">
+                <input 
+                  id="platform-logo-upload"
+                  type="file" 
+                  accept="image/*"
+                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                  onChange={(e) => {
+                    const file = e.target.files[0];
+                    if (file) {
+                      setFileName(file.name);
+                      setPreviewUrl(URL.createObjectURL(file));
+                      setLogoFile(file);
+                    } else {
+                      setFileName("");
+                      setPreviewUrl("");
+                      setLogoFile(null);
+                    }
+                  }}
+                />
+                <button type="button" className="bg-gray-100 border-r border-gray-200 px-4 h-full text-sm font-medium text-gray-700 hover:bg-gray-200 transition-colors pointer-events-none">
                   Choose file
                 </button>
-                <span className="px-4 text-sm text-gray-400">No file chosen</span>
+                <span className="px-4 text-sm text-gray-400 truncate flex-1">{fileName || "No file chosen"}</span>
               </div>
               <p className="text-[11px] text-gray-400 mt-1">Suggested size: 48x48px (Square image)</p>
             </div>
             <div className="flex-1">
-              <div className="w-24 h-24 bg-[#0a3161] rounded-md flex items-center justify-center p-2">
-                <div className="w-full h-full border border-dashed border-blue-300/30 flex items-center justify-center relative">
-                  {/* Mock logo representing the Eon Assets logo in screenshot */}
-                  <div className="text-white flex flex-col items-center">
-                    <div className="text-2xl font-bold">E</div>
-                    <div className="text-[8px] tracking-widest mt-1">ASSETS</div>
-                  </div>
+              <label htmlFor="platform-logo-upload" className="w-24 h-24 bg-gray-50 border border-dashed border-gray-300 rounded-md flex items-center justify-center cursor-pointer hover:bg-gray-100 transition-colors block overflow-hidden">
+                <div className="w-full h-full flex items-center justify-center relative">
+                  {(previewUrl || settingsData?.platform_logo) ? (
+                    <img src={previewUrl || settingsData?.platform_logo} alt="Logo preview" className="w-full h-full object-cover" />
+                  ) : (
+                    <Camera className="w-6 h-6 text-gray-400" />
+                  )}
                 </div>
-              </div>
+              </label>
             </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
-            <ValidatedInput label="Site Name" value="EonAssets" requiredNote={true} />
-            <ValidatedInput label="Site Title" value="Earn crypto on Eon Assets" requiredNote={true} />
+            <ValidatedInput label="Site Name" name="site_name" register={register} requiredNote={true} />
+            <ValidatedInput label="Site Title" name="site_title" register={register} requiredNote={true} />
             
-            <ValidatedInput label="Currency Name" value="USD" requiredNote={true} />
-            <ValidatedInput label="Currency Symbol" value="$" requiredNote={true} />
+            <ValidatedInput label="Currency Name" name="currency_name" register={register} requiredNote={true} />
+            <ValidatedInput label="Currency Symbol" name="currency_symbol" register={register} requiredNote={true} />
             
             <div className="flex flex-col space-y-1">
               <label className="text-[13px] font-medium text-[#475f7b]">Timezone</label>
-              <Select defaultValue="utc">
-                <SelectTrigger className="border-blue-500 focus:ring-0 h-10">
-                  <SelectValue placeholder="Select Timezone" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="utc">UTC</SelectItem>
-                  <SelectItem value="est">EST</SelectItem>
-                </SelectContent>
-              </Select>
-              <p className="text-[11px] text-blue-600 mt-1">○ Note: This is filed is required</p>
+              <Controller
+                name="timezone"
+                control={control}
+                render={({ field }) => (
+                  <Select value={field.value} onValueChange={field.onChange}>
+                    <SelectTrigger className="border-blue-500 focus:ring-0 h-10">
+                      <SelectValue placeholder="Select Timezone" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="UTC">UTC</SelectItem>
+                      <SelectItem value="EST">EST</SelectItem>
+                      <SelectItem value="PST">PST</SelectItem>
+                      <SelectItem value="GMT">GMT</SelectItem>
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+              <p className="text-[11px] text-blue-600 mt-1">○ Note: This field is required</p>
             </div>
 
-            <ValidatedInput label="Registration Bonus" value="5.00" requiredNote={false} />
+            <ValidatedInput label="Registration Bonus" name="registration_bonus" type="number" register={register} requiredNote={false} />
 
             <div className="flex flex-col space-y-1">
               <label className="text-[13px] font-medium text-[#475f7b]">Welcome Bonus Balance Destination</label>
-              <Select defaultValue="gift">
-                <SelectTrigger className="border-blue-500 focus:ring-0 h-10">
-                  <SelectValue placeholder="Select Destination" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="gift">Gift Balance</SelectItem>
-                  <SelectItem value="main">Main Balance</SelectItem>
-                </SelectContent>
-              </Select>
+              <Controller
+                name="welcome_bonus_destination"
+                control={control}
+                render={({ field }) => (
+                  <Select value={field.value} onValueChange={field.onChange}>
+                    <SelectTrigger className="border-blue-500 focus:ring-0 h-10">
+                      <SelectValue placeholder="Select Destination" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="gift">Gift Balance</SelectItem>
+                      <SelectItem value="deposit">Main Balance</SelectItem>
+                    </SelectContent>
+                  </Select>
+                )}
+              />
               <p className="text-[11px] text-gray-400 mt-1">Choose which balance the welcome bonus will be credited to</p>
             </div>
           </div>
@@ -145,46 +283,42 @@ export default function BasicSettingsPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
             <ValidatedInput 
               label="Telegram Support (Customer Service)" 
-              value="https://t.me/" 
+              name="telegram_support"
+              register={register}
               subText="Direct link to your Telegram support account for customer inquiries" 
             />
             <ValidatedInput 
               label="WhatsApp Support" 
-              value="https://t.me/" 
+              name="whatsapp_support"
+              register={register}
               subText="WhatsApp link for customer support (format: https://wa.me/phonenumber)" 
             />
             <ValidatedInput 
               label="Telegram Community Channel" 
-              value="https://t.me/" 
+              name="telegram_community"
+              register={register}
               subText="Public Telegram channel for announcements and community updates" 
             />
             <ValidatedInput 
               label="Telegram Group Chat" 
-              value="https://t.me/" 
+              name="telegram_group"
+              register={register}
               subText="Telegram group for community discussions and member interactions" 
             />
             
             <div className="mt-2 h-full">
               <RichTextEditor 
                 label="Recharge Notice"
-                defaultValue="1. Select the Network you wish to deposit.
-
-2. Then go straight into your crypto wallet and transfer the amount you wish to deposit
-
-3. Wait for the transfer to be successful and kindly refresh to receive your deposit straight into your balance automatically."
+                name="deposit_notice"
+                control={control}
               />
             </div>
 
             <div className="mt-2 h-full">
               <RichTextEditor 
                 label="Withdraw Notice"
-                defaultValue="1. Fllow the below steps to make your withdrawal in the correct manner
-
-2. Enter your wallet address to withdraw correctly
-
-3. You can make minimum withdrawal of $5
-
-4. Withdrawal may take 5 - 10 minutes with a 1.5% charges"
+                name="withdrawal_notice"
+                control={control}
               />
             </div>
           </div>
@@ -201,10 +335,16 @@ export default function BasicSettingsPage() {
             </h2>
             
             <div className="flex items-start gap-3">
-              <Switch 
-                checked={autoWithdraw} 
-                onCheckedChange={setAutoWithdraw}
-                className="mt-1"
+              <Controller
+                name="auto_withdrawal"
+                control={control}
+                render={({ field }) => (
+                  <Switch 
+                    checked={field.value} 
+                    onCheckedChange={field.onChange}
+                    className="mt-1"
+                  />
+                )}
               />
               <div>
                 <label className="text-[13px] font-bold text-[#475f7b] block mb-0.5">Auto Withdrawal</label>
@@ -218,55 +358,80 @@ export default function BasicSettingsPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 mt-8">
             <ValidatedInput 
               label="Deposit Bonus (%)" 
-              value="2.00" 
+              name="deposit_bonus"
+              type="number"
+              register={register}
               subText="Percentage bonus added to user deposits (0 = disabled)" 
             />
             <ValidatedInput 
               label="Daily Withdrawal Limit (times)" 
-              value="4" 
+              name="daily_withdrawal_limit"
+              type="number"
+              register={register}
               subText="How many times a user can withdraw per day" 
             />
             <ValidatedInput 
               label="Withdrawal Opening Time" 
-              value="09:00 AM" 
+              name="withdrawal_open_time"
+              register={register}
               icon={Clock}
               subText="Time when withdrawals open (24-hour format)" 
             />
             <ValidatedInput 
               label="Withdrawal Closing Time" 
-              value="10:00 PM" 
+              name="withdrawal_close_time"
+              register={register}
               icon={Clock}
               subText="Time when withdrawals close (24-hour format)" 
             />
             
             <div className="flex flex-col space-y-1">
               <label className="text-[13px] font-medium text-[#475f7b]">Require Investment to Withdraw</label>
-              <Select defaultValue="yes">
-                <SelectTrigger className="border-blue-500 focus:ring-0 h-10">
-                  <SelectValue placeholder="Select Requirement" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="yes">Yes - Users must have active investment</SelectItem>
-                  <SelectItem value="no">No - Anyone can withdraw</SelectItem>
-                </SelectContent>
-              </Select>
+              <Controller
+                name="require_investment_to_withdraw"
+                control={control}
+                render={({ field }) => (
+                  <Select value={field.value ? "yes" : "no"} onValueChange={(val) => field.onChange(val === "yes")}>
+                    <SelectTrigger className="border-blue-500 focus:ring-0 h-10">
+                      <SelectValue placeholder="Select Requirement" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="yes">Yes - Users must have active investment</SelectItem>
+                      <SelectItem value="no">No - Anyone can withdraw</SelectItem>
+                    </SelectContent>
+                  </Select>
+                )}
+              />
               <p className="text-[11px] text-gray-400 mt-1">If enabled, users must have at least 1 active mining plan to withdraw</p>
             </div>
 
             <ValidatedInput 
               label="Minimum Investments Required" 
-              value="1" 
+              name="min_investment_to_withdraw"
+              type="number"
+              register={register}
               subText="Minimum number of active investments required to withdraw" 
             />
           </div>
 
           <div className="mt-10">
-            <Button className="bg-[#5A8DEE] hover:bg-[#4778d9] text-white px-8 py-2 h-10 font-medium rounded-sm-sm shadow-sm border-0">
-              Save
+            <Button 
+              type="submit"
+              disabled={isSubmitting}
+              className="bg-[#5A8DEE] hover:bg-[#4778d9] text-white px-8 py-2 h-10 font-medium rounded-sm shadow-sm border-0"
+            >
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Saving...
+                </>
+              ) : (
+                "Save"
+              )}
             </Button>
           </div>
         </CardContent>
       </Card>
-    </div>
+    </form>
   )
 }

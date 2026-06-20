@@ -26,12 +26,12 @@ export default function ChangePassword() {
     if (postChangePassword.isPending) return;
 
     if (!form.currentPassword || !form.newPassword || !form.confirmPassword) {
-      toast.error("Please fill all fields");
+      /* toast.error("Please fill all fields") (removed per user) */;
       return;
     }
 
     if (form.newPassword !== form.confirmPassword) {
-      toast.error("New passwords do not match");
+      /* toast.error("New passwords do not match") (removed per user) */;
       return;
     }
 
@@ -47,7 +47,7 @@ export default function ChangePassword() {
             newPassword: "",
             confirmPassword: "",
           });
-          toast.success("Password updated successfully");
+          /* toast.success("Password updated successfully") (removed per user) */;
         },
       }
     );
@@ -134,11 +134,11 @@ export default function ChangePassword() {
 //   const handleSubmit = (e) => {
 //     e.preventDefault();
 //     if (!form.currentPassword || !form.newPassword || !form.confirmPassword) {
-//       toast.error("Please fill all fields");
+//       /* toast.error("Please fill all fields") (removed per user) */;
 //       return;
 //     }
 //     if (form.newPassword !== form.confirmPassword) {
-//       toast.error("New passwords do not match");
+//       /* toast.error("New passwords do not match") (removed per user) */;
 //       return;
 //     }
 

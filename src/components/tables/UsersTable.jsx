@@ -129,7 +129,7 @@ export default function UsersTable({ searchTerm = "" }) {
   const handleConfirmReset = async () => {
     if (!userToReset?._id) return;
     if (!newPassword.trim()) {
-      toast.error("Please enter a new password");
+      /* toast.error("Please enter a new password") (removed per user) */;
       return;
     }
 
@@ -137,12 +137,12 @@ export default function UsersTable({ searchTerm = "" }) {
       setIsResetting(true);
       const res = await postData(`/api/users/${userToReset._id}/reset-password`, { newPassword });
       if (res?.success) {
-        toast.success(res.message || "Password reset successfully");
+        /* toast.success(res.message || "Password reset successfully") (removed per user) */;
       } else {
-        toast.error(res?.message || "Failed to reset password");
+        /* toast.error(res?.message || "Failed to reset password") (removed per user) */;
       }
     } catch (error) {
-      toast.error(error?.message || "Failed to reset password");
+      /* toast.error(error?.message || "Failed to reset password") (removed per user) */;
     } finally {
       setIsResetting(false);
       setIsResetOpen(false);
@@ -160,7 +160,7 @@ export default function UsersTable({ searchTerm = "" }) {
   const handleConfirmEditEmail = async () => {
     if (!userToEditEmail?._id) return;
     if (!newEmail.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newEmail)) {
-      toast.error("Please enter a valid email address");
+      /* toast.error("Please enter a valid email address") (removed per user) */;
       return;
     }
 
@@ -168,13 +168,13 @@ export default function UsersTable({ searchTerm = "" }) {
       setIsEditingEmail(true);
       const res = await patchData(`/api/users/${userToEditEmail._id}`, { email: newEmail.trim() });
       if (res?.success) {
-        toast.success(res.message || "Email updated successfully");
+        /* toast.success(res.message || "Email updated successfully") (removed per user) */;
         refetch();
       } else {
-        toast.error(res?.message || "Failed to update email");
+        /* toast.error(res?.message || "Failed to update email") (removed per user) */;
       }
     } catch (error) {
-      toast.error(error?.message || "Failed to update email");
+      /* toast.error(error?.message || "Failed to update email") (removed per user) */;
     } finally {
       setIsEditingEmail(false);
       setIsEditEmailOpen(false);

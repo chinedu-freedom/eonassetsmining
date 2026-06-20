@@ -50,13 +50,13 @@ export default function PendingWithdrawPage() {
       });
       const data = await res.json();
       if (res.ok) {
-        toast.success(`Withdrawal ${type.toLowerCase()} successfully`);
+        /* toast.success(`Withdrawal ${type.toLowerCase() (removed per user) */} successfully`);
         mutate();
       } else {
-        toast.error(data.error || `Failed to ${type.toLowerCase()} withdrawal`);
+        /* toast.error(data.error || `Failed to ${type.toLowerCase() (removed per user) */} withdrawal`);
       }
     } catch (error) {
-      toast.error("Network error processing request");
+      /* toast.error("Network error processing request") (removed per user) */;
     } finally {
       setIsProcessing(false);
     }

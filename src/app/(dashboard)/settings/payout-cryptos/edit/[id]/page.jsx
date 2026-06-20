@@ -1,23 +1,32 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect, use } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useForm, Controller } from "react-hook-form"
-import { ArrowLeft, Check, Banknote, FileText, Settings, Image as ImageIcon, Plus, Loader2 } from "lucide-react"
+import { ArrowLeft, Check, Banknote, FileText, Settings, Image as ImageIcon, Plus, Loader2, Save } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { usePost } from "@/hooks/useApi"
+import { useFetchData, usePut } from "@/hooks/useApi"
 import { toast } from "sonner"
 
-export default function AddPayoutCryptoPage() {
+export default function EditPayoutCryptoPage({ params }) {
+  const resolvedParams = use(params)
+  const id = resolvedParams.id
   const router = useRouter()
   const [iconPreview, setIconPreview] = useState(null)
   
-  const { register, handleSubmit, control, formState: { errors }, setValue, watch } = useForm({
+  const { data: crypto, isLoading } = useFetchData(id ? `/admin/settings/payout-cryptos/${id}` : null)
+  const updateCryptoMutation = usePut((id) => `/admin/settings/payout-cryptos/${id}`, "/admin/settings/payout-cryptos")
+
+  const { register, handleSubmit, control, formState: { errors }, setValue, watch, reset } = useForm({
     defaultValues: {
+      name: "",
+      symbol: "",
+      network: "",
+      network_name: "",
       min_amount: 10,
       max_amount: 100000,
       fee_percentage: 0,
@@ -27,7 +36,26 @@ export default function AddPayoutCryptoPage() {
     }
   })
 
-  const createCryptoMutation = usePost("/admin/settings/payout-cryptos", "/admin/settings/payout-cryptos")
+  useEffect(() => {
+    if (crypto) {
+      reset({
+        name: crypto.name,
+        symbol: crypto.symbol,
+        network: crypto.network,
+        network_name: crypto.network_name || "",
+        min_amount: crypto.min_amount,
+        max_amount: crypto.max_amount,
+        fee_percentage: crypto.fee_percentage,
+        fixed_fee: crypto.fixed_fee,
+        sort_order: crypto.sort_order,
+        status: String(crypto.status) === 'true'
+      })
+      if (crypto.icon) {
+        setIconPreview(crypto.icon)
+        setValue("icon", crypto.icon)
+      }
+    }
+  }, [crypto, reset, setValue])
 
   const handleImageChange = (e) => {
     const file = e.target.files[0]
@@ -47,19 +75,30 @@ export default function AddPayoutCryptoPage() {
 
   const onSubmit = async (data) => {
     try {
-      await createCryptoMutation.mutateAsync({
-        ...data,
-        symbol: data.symbol.toUpperCase(),
-        network: data.network.toUpperCase(),
-        min_amount: parseFloat(data.min_amount),
-        max_amount: parseFloat(data.max_amount),
-        fee_percentage: parseFloat(data.fee_percentage),
-        fixed_fee: parseFloat(data.fixed_fee),
-        sort_order: parseInt(data.sort_order),
-        status: String(data.status) === 'true'
+      await updateCryptoMutation.mutateAsync({
+        id,
+        data: {
+          ...data,
+          symbol: data.symbol.toUpperCase(),
+          network: data.network.toUpperCase(),
+          min_amount: parseFloat(data.min_amount),
+          max_amount: parseFloat(data.max_amount),
+          fee_percentage: parseFloat(data.fee_percentage),
+          fixed_fee: parseFloat(data.fixed_fee),
+          sort_order: parseInt(data.sort_order),
+          status: String(data.status) === 'true'
+        }
       })
       router.push("/settings/payout-cryptos")
     } catch (error) {}
+  }
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+      </div>
+    )
   }
 
   return (
@@ -69,7 +108,7 @@ export default function AddPayoutCryptoPage() {
           
           {/* Header */}
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
-            <h2 className="text-[1.2rem] font-medium text-[#475f7b]">Create New Payout Crypto</h2>
+            <h2 className="text-[1.2rem] font-medium text-[#475f7b]">Edit Payout Crypto</h2>
             <Link href="/settings/payout-cryptos">
               <Button className="bg-[#5A8DEE] hover:bg-[#4778d9] text-white px-4 h-10 font-medium rounded-sm shadow-sm border-0 flex items-center gap-2">
                 <ArrowLeft className="w-4 h-4" />
@@ -323,15 +362,15 @@ export default function AddPayoutCryptoPage() {
           <h2 className="text-[1.1rem] font-medium text-[#475f7b]">Submit Payout Crypto</h2>
           <Button 
             onClick={handleSubmit(onSubmit)}
-            disabled={createCryptoMutation.isPending}
+            disabled={updateCryptoMutation.isPending}
             className="bg-blue-600 hover:bg-blue-700 text-white px-5 h-10 font-medium rounded-sm shadow-sm border-0 flex items-center gap-2"
           >
-            {createCryptoMutation.isPending ? (
+            {updateCryptoMutation.isPending ? (
               <Loader2 className="w-4 h-4 animate-spin" />
             ) : (
-              <Plus className="w-4 h-4" />
+              <Save className="w-4 h-4" />
             )}
-            Create
+            Update
           </Button>
         </CardContent>
       </Card>
