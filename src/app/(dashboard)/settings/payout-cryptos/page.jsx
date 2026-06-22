@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { Search, Info, Edit, Trash2, Plus, ArrowUpDown, Loader2 } from "lucide-react"
+import { Search, Edit, Trash2, Plus, Loader2 } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -22,13 +22,12 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useFetchData, useDelete } from "@/hooks/useApi"
-import { toast } from "sonner"
-import Image from "next/image"
 
 export default function PayoutCryptosPage() {
   const [searchTerm, setSearchTerm] = useState("")
-  const [sortConfig, setSortConfig] = useState({ key: 'sort_order', direction: 'asc' })
+  const [statusFilter, setStatusFilter] = useState("all")
   
   const [confirmDialog, setConfirmDialog] = useState({
     isOpen: false,
@@ -54,128 +53,113 @@ export default function PayoutCryptosPage() {
     }
   }
 
-  const filteredCryptos = cryptos?.filter(c => 
-    c.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-    c.symbol.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    c.network.toLowerCase().includes(searchTerm.toLowerCase())
-  ) || []
+  const filteredCryptos = cryptos?.filter(c => {
+    const matchesSearch = c.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                          c.symbol.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                          c.network.toLowerCase().includes(searchTerm.toLowerCase())
+    
+    let matchesStatus = true
+    if (statusFilter === "active") matchesStatus = c.status === true
+    if (statusFilter === "inactive") matchesStatus = c.status === false
 
-  if (isLoading) {
-    return (
-      <div className="flex justify-center items-center h-64">
-        <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
-      </div>
-    )
-  }
+    return matchesSearch && matchesStatus
+  }) || []
 
   return (
-    <div className="space-y-6 pb-10">
-      <Card className="border-none shadow-sm bg-white rounded-md">
-        <CardContent className="p-0">
-          
-          {/* Header Section */}
-          <div className="p-6 border-b border-gray-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-            <h2 className="text-[1.2rem] font-medium text-[#475f7b]">Payout Cryptocurrencies</h2>
-            <Link href="/settings/payout-cryptos/add">
-              <Button className="bg-[#5A8DEE] hover:bg-[#4778d9] text-white px-4 h-10 font-medium rounded-sm shadow-sm border-0 flex items-center gap-2">
-                <Plus className="w-4 h-4" />
-                Add New Crypto
-              </Button>
-            </Link>
-          </div>
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between w-full mb-6">
+        <div>
+          <h1 className="text-2xl font-bold text-foreground">Payout Cryptocurrencies</h1>
+          <p className="text-muted-foreground text-sm">Manage cryptocurrency networks and addresses for withdrawals</p>
+        </div>
+        <div className="flex items-center space-x-3">
+          <Link href="/settings/payout-cryptos/add">
+            <Button className="bg-blue-600 hover:bg-blue-700 text-white rounded-sm-sm px-6 shadow-lg">
+              <Plus className="w-4 h-4 mr-2" />
+              Add Crypto
+            </Button>
+          </Link>
+        </div>
+      </div>
 
-          <div className="p-6">
-            
-            {/* Toolbar */}
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-              {/* Export Buttons */}
-              <div className="flex rounded-md overflow-hidden border border-[#475f7b]">
-                <button className="bg-[#475f7b] hover:bg-[#394c63] text-white px-4 py-1.5 text-[13px] font-medium border-r border-[#394c63] transition-colors">
-                  Copy
-                </button>
-                <button className="bg-[#475f7b] hover:bg-[#394c63] text-white px-4 py-1.5 text-[13px] font-medium border-r border-[#394c63] transition-colors">
-                  PDF
-                </button>
-                <button className="bg-[#475f7b] hover:bg-[#394c63] text-white px-4 py-1.5 text-[13px] font-medium border-r border-[#394c63] transition-colors">
-                  JSON
-                </button>
-                <button className="bg-[#475f7b] hover:bg-[#394c63] text-white px-4 py-1.5 text-[13px] font-medium transition-colors">
-                  Print
-                </button>
-              </div>
-
-              {/* Search */}
-              <div className="flex items-center gap-2">
-                <span className="text-[13px] text-gray-500">Search:</span>
-                <Input 
+      {/* Filters */}
+      <Card className="border-none shadow-sm bg-card">
+        <CardContent className="p-6">
+          <div className="flex flex-col md:flex-row gap-4 w-full">
+            <div className="flex items-center gap-4 w-full">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground z-10 pointer-events-none" />
+                <Input
+                  placeholder="Search by name, symbol, or network..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-[200px] h-8 border-gray-200 focus-visible:ring-0 text-[13px]"
+                  className="pl-9 bg-background"
                 />
               </div>
+              <Select value={statusFilter} onValueChange={setStatusFilter}>
+                <SelectTrigger className="w-36 bg-background">
+                  <SelectValue placeholder="Status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Status</SelectItem>
+                  <SelectItem value="active">Active</SelectItem>
+                  <SelectItem value="inactive">Inactive</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
+          </div>
+        </CardContent>
+      </Card>
 
-            {/* Table */}
-            <div className="overflow-x-auto">
-              <Table className="min-w-[1000px] whitespace-nowrap">
-                <TableHeader>
-                  <TableRow className="border-b border-gray-200 bg-transparent hover:bg-transparent">
-                    <TableHead className="font-bold text-[#475f7b] text-[12px] uppercase w-[60px]">
-                      <div className="flex items-center gap-1 cursor-pointer">S.N <ArrowUpDown className="w-3 h-3 text-gray-400" /></div>
-                    </TableHead>
-                    <TableHead className="font-bold text-[#475f7b] text-[12px] uppercase">
-                      <div className="flex items-center gap-1 cursor-pointer">Icon <ArrowUpDown className="w-3 h-3 text-gray-400" /></div>
-                    </TableHead>
-                    <TableHead className="font-bold text-[#475f7b] text-[12px] uppercase">
-                      <div className="flex items-center gap-1 cursor-pointer">Name <ArrowUpDown className="w-3 h-3 text-gray-400" /></div>
-                    </TableHead>
-                    <TableHead className="font-bold text-[#475f7b] text-[12px] uppercase">
-                      <div className="flex items-center gap-1 cursor-pointer">Symbol <ArrowUpDown className="w-3 h-3 text-gray-400" /></div>
-                    </TableHead>
-                    <TableHead className="font-bold text-[#475f7b] text-[12px] uppercase">
-                      <div className="flex items-center gap-1 cursor-pointer">Network <ArrowUpDown className="w-3 h-3 text-gray-400" /></div>
-                    </TableHead>
-                    <TableHead className="font-bold text-[#475f7b] text-[12px] uppercase">
-                      <div className="flex items-center gap-1 cursor-pointer">Min/Max Amount <ArrowUpDown className="w-3 h-3 text-gray-400" /></div>
-                    </TableHead>
-                    <TableHead className="font-bold text-[#475f7b] text-[12px] uppercase">
-                      <div className="flex items-center gap-1 cursor-pointer">Fee <ArrowUpDown className="w-3 h-3 text-gray-400" /></div>
-                    </TableHead>
-                    <TableHead className="font-bold text-[#475f7b] text-[12px] uppercase">
-                      <div className="flex items-center gap-1 cursor-pointer">Sort Order <ArrowUpDown className="w-3 h-3 text-gray-400" /></div>
-                    </TableHead>
-                    <TableHead className="font-bold text-[#475f7b] text-[12px] uppercase">
-                      <div className="flex items-center gap-1 cursor-pointer">Status <ArrowUpDown className="w-3 h-3 text-gray-400" /></div>
-                    </TableHead>
-                    <TableHead className="font-bold text-[#475f7b] text-[12px] uppercase text-right">
-                      <div className="flex items-center justify-end gap-1 cursor-pointer">Actions <ArrowUpDown className="w-3 h-3 text-gray-400" /></div>
-                    </TableHead>
+      {/* Table */}
+      <Card className="border-none shadow-sm bg-card">
+        <CardContent className="p-0">
+          <div className="overflow-x-auto">
+            {isLoading ? (
+              <div className="flex justify-center items-center py-10">
+                <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
+              </div>
+            ) : (
+              <Table className="min-w-[1000px]">
+                <TableHeader className="bg-gray-50/50">
+                  <TableRow>
+                    <TableHead className="w-[60px] font-bold text-gray-500 uppercase text-xs whitespace-nowrap">S.N</TableHead>
+                    <TableHead className="w-[60px] font-bold text-gray-500 uppercase text-xs whitespace-nowrap">ICON</TableHead>
+                    <TableHead className="font-bold text-gray-500 uppercase text-xs whitespace-nowrap">NAME</TableHead>
+                    <TableHead className="font-bold text-gray-500 uppercase text-xs whitespace-nowrap">SYMBOL</TableHead>
+                    <TableHead className="font-bold text-gray-500 uppercase text-xs whitespace-nowrap">NETWORK</TableHead>
+                    <TableHead className="font-bold text-gray-500 uppercase text-xs whitespace-nowrap">MIN/MAX AMOUNT</TableHead>
+                    <TableHead className="font-bold text-gray-500 uppercase text-xs whitespace-nowrap">FEE</TableHead>
+                    <TableHead className="font-bold text-gray-500 uppercase text-xs whitespace-nowrap">SORT ORDER</TableHead>
+                    <TableHead className="font-bold text-gray-500 uppercase text-xs whitespace-nowrap">STATUS</TableHead>
+                    <TableHead className="font-bold text-gray-500 uppercase text-xs text-right pr-6 whitespace-nowrap">ACTIONS</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {filteredCryptos.length > 0 ? filteredCryptos.map((item, index) => (
-                    <TableRow key={item.id} className="border-b border-gray-100 hover:bg-gray-50/50 transition-colors">
-                      <TableCell className="py-4 font-bold text-[13px] text-[#475f7b]">{index + 1}</TableCell>
-                      <TableCell className="py-4">
+                    <TableRow key={item.id} className="hover:bg-gray-50/50">
+                      <TableCell className="font-medium text-gray-700">{index + 1}</TableCell>
+                      <TableCell>
                         <div className="flex items-center gap-1.5 text-gray-400">
                           {item.icon ? (
-                            <img src={item.icon} alt={item.symbol} className="w-10 h-10 object-contain" />
+                            <img src={item.icon} alt={item.symbol} className="w-8 h-8 object-contain" />
                           ) : (
-                            <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center text-[11px] text-gray-500 font-bold">
+                            <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center text-[11px] text-gray-500 font-bold">
                               {item.symbol.substring(0, 2)}
                             </div>
                           )}
                         </div>
                       </TableCell>
-                      <TableCell className="py-4 font-bold text-[13px] text-[#475f7b]">
+                      <TableCell className="font-bold text-[13px] text-gray-800">
                         {item.name}
                       </TableCell>
-                      <TableCell className="py-4">
+                      <TableCell>
                         <span className="inline-flex items-center justify-center bg-pink-50 text-pink-500 px-2.5 py-1 rounded-[4px] text-[11px] font-bold">
                           {item.symbol}
                         </span>
                       </TableCell>
-                      <TableCell className="py-4">
+                      <TableCell>
                         <div className="flex flex-col items-start">
                           <span className="inline-flex items-center justify-center bg-[#00CFDD] text-white px-3 py-1 rounded-[4px] text-[11px] font-bold">
                             {item.network}
@@ -183,16 +167,16 @@ export default function PayoutCryptosPage() {
                           <span className="text-[11px] text-gray-400 mt-1">{item.network_name}</span>
                         </div>
                       </TableCell>
-                      <TableCell className="py-4 text-[13px] text-[#475f7b] font-medium">
+                      <TableCell className="text-[13px] text-gray-700 font-medium">
                         {Number(item.min_amount).toFixed(2)} - {Number(item.max_amount).toFixed(2)}
                       </TableCell>
-                      <TableCell className="py-4 text-[13px] text-[#475f7b] font-medium">
+                      <TableCell className="text-[13px] text-gray-700 font-medium">
                         {Number(item.fee_percentage).toFixed(2)}% {Number(item.fixed_fee) > 0 ? `+ ${Number(item.fixed_fee).toFixed(2)}` : ''}
                       </TableCell>
-                      <TableCell className="py-4 font-bold text-[13px] text-[#475f7b]">
+                      <TableCell className="font-bold text-[13px] text-gray-700">
                         {item.sort_order}
                       </TableCell>
-                      <TableCell className="py-4">
+                      <TableCell>
                         {item.status ? (
                           <span className="inline-flex items-center justify-center bg-blue-600 text-white px-3 py-1.5 rounded-[4px] text-[11px] font-medium">
                             Active
@@ -203,20 +187,25 @@ export default function PayoutCryptosPage() {
                           </span>
                         )}
                       </TableCell>
-                      <TableCell className="py-4 text-right">
+                      <TableCell className="text-right pr-6">
                         <div className="flex items-center justify-end gap-1.5">
                           <Link href={`/settings/payout-cryptos/edit/${item.id}`}>
-                            <Button size="icon" className="w-8 h-8 rounded-sm bg-[#FF9F43] hover:bg-[#e08b39] border-0 shadow-none">
-                              <Edit className="w-4 h-4 text-white" />
+                            <Button size="icon" variant="ghost" className="w-8 h-8 text-blue-600 hover:text-blue-700 hover:bg-blue-50">
+                              <Edit className="w-4 h-4" />
                             </Button>
                           </Link>
                           <Button 
                             size="icon" 
+                            variant="ghost"
                             disabled={deleteCryptoMutation.isPending}
                             onClick={() => handleDeleteClick(item.id)}
-                            className="w-8 h-8 rounded-sm bg-[#ff5b5c] hover:bg-[#e04e4f] border-0 shadow-none"
+                            className="w-8 h-8 text-red-600 hover:text-red-700 hover:bg-red-50"
                           >
-                            <Trash2 className="w-4 h-4 text-white" />
+                            {deleteCryptoMutation.isPending && confirmDialog.cryptoId === item.id ? (
+                              <Loader2 className="w-4 h-4 animate-spin" />
+                            ) : (
+                              <Trash2 className="w-4 h-4" />
+                            )}
                           </Button>
                         </div>
                       </TableCell>
@@ -230,26 +219,7 @@ export default function PayoutCryptosPage() {
                   )}
                 </TableBody>
               </Table>
-            </div>
-
-            {/* Pagination Mock */}
-            <div className="flex flex-col sm:flex-row justify-between items-center mt-6 text-[13px] text-gray-500 gap-4">
-              <div>
-                Showing {filteredCryptos.length > 0 ? 1 : 0} to {filteredCryptos.length} of {filteredCryptos.length} entries
-              </div>
-              <div className="flex items-center gap-1">
-                <button className="px-3 py-1.5 border border-gray-200 bg-gray-50 text-gray-400 rounded-sm cursor-not-allowed">
-                  Previous
-                </button>
-                <button className="px-3 py-1.5 border border-[#5A8DEE] bg-[#5A8DEE] text-white rounded-sm font-medium">
-                  1
-                </button>
-                <button className="px-3 py-1.5 border border-gray-200 bg-gray-50 text-gray-400 rounded-sm cursor-not-allowed">
-                  Next
-                </button>
-              </div>
-            </div>
-
+            )}
           </div>
         </CardContent>
       </Card>

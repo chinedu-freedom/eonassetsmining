@@ -100,37 +100,37 @@ export default function LiveMarketPage() {
 
           <div className="overflow-x-auto">
             <Table className="min-w-[1000px] whitespace-nowrap">
-              <TableHeader className="bg-transparent border-b min-w-[1000px] whitespace-nowrap">
-                <TableRow className="hover:bg-transparent min-w-[1000px] whitespace-nowrap">
-                  <TableHead className="font-bold text-gray-500 uppercase text-xs w-[60px] min-w-[1000px] whitespace-nowrap">#</TableHead>
-                  <TableHead className="font-bold text-gray-500 uppercase text-xs w-[80px] min-w-[1000px] whitespace-nowrap">LOGO</TableHead>
-                  <TableHead className="font-bold text-gray-500 uppercase text-xs min-w-[1000px] whitespace-nowrap">SYMBOL</TableHead>
-                  <TableHead className="font-bold text-gray-500 uppercase text-xs min-w-[1000px] whitespace-nowrap">NAME</TableHead>
-                  <TableHead className="font-bold text-gray-500 uppercase text-xs min-w-[1000px] whitespace-nowrap">BINANCE SYMBOL</TableHead>
-                  <TableHead className="font-bold text-gray-500 uppercase text-xs min-w-[1000px] whitespace-nowrap">STATUS</TableHead>
-                  <TableHead className="font-bold text-gray-500 uppercase text-xs min-w-[1000px] whitespace-nowrap">ACTIONS</TableHead>
+              <TableHeader className="bg-transparent border-b">
+                <TableRow className="hover:bg-transparent">
+                  <TableHead className="font-bold text-gray-500 uppercase text-xs w-[60px]">#</TableHead>
+                  <TableHead className="font-bold text-gray-500 uppercase text-xs w-[80px]">LOGO</TableHead>
+                  <TableHead className="font-bold text-gray-500 uppercase text-xs">SYMBOL</TableHead>
+                  <TableHead className="font-bold text-gray-500 uppercase text-xs">NAME</TableHead>
+                  <TableHead className="font-bold text-gray-500 uppercase text-xs">BINANCE SYMBOL</TableHead>
+                  <TableHead className="font-bold text-gray-500 uppercase text-xs">STATUS</TableHead>
+                  <TableHead className="font-bold text-gray-500 uppercase text-xs">ACTIONS</TableHead>
                 </TableRow>
               </TableHeader>
-              <TableBody className="min-w-[1000px] whitespace-nowrap">
+              <TableBody>
                 {isLoading ? (
-                  <TableRow className="min-w-[1000px] whitespace-nowrap">
-                    <TableCell colSpan={7} className="text-center py-8 text-gray-500 min-w-[1000px] whitespace-nowrap">
+                  <TableRow>
+                    <TableCell colSpan={7} className="text-center py-8 text-gray-500">
                       Loading data...
                     </TableCell>
                   </TableRow>
                 ) : assets.length === 0 ? (
-                  <TableRow className="min-w-[1000px] whitespace-nowrap">
-                    <TableCell colSpan={7} className="text-center py-8 text-gray-500 min-w-[1000px] whitespace-nowrap">
+                  <TableRow>
+                    <TableCell colSpan={7} className="text-center py-8 text-gray-500">
                       No cryptocurrencies added yet.
                     </TableCell>
                   </TableRow>
                 ) : (
                   assets.map((crypto, index) => (
-                    <TableRow key={crypto.id} className="hover:bg-gray-50/50 border-b last:border-0 min-w-[1000px] whitespace-nowrap">
-                      <TableCell className="font-medium text-gray-700 text-sm min-w-[1000px] whitespace-nowrap">
+                    <TableRow key={crypto.id} className="hover:bg-gray-50/50 border-b last:border-0">
+                      <TableCell className="font-medium text-gray-700 text-sm">
                         {index + 1}
                       </TableCell>
-                      <TableCell className="min-w-[1000px] whitespace-nowrap">
+                      <TableCell>
                         <div className="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center bg-gray-50">
                           {crypto.logo_url ? (
                             <img src={crypto.logo_url} alt={crypto.name} className="w-full h-full object-contain" />
@@ -139,18 +139,18 @@ export default function LiveMarketPage() {
                           )}
                         </div>
                       </TableCell>
-                      <TableCell className="min-w-[1000px] whitespace-nowrap">
+                      <TableCell>
                         <span className="font-bold text-gray-800 text-[14px]">{crypto.symbol}</span>
                       </TableCell>
-                      <TableCell className="min-w-[1000px] whitespace-nowrap">
+                      <TableCell>
                         <span className="text-gray-600 text-[14px]">{crypto.name}</span>
                       </TableCell>
-                      <TableCell className="min-w-[1000px] whitespace-nowrap">
+                      <TableCell>
                         <Badge className="bg-[#ff5b5c]/10 hover:bg-[#ff5b5c]/20 text-[#ff5b5c] border-0 px-2 py-0.5 rounded-[4px] text-[10px] font-bold tracking-wider uppercase">
                           {crypto.trading_pair}
                         </Badge>
                       </TableCell>
-                      <TableCell className="min-w-[1000px] whitespace-nowrap">
+                      <TableCell>
                         {crypto.status ? (
                           <Badge className="bg-blue-600/10 hover:bg-blue-600/20 text-blue-600 border-0 px-3 py-1 rounded-[4px] text-[10px] font-bold tracking-widest uppercase">
                             ACTIVE
@@ -161,7 +161,7 @@ export default function LiveMarketPage() {
                           </Badge>
                         )}
                       </TableCell>
-                      <TableCell className="min-w-[1000px] whitespace-nowrap">
+                      <TableCell>
                         <div className="flex items-center space-x-2">
                           <Button 
                             variant="default" 

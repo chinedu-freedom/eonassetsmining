@@ -1,4 +1,4 @@
-const fetch = require('node-fetch'); // If next.js 13+ we can just use global fetch in Node 18+
+// using global fetch
 
 async function clearData() {
   console.log("Fetching payment methods...");

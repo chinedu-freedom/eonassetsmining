@@ -201,70 +201,73 @@ export default function PlansManagementPage() {
         </CardHeader>
         <CardContent>
           <div className="overflow-x-auto">
-            <Table className="min-w-[1000px] whitespace-nowrap">
-              <TableHeader className="min-w-[1000px] whitespace-nowrap">
-                <TableRow className="min-w-[1000px] whitespace-nowrap">
-                  <TableHead className="min-w-[1000px] whitespace-nowrap">Package ID</TableHead>
-                  <TableHead className="min-w-[1000px] whitespace-nowrap">Title</TableHead>
-                  <TableHead className="min-w-[1000px] whitespace-nowrap">Min - Max Deposit</TableHead>
-                  <TableHead className="min-w-[1000px] whitespace-nowrap">Daily Profit</TableHead>
-                  <TableHead className="min-w-[1000px] whitespace-nowrap">Duration</TableHead>
-                  <TableHead className="min-w-[1000px] whitespace-nowrap">Type</TableHead>
-                  <TableHead className="min-w-[1000px] whitespace-nowrap">Status</TableHead>
-                  <TableHead className="min-w-[1000px] whitespace-nowrap">Actions</TableHead>
+            <Table className="whitespace-nowrap">
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="font-bold text-[#475f7b] text-[12px] uppercase">#</TableHead>
+                  <TableHead className="font-bold text-[#475f7b] text-[12px] uppercase">Thumbnail</TableHead>
+                  <TableHead className="font-bold text-[#475f7b] text-[12px] uppercase">Name</TableHead>
+                  <TableHead className="font-bold text-[#475f7b] text-[12px] uppercase">Duration</TableHead>
+                  <TableHead className="font-bold text-[#475f7b] text-[12px] uppercase">Daily %</TableHead>
+                  <TableHead className="font-bold text-[#475f7b] text-[12px] uppercase">Min/Max</TableHead>
+                  <TableHead className="font-bold text-[#475f7b] text-[12px] uppercase">Capital Return</TableHead>
+                  <TableHead className="font-bold text-[#475f7b] text-[12px] uppercase">Status</TableHead>
+                  <TableHead className="font-bold text-[#475f7b] text-[12px] uppercase text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
-              <TableBody className="min-w-[1000px] whitespace-nowrap">
+              <TableBody>
                 {isLoading ? (
-                  <TableRow className="min-w-[1000px] whitespace-nowrap">
-                    <TableCell colSpan={8} className="text-center py-10 text-gray-500 bg-gray-50/30 min-w-[1000px] whitespace-nowrap">
+                  <TableRow>
+                    <TableCell colSpan={9} className="text-center py-10 text-gray-500 bg-gray-50/30">
                       <Loader2 className="w-6 h-6 animate-spin mx-auto mb-2" />
                       Loading plans...
                     </TableCell>
                   </TableRow>
                 ) : filteredPlans.length === 0 ? (
-                  <TableRow className="min-w-[1000px] whitespace-nowrap">
-                    <TableCell colSpan={8} className="text-center py-12 text-gray-500 bg-gray-50/30 min-w-[1000px] whitespace-nowrap">
+                  <TableRow>
+                    <TableCell colSpan={9} className="text-center py-12 text-gray-500 bg-gray-50/30">
                       <Package className="w-10 h-10 mx-auto mb-3 text-gray-400" />
                       <p className="text-base font-medium text-gray-600 mb-1">No plans available</p>
                       <p className="text-sm text-gray-500">There are no packages matching your search criteria.</p>
                     </TableCell>
                   </TableRow>
-                ) : filteredPlans.map((plan) => (
-                  <TableRow key={plan.id} className="min-w-[1000px] whitespace-nowrap">
-                    <TableCell className="font-medium text-xs text-muted-foreground truncate max-w-[120px] min-w-[1000px] whitespace-nowrap">{plan.id}</TableCell>
-                    <TableCell className="min-w-[1000px] whitespace-nowrap">
-                      <div className="flex items-center gap-3">
-                        {plan.image ? (
-                          <img src={plan.image} alt={plan.name} className="w-10 h-10 rounded-full object-cover border border-gray-100" />
-                        ) : (
-                          <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center border border-blue-100 shrink-0">
-                            <Package className="w-5 h-5 text-blue-500" />
-                          </div>
-                        )}
-                        <div>
-                          <div className="font-medium text-foreground">{plan.name}</div>
-                          <div className="text-sm text-muted-foreground">Created: {format(new Date(plan.created_at), 'MMM dd, yyyy')}</div>
+                ) : filteredPlans.map((plan, index) => (
+                  <TableRow key={plan.id}>
+                    <TableCell className="font-medium text-[13px] text-muted-foreground">{index + 1}</TableCell>
+                    <TableCell>
+                      {plan.image ? (
+                        <img src={plan.image} alt={plan.name} className="w-10 h-10 rounded-full object-cover border border-gray-100" />
+                      ) : (
+                        <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center border border-blue-100 shrink-0">
+                          <Package className="w-5 h-5 text-blue-500" />
                         </div>
-                      </div>
+                      )}
                     </TableCell>
-                    <TableCell className="min-w-[1000px] whitespace-nowrap">
-                      <div className="font-medium text-foreground">${Number(plan.min_investment)} - ${Number(plan.max_investment)}</div>
+                    <TableCell>
+                      <div className="font-bold text-[14px] text-foreground">{plan.name}</div>
+                      <div className="text-[12px] text-muted-foreground">Created: {format(new Date(plan.created_at), 'MMM dd, yyyy')}</div>
                     </TableCell>
-                    <TableCell className="font-medium text-foreground min-w-[1000px] whitespace-nowrap">{Number(plan.daily_income)}%</TableCell>
-                    <TableCell className="font-medium min-w-[1000px] whitespace-nowrap">{plan.duration} Days</TableCell>
-                    <TableCell className="min-w-[1000px] whitespace-nowrap">
-                      <Badge className={getTypeColor(plan.is_fixed_deposit)} variant="outline">
+                    <TableCell className="text-[13px] font-medium text-muted-foreground">{plan.duration} Days</TableCell>
+                    <TableCell>
+                      <Badge className="bg-green-100/50 hover:bg-green-100 text-green-700 border-0 shadow-none font-bold">
+                        {Number(plan.daily_income)}% Daily
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      <div className="text-[13px] font-semibold text-foreground">${Number(plan.min_investment).toLocaleString()} - ${Number(plan.max_investment).toLocaleString()}</div>
+                    </TableCell>
+                    <TableCell>
+                      <Badge className={`${getTypeColor(plan.is_fixed_deposit)} hover:${getTypeColor(plan.is_fixed_deposit)} border-0 shadow-none font-bold`}>
                         {plan.is_fixed_deposit ? "Fixed" : "Flexible"}
                       </Badge>
                     </TableCell>
-                    <TableCell className="min-w-[1000px] whitespace-nowrap">
-                      <Badge className={getStatusColor(plan.status ? "active" : "inactive")} variant="outline">
+                    <TableCell>
+                      <Badge className={`${getStatusColor(plan.status ? "active" : "inactive")} hover:${getStatusColor(plan.status ? "active" : "inactive")} border-0 capitalize shadow-none font-bold`}>
                         {plan.status ? "Active" : "Inactive"}
                       </Badge>
                     </TableCell>
-                    <TableCell className="min-w-[1000px] whitespace-nowrap">
-                      <div className="flex items-center space-x-2">
+                    <TableCell className="text-right">
+                      <div className="flex items-center justify-end space-x-2">
                         <Button 
                           variant="outline" 
                           size="sm" 
