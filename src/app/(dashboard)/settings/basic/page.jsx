@@ -12,9 +12,9 @@ import { useForm, Controller } from "react-hook-form"
 import { useFetchData, usePut } from "@/hooks/useApi"
 import { toast } from "sonner"
 import dynamic from "next/dynamic"
-import "react-quill/dist/quill.snow.css"
+import "react-quill-new/dist/quill.snow.css"
 
-const ReactQuill = dynamic(() => import("react-quill"), { ssr: false })
+const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false })
 
 const ValidatedInput = ({ label, requiredNote, subText, icon: Icon, register, name, type="text" }) => (
   <div className="flex flex-col space-y-1">

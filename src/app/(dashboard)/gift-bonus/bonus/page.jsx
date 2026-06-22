@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Search, Edit, Trash2, Plus, Gift, History } from "lucide-react"
+import { Search, Edit, Trash2, Plus, Gift, History, ChevronsUpDown } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import GiftCodeDialog from "@/components/modals/GiftCodeDialog"
 import { Card, CardContent } from "@/components/ui/card"
@@ -117,48 +117,64 @@ export default function GiftBonusPage() {
       <Card className="border-none shadow-sm bg-white rounded-md">
         <CardContent className="p-0">
           <div className="overflow-x-auto">
-            <Table className="min-w-[1000px] whitespace-nowrap">
-              <TableHeader className="bg-gray-50/50 border-b min-w-[1000px] whitespace-nowrap">
-                <TableRow className="hover:bg-transparent min-w-[1000px] whitespace-nowrap">
-                  <TableHead className="w-[60px] font-bold text-gray-600 uppercase text-[12px] tracking-wider py-4 pl-6 min-w-[1000px] whitespace-nowrap">#</TableHead>
-                  <TableHead className="font-bold text-gray-600 uppercase text-[12px] tracking-wider py-4 min-w-[1000px] whitespace-nowrap">CODE NAME</TableHead>
-                  <TableHead className="font-bold text-gray-600 uppercase text-[12px] tracking-wider py-4 min-w-[1000px] whitespace-nowrap">GIFT CODE</TableHead>
-                  <TableHead className="font-bold text-gray-600 uppercase text-[12px] tracking-wider py-4 min-w-[1000px] whitespace-nowrap">AMOUNT</TableHead>
-                  <TableHead className="font-bold text-gray-600 uppercase text-[12px] tracking-wider py-4 min-w-[1000px] whitespace-nowrap">USAGE</TableHead>
-                  <TableHead className="font-bold text-gray-600 uppercase text-[12px] tracking-wider py-4 min-w-[1000px] whitespace-nowrap">MAX USES</TableHead>
-                  <TableHead className="font-bold text-gray-600 uppercase text-[12px] tracking-wider py-4 min-w-[1000px] whitespace-nowrap">STATUS</TableHead>
-                  <TableHead className="font-bold text-gray-600 uppercase text-[12px] tracking-wider py-4 text-right pr-6 w-[120px] min-w-[1000px] whitespace-nowrap">ACTIONS</TableHead>
+            <Table>
+              <TableHeader className="bg-gray-50/50 border-b">
+                <TableRow className="hover:bg-transparent">
+                  <TableHead className="w-[60px] font-bold text-gray-600 uppercase text-[12px] tracking-wider py-4 pl-6 cursor-pointer hover:bg-gray-100 transition-colors">
+                    S.N
+                  </TableHead>
+                  <TableHead className="font-bold text-gray-600 uppercase text-[12px] tracking-wider py-4 cursor-pointer hover:bg-gray-100 transition-colors">
+                    CODE NAME <ChevronsUpDown className="ml-1 h-3 w-3 inline-block" />
+                  </TableHead>
+                  <TableHead className="font-bold text-gray-600 uppercase text-[12px] tracking-wider py-4 cursor-pointer hover:bg-gray-100 transition-colors">
+                    GIFT CODE <ChevronsUpDown className="ml-1 h-3 w-3 inline-block" />
+                  </TableHead>
+                  <TableHead className="font-bold text-gray-600 uppercase text-[12px] tracking-wider py-4 cursor-pointer hover:bg-gray-100 transition-colors">
+                    AMOUNT <ChevronsUpDown className="ml-1 h-3 w-3 inline-block" />
+                  </TableHead>
+                  <TableHead className="font-bold text-gray-600 uppercase text-[12px] tracking-wider py-4 cursor-pointer hover:bg-gray-100 transition-colors">
+                    USAGE <ChevronsUpDown className="ml-1 h-3 w-3 inline-block" />
+                  </TableHead>
+                  <TableHead className="font-bold text-gray-600 uppercase text-[12px] tracking-wider py-4 cursor-pointer hover:bg-gray-100 transition-colors">
+                    MAX USES <ChevronsUpDown className="ml-1 h-3 w-3 inline-block" />
+                  </TableHead>
+                  <TableHead className="font-bold text-gray-600 uppercase text-[12px] tracking-wider py-4 cursor-pointer hover:bg-gray-100 transition-colors">
+                    STATUS <ChevronsUpDown className="ml-1 h-3 w-3 inline-block" />
+                  </TableHead>
+                  <TableHead className="font-bold text-gray-600 uppercase text-[12px] tracking-wider py-4 text-right pr-6 w-[120px]">
+                    ACTIONS
+                  </TableHead>
                 </TableRow>
               </TableHeader>
-              <TableBody className="min-w-[1000px] whitespace-nowrap">
+              <TableBody>
                 {isLoading ? (
-                  <TableRow className="min-w-[1000px] whitespace-nowrap">
-                    <TableCell colSpan={8} className="text-center py-10 text-gray-500 bg-gray-50/30 min-w-[1000px] whitespace-nowrap">
+                  <TableRow>
+                    <TableCell colSpan={8} className="text-center py-10 text-gray-500 bg-gray-50/30">
                       Loading...
                     </TableCell>
                   </TableRow>
                 ) : filteredData.length > 0 ? (
                   filteredData.map((item, index) => (
-                    <TableRow key={item.id} className="hover:bg-gray-50 border-b last:border-0 min-w-[1000px] whitespace-nowrap">
-                      <TableCell className="font-medium text-gray-700 text-[13px] py-4 pl-6 min-w-[1000px] whitespace-nowrap">
+                    <TableRow key={item.id} className="hover:bg-gray-50 border-b last:border-0">
+                      <TableCell className="font-medium text-gray-700 text-[13px] py-4 pl-6">
                         {index + 1}
                       </TableCell>
-                      <TableCell className="py-4 min-w-[1000px] whitespace-nowrap">
+                      <TableCell className="py-4">
                         <span className="font-medium text-gray-700 text-[13px]">{item.code_name}</span>
                       </TableCell>
-                      <TableCell className="py-4 min-w-[1000px] whitespace-nowrap">
+                      <TableCell className="py-4">
                         <span className="font-medium text-[#5A8DEE] text-[13px] bg-blue-50 px-2 py-1 rounded-sm">{item.code}</span>
                       </TableCell>
-                      <TableCell className="py-4 min-w-[1000px] whitespace-nowrap">
+                      <TableCell className="py-4">
                         <span className="font-medium text-gray-700 text-[13px]">${Number(item.reward_amount).toFixed(2)}</span>
                       </TableCell>
-                      <TableCell className="py-4 min-w-[1000px] whitespace-nowrap">
+                      <TableCell className="py-4">
                         <span className="font-medium text-gray-700 text-[13px]">{item.used_count || 0}</span>
                       </TableCell>
-                      <TableCell className="py-4 min-w-[1000px] whitespace-nowrap">
+                      <TableCell className="py-4">
                         <span className="font-medium text-gray-700 text-[13px]">{item.max_uses}</span>
                       </TableCell>
-                      <TableCell className="py-4 min-w-[1000px] whitespace-nowrap">
+                      <TableCell className="py-4">
                         <span className={`text-[12px] px-2.5 py-1 rounded-md font-medium ${
                           item.status
                             ? 'bg-blue-600/10 text-blue-600' 
@@ -167,7 +183,7 @@ export default function GiftBonusPage() {
                           {item.status ? "Active" : "Inactive"}
                         </span>
                       </TableCell>
-                      <TableCell className="py-4 text-right pr-6 min-w-[1000px] whitespace-nowrap">
+                      <TableCell className="py-4 text-right pr-6">
                         <div className="flex items-center justify-end space-x-2">
                           <Button 
                             variant="default" 
@@ -195,8 +211,8 @@ export default function GiftBonusPage() {
                     </TableRow>
                   ))
                 ) : (
-                  <TableRow className="min-w-[1000px] whitespace-nowrap">
-                    <TableCell colSpan={8} className="text-center py-10 text-gray-500 bg-gray-50/30 min-w-[1000px] whitespace-nowrap">
+                  <TableRow>
+                    <TableCell colSpan={8} className="text-center py-10 text-gray-500 bg-gray-50/30">
                       No data available in table
                     </TableCell>
                   </TableRow>
