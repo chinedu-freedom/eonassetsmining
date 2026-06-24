@@ -90,6 +90,12 @@ export default function BasicSettingsPage() {
       withdrawal_close_time: "",
       require_investment_to_withdraw: false,
       min_investment_to_withdraw: 1,
+      min_withdrawal: 10,
+      max_withdrawal: 10000,
+      withdrawal_charge: 2,
+      min_deposit: 10,
+      max_deposit: 100000,
+      deposit_charge: 0,
     }
   });
 
@@ -117,6 +123,8 @@ export default function BasicSettingsPage() {
         require_investment_to_withdraw: settingsData.require_investment_to_withdraw ?? false,
         min_investment_to_withdraw: settingsData.min_investment_to_withdraw || 1,
         min_withdrawal: Number(settingsData.min_withdrawal) || 10,
+        max_withdrawal: Number(settingsData.max_withdrawal) || 10000,
+        withdrawal_charge: Number(settingsData.withdrawal_charge) || 2,
         max_deposit: Number(settingsData.max_deposit) || 10000,
         min_deposit: Number(settingsData.min_deposit) || 10
       })
@@ -142,7 +150,10 @@ export default function BasicSettingsPage() {
         registration_bonus: Number(formData.registration_bonus),
         deposit_bonus: Number(formData.deposit_bonus),
         daily_withdrawal_limit: Number(formData.daily_withdrawal_limit),
-        min_investment_to_withdraw: Number(formData.min_investment_to_withdraw)
+        min_investment_to_withdraw: Number(formData.min_investment_to_withdraw),
+        min_withdrawal: Number(formData.min_withdrawal),
+        max_withdrawal: Number(formData.max_withdrawal),
+        withdrawal_charge: Number(formData.withdrawal_charge)
       }
       await updateSettingsMutation.mutateAsync(payload)
       // /* toast.success("Settings updated successfully") (removed per user) */
@@ -369,6 +380,48 @@ export default function BasicSettingsPage() {
               type="number"
               register={register}
               subText="How many times a user can withdraw per day" 
+            />
+            <ValidatedInput 
+              label="Minimum Deposit" 
+              name="min_deposit"
+              type="number"
+              register={register}
+              subText="Minimum amount a user can deposit" 
+            />
+            <ValidatedInput 
+              label="Maximum Deposit" 
+              name="max_deposit"
+              type="number"
+              register={register}
+              subText="Maximum amount a user can deposit per request" 
+            />
+            <ValidatedInput 
+              label="Deposit Charge (%)" 
+              name="deposit_charge"
+              type="number"
+              register={register}
+              subText="Percentage fee applied to deposits" 
+            />
+            <ValidatedInput 
+              label="Minimum Payout" 
+              name="min_withdrawal"
+              type="number"
+              register={register}
+              subText="Minimum amount a user can withdraw" 
+            />
+            <ValidatedInput 
+              label="Maximum Payout" 
+              name="max_withdrawal"
+              type="number"
+              register={register}
+              subText="Maximum amount a user can withdraw per request" 
+            />
+            <ValidatedInput 
+              label="Payout Charge (%)" 
+              name="withdrawal_charge"
+              type="number"
+              register={register}
+              subText="Percentage fee applied to withdrawals" 
             />
             <ValidatedInput 
               label="Withdrawal Opening Time" 

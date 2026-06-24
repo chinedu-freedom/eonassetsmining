@@ -69,7 +69,7 @@ const navigation = [
       { name: "Languages", href: "/settings/languages" },
       { name: "About Us", href: "/settings/about" },
       { name: "Commission", href: "/settings/commission" },
-      { name: "Payout Methods", href: "/settings/payout-methods" },
+
       { name: "Payout Cryptos", href: "/settings/payout-cryptos" },
     ]
   }

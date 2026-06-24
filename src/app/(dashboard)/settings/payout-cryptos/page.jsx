@@ -129,8 +129,6 @@ export default function PayoutCryptosPage() {
                     <TableHead className="font-bold text-gray-500 uppercase text-xs whitespace-nowrap">NAME</TableHead>
                     <TableHead className="font-bold text-gray-500 uppercase text-xs whitespace-nowrap">SYMBOL</TableHead>
                     <TableHead className="font-bold text-gray-500 uppercase text-xs whitespace-nowrap">NETWORK</TableHead>
-                    <TableHead className="font-bold text-gray-500 uppercase text-xs whitespace-nowrap">MIN/MAX AMOUNT</TableHead>
-                    <TableHead className="font-bold text-gray-500 uppercase text-xs whitespace-nowrap">FEE</TableHead>
                     <TableHead className="font-bold text-gray-500 uppercase text-xs whitespace-nowrap">SORT ORDER</TableHead>
                     <TableHead className="font-bold text-gray-500 uppercase text-xs whitespace-nowrap">STATUS</TableHead>
                     <TableHead className="font-bold text-gray-500 uppercase text-xs text-right pr-6 whitespace-nowrap">ACTIONS</TableHead>
@@ -166,12 +164,6 @@ export default function PayoutCryptosPage() {
                           </span>
                           <span className="text-[11px] text-gray-400 mt-1">{item.network_name}</span>
                         </div>
-                      </TableCell>
-                      <TableCell className="text-[13px] text-gray-700 font-medium">
-                        {Number(item.min_amount).toFixed(2)} - {Number(item.max_amount).toFixed(2)}
-                      </TableCell>
-                      <TableCell className="text-[13px] text-gray-700 font-medium">
-                        {Number(item.fee_percentage).toFixed(2)}% {Number(item.fixed_fee) > 0 ? `+ ${Number(item.fixed_fee).toFixed(2)}` : ''}
                       </TableCell>
                       <TableCell className="font-bold text-[13px] text-gray-700">
                         {item.sort_order}

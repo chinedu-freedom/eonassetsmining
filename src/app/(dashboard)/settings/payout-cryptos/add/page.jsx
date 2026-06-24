@@ -18,10 +18,6 @@ export default function AddPayoutCryptoPage() {
   
   const { register, handleSubmit, control, formState: { errors }, setValue, watch } = useForm({
     defaultValues: {
-      min_amount: 10,
-      max_amount: 100000,
-      fee_percentage: 0,
-      fixed_fee: 0,
       sort_order: 0,
       status: true
     }
@@ -51,10 +47,6 @@ export default function AddPayoutCryptoPage() {
         ...data,
         symbol: data.symbol.toUpperCase(),
         network: data.network.toUpperCase(),
-        min_amount: parseFloat(data.min_amount),
-        max_amount: parseFloat(data.max_amount),
-        fee_percentage: parseFloat(data.fee_percentage),
-        fixed_fee: parseFloat(data.fixed_fee),
         sort_order: parseInt(data.sort_order),
         status: String(data.status) === 'true'
       })
@@ -181,95 +173,7 @@ export default function AddPayoutCryptoPage() {
               </div>
             </div>
 
-            {/* Amount Limits */}
-            <div className="pt-4">
-              <div className="flex items-center gap-2 mb-6 border-b border-gray-100 pb-4">
-                <Banknote className="w-5 h-5 text-[#5A8DEE]" />
-                <h3 className="text-[1.1rem] font-medium text-[#5A8DEE]">Amount Limits</h3>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
-                <div className="flex flex-col space-y-1">
-                  <label className="text-[12px] font-bold text-[#475f7b]">
-                    Minimum Amount <span className="text-red-500">*</span>
-                  </label>
-                  <Input 
-                    type="number"
-                    step="any"
-                    {...register("min_amount", { required: true })}
-                    className="border-blue-500 focus-visible:ring-0 focus-visible:border-blue-500 h-10 text-gray-700 text-[13px]"
-                  />
-                  <div className="flex items-center gap-1 mt-1">
-                    <div className="w-1.5 h-1.5 rounded-full border border-blue-500 flex items-center justify-center">
-                      <div className="w-0.5 h-0.5 bg-blue-600 rounded-full"></div>
-                    </div>
-                    <p className="text-[11px] text-blue-600">Minimum withdrawal amount</p>
-                  </div>
-                </div>
 
-                <div className="flex flex-col space-y-1">
-                  <label className="text-[12px] font-bold text-[#475f7b]">
-                    Maximum Amount <span className="text-red-500">*</span>
-                  </label>
-                  <Input 
-                    type="number"
-                    step="any"
-                    {...register("max_amount", { required: true })}
-                    className="border-blue-500 focus-visible:ring-0 focus-visible:border-blue-500 h-10 text-gray-700 text-[13px]"
-                  />
-                  <div className="flex items-center gap-1 mt-1">
-                    <div className="w-1.5 h-1.5 rounded-full border border-blue-500 flex items-center justify-center">
-                      <div className="w-0.5 h-0.5 bg-blue-600 rounded-full"></div>
-                    </div>
-                    <p className="text-[11px] text-blue-600">Maximum withdrawal amount</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Fee Settings */}
-            <div className="pt-4">
-              <div className="flex items-center gap-2 mb-6 border-b border-gray-100 pb-4">
-                <FileText className="w-5 h-5 text-[#5A8DEE]" />
-                <h3 className="text-[1.1rem] font-medium text-[#5A8DEE]">Fee Settings</h3>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
-                <div className="flex flex-col space-y-1">
-                  <label className="text-[12px] font-bold text-[#475f7b]">
-                    Fee Percentage <span className="text-red-500">*</span>
-                  </label>
-                  <Input 
-                    type="number"
-                    step="any"
-                    {...register("fee_percentage", { required: true })}
-                    className="border-blue-500 focus-visible:ring-0 focus-visible:border-blue-500 h-10 text-gray-700 text-[13px]"
-                  />
-                  <div className="flex items-center gap-1 mt-1">
-                    <div className="w-1.5 h-1.5 rounded-full border border-blue-500 flex items-center justify-center">
-                      <div className="w-0.5 h-0.5 bg-blue-600 rounded-full"></div>
-                    </div>
-                    <p className="text-[11px] text-blue-600">Percentage fee (0-100)</p>
-                  </div>
-                </div>
-
-                <div className="flex flex-col space-y-1">
-                  <label className="text-[12px] font-bold text-[#475f7b]">
-                    Fixed Fee <span className="text-red-500">*</span>
-                  </label>
-                  <Input 
-                    type="number"
-                    step="any"
-                    {...register("fixed_fee", { required: true })}
-                    className="border-blue-500 focus-visible:ring-0 focus-visible:border-blue-500 h-10 text-gray-700 text-[13px]"
-                  />
-                  <div className="flex items-center gap-1 mt-1">
-                    <div className="w-1.5 h-1.5 rounded-full border border-blue-500 flex items-center justify-center">
-                      <div className="w-0.5 h-0.5 bg-blue-600 rounded-full"></div>
-                    </div>
-                    <p className="text-[11px] text-blue-600">Fixed fee amount added to percentage</p>
-                  </div>
-                </div>
-              </div>
-            </div>
 
             {/* Display Settings */}
             <div className="pt-4">
