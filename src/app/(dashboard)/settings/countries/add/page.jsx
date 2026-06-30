@@ -50,7 +50,7 @@ export default function AddCountryPage() {
             <Link href="/settings/countries">
               <Button className="bg-[#5A8DEE] hover:bg-[#4778d9] text-white px-4 h-9 text-[13px] font-medium rounded-sm-[4px] shadow-sm border-0 flex items-center gap-1.5">
                 <ChevronLeft className="w-4 h-4" />
-                , it 
+                Back
               </Button>
             </Link>
           </div>
