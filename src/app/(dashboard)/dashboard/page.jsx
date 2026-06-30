@@ -55,7 +55,7 @@ export default function DashboardOverview() {
     const fetchStats = async () => {
       try {
         const token = localStorage.getItem('adminToken');
-        const res = await fetch('http://localhost:3001/api/admin/dashboard/stats', {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/admin/dashboard/stats`, {
           headers: {
             'Authorization': `Bearer ${token}`
           }

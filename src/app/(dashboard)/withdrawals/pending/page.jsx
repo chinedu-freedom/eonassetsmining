@@ -49,7 +49,7 @@ export default function PendingWithdrawPage() {
     setIsProcessing(true);
     try {
       const token = document.cookie.split("; ").find(row => row.startsWith("satrixnow-admin-token="))?.split("=")[1];
-      const res = await fetch(`http://localhost:3001/api/admin/transactions/withdrawals/${withdrawId}/status`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/admin/transactions/withdrawals/${withdrawId}/status`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
