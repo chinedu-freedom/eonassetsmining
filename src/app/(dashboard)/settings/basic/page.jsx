@@ -79,6 +79,7 @@ export default function BasicSettingsPage() {
       welcome_bonus_destination: "deposit",
       telegram_support: "",
       whatsapp_support: "",
+      whatsapp_group: "",
       telegram_community: "",
       telegram_group: "",
       deposit_notice: "",
@@ -111,6 +112,7 @@ export default function BasicSettingsPage() {
         welcome_bonus_destination: settingsData.welcome_bonus_destination || "deposit",
         telegram_support: settingsData.telegram_support || "",
         whatsapp_support: settingsData.whatsapp_support || "",
+        whatsapp_group: settingsData.whatsapp_group || "",
         telegram_community: settingsData.telegram_community || "",
         telegram_group: settingsData.telegram_group || "",
         deposit_notice: settingsData.deposit_notice || "",
@@ -323,6 +325,12 @@ export default function BasicSettingsPage() {
               name="telegram_group"
               register={register}
               subText="Telegram group for community discussions and member interactions" 
+            />
+            <ValidatedInput 
+              label="WhatsApp Group Link (Popup Modal)" 
+              name="whatsapp_group"
+              register={register}
+              subText="WhatsApp group link for the official information popup modal in the user dashboard" 
             />
             
             <div className="mt-2 h-full">
