@@ -22,12 +22,12 @@ import { useFetchData, usePut } from "@/hooks/useApi"
 import { cn } from "@/lib/utils"
 
 const emailSettingsSchema = z.object({
-  smtp_host: z.string().min(1, "SMTP Host is required"),
-  smtp_port: z.string().min(1, "Port is required"),
-  smtp_user: z.string().min(1, "SMTP Username/Email is required"),
+  smtp_host: z.string().optional(),
+  smtp_port: z.string().optional(),
+  smtp_user: z.string().optional(),
   smtp_pass_encrypted: z.string().optional(),
-  from_email: z.string().email("Invalid email format").min(1, "From Email is required"),
-  from_name: z.string().min(1, "From Name is required"),
+  from_email: z.string().optional(),
+  from_name: z.string().optional(),
   
   notify_deposit_processing: z.boolean(),
   notify_deposit_approved: z.boolean(),
@@ -93,7 +93,9 @@ export default function EmailSettingsPage() {
     try {
       const payload = {
         ...data,
-        smtp_port: parseInt(data.smtp_port, 10),
+      }
+      if (payload.smtp_port) {
+        payload.smtp_port = parseInt(payload.smtp_port, 10)
       }
       if (!payload.smtp_pass_encrypted) {
         delete payload.smtp_pass_encrypted // Don't overwrite with empty string
@@ -152,72 +154,6 @@ export default function EmailSettingsPage() {
             ) : (
               <form onSubmit={handleSubmit(onSubmit)}>
                 
-                {/* SMTP Configuration */}
-                <div className="mb-8">
-                  <h2 className="text-[1.1rem] font-medium text-[#5A8DEE] flex items-center gap-2 mb-6">
-                    <Server className="w-5 h-5" />
-                    SMTP Configuration
-                  </h2>
-                  
-                  <div className="bg-[#00CFDD] text-white p-4 rounded-md mb-6 text-[13px] leading-relaxed">
-                    <p>
-                      <span className="font-bold">Gmail Users:</span> Use <span className="bg-white/20 px-1 py-0.5 rounded text-pink-100 font-mono">smtp.gmail.com</span> as host, port <span className="bg-white/20 px-1 py-0.5 rounded text-pink-100 font-mono">587</span>.
-                    </p>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                    <div>
-                      <label className="text-[12px] font-medium text-[#475f7b] block mb-1">SMTP Host</label>
-                      <Input {...register("smtp_host")} className="border-gray-200 h-10 text-[13px]" />
-                      {errors.smtp_host && <span className="text-xs text-red-500">{errors.smtp_host.message}</span>}
-                    </div>
-                    <div>
-                      <label className="text-[12px] font-medium text-[#475f7b] block mb-1">Port</label>
-                      <Input {...register("smtp_port")} className="border-gray-200 h-10 text-[13px]" />
-                      {errors.smtp_port && <span className="text-xs text-red-500">{errors.smtp_port.message}</span>}
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                      <label className="text-[12px] font-medium text-[#475f7b] block mb-1">Username / Email</label>
-                      <Input {...register("smtp_user")} className="border-gray-200 h-10 text-[13px]" />
-                      {errors.smtp_user && <span className="text-xs text-red-500">{errors.smtp_user.message}</span>}
-                    </div>
-                    <div>
-                      <label className="text-[12px] font-medium text-[#475f7b] block mb-1">Password / App Password</label>
-                      <Input type="password" {...register("smtp_pass_encrypted")} className="border-gray-200 h-10 text-[13px]" />
-                      <p className="text-[11px] text-gray-400 mt-1">Leave blank to keep existing password</p>
-                      {errors.smtp_pass_encrypted && <span className="text-xs text-red-500">{errors.smtp_pass_encrypted.message}</span>}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="h-px bg-gray-100 w-full mb-8"></div>
-
-                {/* Sender Information */}
-                <div className="mb-8">
-                  <h2 className="text-[1.1rem] font-medium text-[#5A8DEE] flex items-center gap-2 mb-6">
-                    <User className="w-5 h-5" />
-                    Sender Information
-                  </h2>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                      <label className="text-[12px] font-medium text-[#475f7b] block mb-1">From Email Address</label>
-                      <Input {...register("from_email")} className="border-gray-200 h-10 text-[13px]" />
-                      {errors.from_email && <span className="text-xs text-red-500">{errors.from_email.message}</span>}
-                    </div>
-                    <div>
-                      <label className="text-[12px] font-medium text-[#475f7b] block mb-1">From Name</label>
-                      <Input {...register("from_name")} className="border-gray-200 h-10 text-[13px]" />
-                      {errors.from_name && <span className="text-xs text-red-500">{errors.from_name.message}</span>}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="h-px bg-gray-100 w-full mb-8"></div>
-
                 {/* Notification Preferences */}
                 <div className="mb-10">
                   <h2 className="text-[1.1rem] font-medium text-[#5A8DEE] flex items-center gap-2 mb-2">
