@@ -25,6 +25,14 @@ const settingsSchema = z.object({
 });
 
 export default function SpinSettingsDialog({ open, setOpen, initialData, totalPrizes = 0, activePrizes = 0 }) {
+  let symbol = "$";
+  if (typeof window !== "undefined") {
+    try {
+      const cached = localStorage.getItem("admin-platform-settings-symbol");
+      if (cached) symbol = cached;
+    } catch (e) {}
+  }
+
   const {
     register,
     handleSubmit,
@@ -102,7 +110,7 @@ export default function SpinSettingsDialog({ open, setOpen, initialData, totalPr
               <span className="text-[10px] font-bold text-blue-500 uppercase tracking-wider mt-1">Total Spins</span>
             </div>
             <div className="bg-orange-50 border border-orange-100 rounded-lg p-3 flex flex-col items-center justify-center text-center">
-              <span className="text-xl font-bold text-orange-600">${Number(initialData?.total_rewards_earned || 0).toFixed(2)}</span>
+              <span className="text-xl font-bold text-orange-600">{symbol}{Number(initialData?.total_rewards_earned || 0).toFixed(2)}</span>
               <span className="text-[10px] font-bold text-orange-500 uppercase tracking-wider mt-1">Total Paid</span>
             </div>
             <div className="bg-teal-50 border border-teal-100 rounded-lg p-3 flex flex-col items-center justify-center text-center">
@@ -115,13 +123,13 @@ export default function SpinSettingsDialog({ open, setOpen, initialData, totalPr
             {/* Spin Cost Card */}
             <div className="bg-[#94a3b8] p-6 rounded-md shadow-sm text-white">
               <h3 className="text-xl font-medium mb-6 flex items-center">
-                <span className="text-gray-200 mr-2">$</span> Spin Cost
+                <span className="text-gray-200 mr-2">{symbol}</span> Spin Cost
               </h3>
 
               <div>
                 <Label className="text-gray-200 text-sm mb-1.5 block">Cost per Spin *</Label>
                 <div className="flex bg-white rounded-sm overflow-hidden h-10">
-                  <span className="bg-gray-100 text-gray-500 px-4 py-2 border-r flex items-center">$</span>
+                  <span className="bg-gray-100 text-gray-500 px-4 py-2 border-r flex items-center">{symbol}</span>
                   <Input
                     type="number"
                     step="0.01"

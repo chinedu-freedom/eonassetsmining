@@ -313,7 +313,6 @@ Single administrator with unrestricted access.
 - Full Name
 - Username
 - Email
-- Phone Number
 - Country
 - Country Code
 - Referral ID

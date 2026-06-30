@@ -26,6 +26,14 @@ export default function SpinWheelPage() {
   const [selectedPrize, setSelectedPrize] = useState(null)
   const [prizeToDelete, setPrizeToDelete] = useState(null)
 
+  let symbol = "$";
+  if (typeof window !== "undefined") {
+    try {
+      const cached = localStorage.getItem("admin-platform-settings-symbol");
+      if (cached) symbol = cached;
+    } catch (e) {}
+  }
+
   // Data Fetching
   const { data: spinPrizes = [], isLoading: loadingPrizes } = useFetchData("/admin/rewards/spin-prizes", ["admin-spin-prizes"])
   const { data: spinSettings = {}, isLoading: loadingSettings } = useFetchData("/admin/rewards/spin-settings", ["admin-spin-settings"])
@@ -88,7 +96,7 @@ export default function SpinWheelPage() {
     },
     {
       title: "Total Prizes Paid",
-      value: `$${Number(spinSettings.total_rewards_earned || 0).toFixed(2)}`,
+      value: `${symbol}${Number(spinSettings.total_rewards_earned || 0).toFixed(2)}`,
       icon: Activity,
       color: "text-orange-600",
       bg: "bg-orange-100",
@@ -198,15 +206,15 @@ export default function SpinWheelPage() {
             <Table className="min-w-[1000px]">
               <TableHeader className="bg-gray-50/50">
                 <TableRow>
-                  <TableHead className="w-[80px] font-bold text-gray-500 uppercase text-xs whitespace-nowrap">POS</TableHead>
-                  <TableHead className="w-[80px] font-bold text-gray-500 uppercase text-xs whitespace-nowrap">COLOR</TableHead>
-                  <TableHead className="font-bold text-gray-500 uppercase text-xs whitespace-nowrap">NAME</TableHead>
-                  <TableHead className="font-bold text-gray-500 uppercase text-xs whitespace-nowrap">VALUE</TableHead>
-                  <TableHead className="font-bold text-gray-500 uppercase text-xs whitespace-nowrap">WEIGHT</TableHead>
-                  <TableHead className="font-bold text-gray-500 uppercase text-xs whitespace-nowrap">PROBABILITY</TableHead>
-                  <TableHead className="font-bold text-gray-500 uppercase text-xs text-center whitespace-nowrap">JACKPOT</TableHead>
-                  <TableHead className="font-bold text-gray-500 uppercase text-xs whitespace-nowrap">STATUS</TableHead>
-                  <TableHead className="font-bold text-gray-500 uppercase text-xs text-right pr-6 whitespace-nowrap">ACTIONS</TableHead>
+                  <TableHead className="w-[80px] font-bold text-gray-500 uppercase text-xs">POS</TableHead>
+                  <TableHead className="w-[80px] font-bold text-gray-500 uppercase text-xs">COLOR</TableHead>
+                  <TableHead className="font-bold text-gray-500 uppercase text-xs">NAME</TableHead>
+                  <TableHead className="font-bold text-gray-500 uppercase text-xs">VALUE</TableHead>
+                  <TableHead className="font-bold text-gray-500 uppercase text-xs">WEIGHT</TableHead>
+                  <TableHead className="font-bold text-gray-500 uppercase text-xs">PROBABILITY</TableHead>
+                  <TableHead className="font-bold text-gray-500 uppercase text-xs text-center">JACKPOT</TableHead>
+                  <TableHead className="font-bold text-gray-500 uppercase text-xs">STATUS</TableHead>
+                  <TableHead className="font-bold text-gray-500 uppercase text-xs text-right pr-6">ACTIONS</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -245,7 +253,7 @@ export default function SpinWheelPage() {
                             className={Number(prize.value) > 0 ? "bg-blue-600 text-white hover:bg-blue-700 border-0" : "bg-[#475f7b] text-white hover:bg-[#34465b] border-0"} 
                             variant="outline"
                           >
-                            ${Number(prize.value).toFixed(2)}
+                            {symbol}{Number(prize.value).toFixed(2)}
                           </Badge>
                         </TableCell>
                         <TableCell className="text-gray-700 font-medium">{prize.weight}</TableCell>

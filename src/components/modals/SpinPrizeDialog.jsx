@@ -43,6 +43,14 @@ const prizeSchema = z.object({
 export default function SpinPrizeDialog({ open, setOpen, initialData }) {
   const isEdit = !!initialData?.id;
 
+  let symbol = "$";
+  if (typeof window !== "undefined") {
+    try {
+      const cached = localStorage.getItem("admin-platform-settings-symbol");
+      if (cached) symbol = cached;
+    } catch (e) {}
+  }
+
   const {
     register,
     handleSubmit,
@@ -154,7 +162,7 @@ export default function SpinPrizeDialog({ open, setOpen, initialData }) {
               <div>
                 <Label className="text-gray-600 text-sm mb-1.5 block">Prize Value *</Label>
                 <div className="relative">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">$</span>
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">{symbol}</span>
                   <Input
                     type="number"
                     step="0.01"

@@ -30,7 +30,7 @@ export default function AddLanguagePage() {
   const onSubmit = async (data) => {
     try {
       await createLanguageMutation.mutateAsync(data)
-      /* toast.success("Language added successfully") (removed per user) */
+      // toast call removed per user
       router.push("/settings/languages")
     } catch (error) {
       // error handled by useApi

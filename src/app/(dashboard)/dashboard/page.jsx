@@ -43,6 +43,14 @@ export default function DashboardOverview() {
 
   const [isLoading, setIsLoading] = useState(true);
 
+  let symbol = "$";
+  if (typeof window !== "undefined") {
+    try {
+      const cached = localStorage.getItem("admin-platform-settings-symbol");
+      if (cached) symbol = cached;
+    } catch (e) {}
+  }
+
   useEffect(() => {
     const fetchStats = async () => {
       try {
@@ -66,9 +74,9 @@ export default function DashboardOverview() {
   }, []);
 
   const mainStats = [
-    { title: "Total Assets", value: `$${Number(stats.totalAssets || 0).toFixed(2)}`, icon: Briefcase, colorClasses: "bg-[#e2ffe8] text-blue-600" },
+    { title: "Total Assets", value: `${symbol}${Number(stats.totalAssets || 0).toFixed(2)}`, icon: Briefcase, colorClasses: "bg-[#e2ffe8] text-blue-600" },
     { title: "Total Users", value: (stats.totalUsers || 0).toString(), icon: User, colorClasses: "bg-[#ffeded] text-[#FF5B5C]" },
-    { title: "Assets Value", value: `$${Number(stats.assetsValue || 0).toFixed(2)}`, icon: CircleDollarSign, colorClasses: "bg-[#e2ffe8] text-blue-600" },
+    { title: "Assets Value", value: `${symbol}${Number(stats.assetsValue || 0).toFixed(2)}`, icon: CircleDollarSign, colorClasses: "bg-[#e2ffe8] text-blue-600" },
     { title: "In-Progress Assets", value: (stats.inProgressAssetsCount || 0).toString(), icon: Clock, colorClasses: "bg-[#ffeded] text-[#FF5B5C]" }
   ];
 
@@ -80,17 +88,17 @@ export default function DashboardOverview() {
   ];
 
   const sumStats = [
-    { title: "Pending Withdraw", value: `$${Number(stats.pendingWithdrawalsSum || 0).toFixed(2)}`, icon: DollarSign, colorClasses: "bg-[#e2ffe8] text-blue-600" },
-    { title: "Approved Withdraw", value: `$${Number(stats.approvedWithdrawalsSum || 0).toFixed(2)}`, icon: DollarSign, colorClasses: "bg-[#e2ffe8] text-blue-600" },
-    { title: "Pending Deposit", value: `$${Number(stats.pendingDepositsSum || 0).toFixed(2)}`, icon: DollarSign, colorClasses: "bg-[#e2ffe8] text-blue-600" },
-    { title: "Approved Deposit", value: `$${Number(stats.approvedDepositsSum || 0).toFixed(2)}`, icon: DollarSign, colorClasses: "bg-[#e2ffe8] text-blue-600" },
+    { title: "Pending Withdraw", value: `${symbol}${Number(stats.pendingWithdrawalsSum || 0).toFixed(2)}`, icon: DollarSign, colorClasses: "bg-[#e2ffe8] text-blue-600" },
+    { title: "Approved Withdraw", value: `${symbol}${Number(stats.approvedWithdrawalsSum || 0).toFixed(2)}`, icon: DollarSign, colorClasses: "bg-[#e2ffe8] text-blue-600" },
+    { title: "Pending Deposit", value: `${symbol}${Number(stats.pendingDepositsSum || 0).toFixed(2)}`, icon: DollarSign, colorClasses: "bg-[#e2ffe8] text-blue-600" },
+    { title: "Approved Deposit", value: `${symbol}${Number(stats.approvedDepositsSum || 0).toFixed(2)}`, icon: DollarSign, colorClasses: "bg-[#e2ffe8] text-blue-600" },
   ];
 
   const todayStats = [
-    { title: "Today Deposit", value: `$${Number(stats.todayDepositsSum || 0).toFixed(2)}`, icon: DollarSign, colorClasses: "bg-[#e2ffe8] text-blue-600" },
-    { title: "Today Withdraw", value: `$${Number(stats.todayWithdrawalsSum || 0).toFixed(2)}`, icon: DollarSign, colorClasses: "bg-[#e2ffe8] text-blue-600" },
+    { title: "Today Deposit", value: `${symbol}${Number(stats.todayDepositsSum || 0).toFixed(2)}`, icon: DollarSign, colorClasses: "bg-[#e2ffe8] text-blue-600" },
+    { title: "Today Withdraw", value: `${symbol}${Number(stats.todayWithdrawalsSum || 0).toFixed(2)}`, icon: DollarSign, colorClasses: "bg-[#e2ffe8] text-blue-600" },
     { title: "Today Users", value: (stats.todayUsers || 0).toString(), icon: User, colorClasses: "bg-[#e2ffe8] text-blue-600" },
-    { title: "Today Assets", value: `$${Number(stats.todayInvestmentsSum || 0).toFixed(2)}`, icon: Briefcase, colorClasses: "bg-[#e2ffe8] text-blue-600" },
+    { title: "Today Assets", value: `${symbol}${Number(stats.todayInvestmentsSum || 0).toFixed(2)}`, icon: Briefcase, colorClasses: "bg-[#e2ffe8] text-blue-600" },
   ];
 
   const StatCard = ({ title, value, icon: Icon, colorClasses }) => (
@@ -166,8 +174,8 @@ export default function DashboardOverview() {
           </div>
           <CardContent className="p-8 pt-0 z-10 relative">
             <div className="flex flex-col justify-end h-full mt-10">
-              <h1 className="text-[#5A8DEE] text-[3.5rem] font-medium leading-[1.2] mb-3">${Number(stats.todayInvestmentsSum || 0).toFixed(2)}</h1>
-              <p className="text-[#828d99] text-[15px] max-w-[200px]">With total interest amount of ${Number(stats.totalInterestAmount || 0).toFixed(2)}.</p>
+              <h1 className="text-[#5A8DEE] text-[3.5rem] font-medium leading-[1.2] mb-3">{symbol}{Number(stats.todayInvestmentsSum || 0).toFixed(2)}</h1>
+              <p className="text-[#828d99] text-[15px] max-w-[200px]">With total interest amount of {symbol}{Number(stats.totalInterestAmount || 0).toFixed(2)}.</p>
             </div>
           </CardContent>
           <div className="absolute right-[20px] bottom-[20px] z-0">

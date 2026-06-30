@@ -32,7 +32,7 @@ export default function AddCountryPage() {
   const onSubmit = async (data) => {
     try {
       await createCountryMutation.mutateAsync(data)
-      /* toast.success("Country added successfully") (removed per user) */
+      // toast call removed per user
       router.push("/settings/countries")
     } catch (error) {
       // Handled by useApi

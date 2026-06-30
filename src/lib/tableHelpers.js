@@ -5,14 +5,19 @@ import {
 
 export const formatCurrency = (amount) => {
   const numAmount = Number(amount);
-  if (isNaN(numAmount)) return "$0";
+  let symbol = "$";
+  if (typeof window !== "undefined") {
+    try {
+      const cached = localStorage.getItem("admin-platform-settings-symbol");
+      if (cached) symbol = cached;
+    } catch (e) {}
+  }
+  if (isNaN(numAmount)) return `${symbol}0`;
   
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
+  return `${symbol}${numAmount.toLocaleString(undefined, {
     minimumFractionDigits: 0,
     maximumFractionDigits: 2,
-  }).format(numAmount);
+  })}`;
 };
 
 export const getStatusColor = (status) => {

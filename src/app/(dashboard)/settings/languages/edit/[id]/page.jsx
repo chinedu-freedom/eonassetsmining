@@ -48,7 +48,7 @@ export default function EditLanguagePage() {
   const onSubmit = async (data) => {
     try {
       await updateLanguageMutation.mutateAsync(data)
-      /* toast.success("Language updated successfully") (removed per user) */
+      // toast call removed per user
       router.push("/settings/languages")
     } catch (error) {
       // Handled by useApi

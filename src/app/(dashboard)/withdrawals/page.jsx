@@ -4,12 +4,20 @@ import { Card } from "@/components/ui/card";
 import { Search, CheckCircle2, XCircle, Clock } from "lucide-react";
 
 const mockWithdrawals = [
-  { id: "WTH-2091", user: "Sarah Miller", amount: "$850.00", method: "USDT (TRC20)", address: "T9zX...4kP2", status: "Pending", date: "Nov 02, 2025 10:15" },
-  { id: "WTH-2092", user: "David Kim", amount: "$3,400.00", method: "Bitcoin (BTC)", address: "bc1q...x89m", status: "Completed", date: "Nov 01, 2025 16:40" },
-  { id: "WTH-2093", user: "Alex Chen", amount: "$12,000.00", method: "Ethereum (ETH)", address: "0x7A...9f1E", status: "Failed", date: "Oct 30, 2025 09:20" },
+  { id: "WTH-2091", user: "Sarah Miller", amount: "850.00", method: "USDT (TRC20)", address: "T9zX...4kP2", status: "Pending", date: "Nov 02, 2025 10:15" },
+  { id: "WTH-2092", user: "David Kim", amount: "3,400.00", method: "Bitcoin (BTC)", address: "bc1q...x89m", status: "Completed", date: "Nov 01, 2025 16:40" },
+  { id: "WTH-2093", user: "Alex Chen", amount: "12,000.00", method: "Ethereum (ETH)", address: "0x7A...9f1E", status: "Failed", date: "Oct 30, 2025 09:20" },
 ];
 
 export default function WithdrawalsPage() {
+  let symbol = "$";
+  if (typeof window !== "undefined") {
+    try {
+      const cached = localStorage.getItem("admin-platform-settings-symbol");
+      if (cached) symbol = cached;
+    } catch (e) {}
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -53,7 +61,7 @@ export default function WithdrawalsPage() {
                     </div>
                   </td>
                   <td className="px-6 py-4 font-medium text-slate-200">{withdrawal.user}</td>
-                  <td className="px-6 py-4 font-bold text-red-400">{withdrawal.amount}</td>
+                  <td className="px-6 py-4 font-bold text-red-400">{symbol}{withdrawal.amount}</td>
                   <td className="px-6 py-4">
                     <div className="flex flex-col">
                       <span className="text-slate-300">{withdrawal.method}</span>

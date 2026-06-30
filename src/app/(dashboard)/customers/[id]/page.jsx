@@ -33,7 +33,15 @@ export default function CustomerDetailsPage() {
   const router = useRouter()
   const { id } = params
 
-  const { data: fetchRes, isLoading, mutate } = useFetchData(`/admin/users/${id}`, ["adminUser", id])
+  let symbol = "$";
+  if (typeof window !== "undefined") {
+    try {
+      const cached = localStorage.getItem("admin-platform-settings-symbol");
+      if (cached) symbol = cached;
+    } catch (e) {}
+  }
+
+  const { data: fetchRes, isLoading, refetch } = useFetchData(`/admin/users/${id}`, ["adminUser", id])
   const user = fetchRes?.data || fetchRes;
   const [editData, setEditData] = useState(null)
   const [isSaving, setIsSaving] = useState(false)
@@ -59,7 +67,6 @@ export default function CustomerDetailsPage() {
         full_name: user.full_name || "",
         username: user.username || "",
         email: user.email || "",
-        phone_number: user.phone_number || "",
         country_id: user.country_id || "",
         is_active: user.is_active ?? true,
         can_deposit: user.can_deposit ?? true,
@@ -89,13 +96,13 @@ export default function CustomerDetailsPage() {
       
       const data = await res.json()
       if (res.ok) {
-        /* toast.success("User profile updated successfully") (removed per user) */
-        mutate()
+        // toast call removed per user
+        refetch()
       } else {
-        /* toast.error(data.error || "Failed to update user") (removed per user) */
+        // toast call removed per user
       }
     } catch (error) {
-      /* toast.error("Failed to connect to server") (removed per user) */
+      // toast call removed per user
     } finally {
       setIsSaving(false)
       setShowSaveConfirm(false)
@@ -107,7 +114,7 @@ export default function CustomerDetailsPage() {
     const setProcessing = actionType === 'credit' ? setIsCreditProcessing : setIsDebitProcessing;
     
     if (!dataObj.amount || Number(dataObj.amount) <= 0) {
-      /* toast.error("Please enter a valid amount") (removed per user) */
+      // toast call removed per user
       return;
     }
     
@@ -129,18 +136,18 @@ export default function CustomerDetailsPage() {
       
       const resData = await res.json()
       if (res.ok) {
-        /* toast.success(`Successfully ${actionType}ed ${dataObj.balance_type} balance.`) (removed per user) */
+        // toast call removed per user
         if (actionType === 'credit') {
           setCreditData({ balance_type: "main", amount: "", reason: "" })
         } else {
           setDebitData({ balance_type: "main", amount: "", reason: "" })
         }
-        mutate()
+        refetch()
       } else {
-        /* toast.error(resData.error || `Failed to process ${actionType}`) (removed per user) */
+        // toast call removed per user
       }
     } catch (error) {
-      /* toast.error("Failed to connect to server") (removed per user) */
+      // toast call removed per user
     } finally {
       setProcessing(false)
     }
@@ -162,14 +169,14 @@ export default function CustomerDetailsPage() {
       })
       
       if (res.ok) {
-        /* toast.success("User deleted successfully") (removed per user) */
+        // toast call removed per user
         router.push("/customers")
       } else {
         const data = await res.json()
-        /* toast.error(data.error || "Failed to delete user") (removed per user) */
+        // toast call removed per user
       }
     } catch (error) {
-      /* toast.error("Failed to connect to server") (removed per user) */
+      // toast call removed per user
     } finally {
       setIsDeleting(false)
       setShowDeleteConfirm(false)
@@ -189,13 +196,13 @@ export default function CustomerDetailsPage() {
       const data = await res.json()
       if (res.ok && data.token) {
         document.cookie = `sec-prd-token=${data.token}; path=/; max-age=7200; SameSite=Lax`
-        /* toast.success("Impersonating user...") (removed per user) */
+        // toast call removed per user
         window.open('http://localhost:3002/dashboard', '_blank')
       } else {
-        /* toast.error(data.error || "Failed to impersonate user") (removed per user) */
+        // toast call removed per user
       }
     } catch (error) {
-      /* toast.error("Failed to connect to server") (removed per user) */
+      // toast call removed per user
     } finally {
       setIsImpersonating(false)
     }
@@ -289,7 +296,7 @@ export default function CustomerDetailsPage() {
                 </div>
                 <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1">
                   <span className="text-muted-foreground flex items-center gap-2"><MapPin className="w-3.5 h-3.5"/> IP Address</span>
-                  <span className="font-medium text-foreground">{user.last_ip || "Unknown"}</span>
+                  <span className="font-medium text-foreground">{user.last_ip === "::1" ? "127.0.0.1 (Local)" : (user.last_ip || "Unknown")}</span>
                 </div>
               </div>
             </div>
@@ -301,14 +308,14 @@ export default function CustomerDetailsPage() {
                 <div className="bg-blue-500/5 border border-blue-500/10 rounded-xl p-4 flex items-center justify-between">
                   <div>
                     <p className="text-xs font-bold text-blue-500 uppercase tracking-wider mb-1">Main Balance</p>
-                    <h3 className="text-2xl font-bold text-foreground">${Number(user.balance || 0).toFixed(2)}</h3>
+                    <h3 className="text-2xl font-bold text-foreground">{symbol}{Number(user.balance || 0).toFixed(2)}</h3>
                   </div>
                   <div className="p-2.5 bg-blue-500/10 rounded-xl hidden sm:block"><CreditCard className="w-5 h-5 text-blue-500" /></div>
                 </div>
                 <div className="bg-emerald-500/5 border border-emerald-500/10 rounded-xl p-4 flex items-center justify-between">
                   <div>
                     <p className="text-xs font-bold text-emerald-500 uppercase tracking-wider mb-1">Gift Balance</p>
-                    <h3 className="text-2xl font-bold text-foreground">${Number(user.gift_balance || 0).toFixed(2)}</h3>
+                    <h3 className="text-2xl font-bold text-foreground">{symbol}{Number(user.gift_balance || 0).toFixed(2)}</h3>
                   </div>
                   <div className="p-2.5 bg-emerald-500/10 rounded-xl hidden sm:block"><Gift className="w-5 h-5 text-emerald-500" /></div>
                 </div>
@@ -329,10 +336,6 @@ export default function CustomerDetailsPage() {
                   <div className="space-y-2">
                     <Label className="text-foreground">Email Address</Label>
                     <Input value={editData.email} onChange={(e) => setEditData({...editData, email: e.target.value})} className="bg-background border-border text-foreground h-10" />
-                  </div>
-                  <div className="space-y-2">
-                    <Label className="text-foreground">Phone Number</Label>
-                    <Input value={editData.phone_number} onChange={(e) => setEditData({...editData, phone_number: e.target.value})} className="bg-background border-border text-foreground h-10" />
                   </div>
                   <div className="space-y-2">
                     <Label className="text-foreground flex items-center gap-2"><Globe className="w-4 h-4"/> Country</Label>
@@ -555,37 +558,37 @@ export default function CustomerDetailsPage() {
         {activeHistoryTab === 'transactions' && (
           <div className="overflow-x-auto p-0">
             <Table className="min-w-[1000px] whitespace-nowrap">
-              <TableHeader className="bg-muted/30 border-b border-border min-w-[1000px] whitespace-nowrap">
-                <TableRow className="hover:bg-transparent border-none min-w-[1000px] whitespace-nowrap">
-                  <TableHead className="font-bold text-muted-foreground uppercase text-xs tracking-wider py-4 min-w-[1000px] whitespace-nowrap">ID</TableHead>
-                  <TableHead className="font-bold text-muted-foreground uppercase text-xs tracking-wider py-4 min-w-[1000px] whitespace-nowrap">TYPE</TableHead>
-                  <TableHead className="font-bold text-muted-foreground uppercase text-xs tracking-wider py-4 min-w-[1000px] whitespace-nowrap">AMOUNT</TableHead>
-                  <TableHead className="font-bold text-muted-foreground uppercase text-xs tracking-wider py-4 min-w-[1000px] whitespace-nowrap">DESCRIPTION</TableHead>
-                  <TableHead className="font-bold text-muted-foreground uppercase text-xs tracking-wider py-4 min-w-[1000px] whitespace-nowrap">DATE</TableHead>
+              <TableHeader className="bg-muted/30 border-b border-border">
+                <TableRow className="hover:bg-transparent border-none">
+                  <TableHead className="font-bold text-muted-foreground uppercase text-xs tracking-wider py-4">ID</TableHead>
+                  <TableHead className="font-bold text-muted-foreground uppercase text-xs tracking-wider py-4">TYPE</TableHead>
+                  <TableHead className="font-bold text-muted-foreground uppercase text-xs tracking-wider py-4">AMOUNT</TableHead>
+                  <TableHead className="font-bold text-muted-foreground uppercase text-xs tracking-wider py-4">DESCRIPTION</TableHead>
+                  <TableHead className="font-bold text-muted-foreground uppercase text-xs tracking-wider py-4">DATE</TableHead>
                 </TableRow>
               </TableHeader>
-              <TableBody className="min-w-[1000px] whitespace-nowrap">
+              <TableBody>
                 {Array.isArray(user.transactions) && user.transactions.length > 0 ? (
                   user.transactions.map((tx) => (
-                    <TableRow key={tx.id} className="border-b border-border hover:bg-muted/20 min-w-[1000px] whitespace-nowrap">
-                      <TableCell className="font-medium text-sm text-foreground min-w-[1000px] whitespace-nowrap">{(tx.id || "").substring(0, 8)}...</TableCell>
-                      <TableCell className="min-w-[1000px] whitespace-nowrap">
+                    <TableRow key={tx.id} className="border-b border-border hover:bg-muted/20">
+                      <TableCell className="font-medium text-sm text-foreground">{(tx.id || "").substring(0, 8)}...</TableCell>
+                      <TableCell>
                         <Badge showDot={false} className="bg-muted text-foreground border border-border text-xs font-medium shadow-sm">{(tx.type || "").replace(/_/g, ' ')}</Badge>
                       </TableCell>
-                      <TableCell className={`font-bold text-sm ${tx.amount  className="min-w-[1000px] whitespace-nowrap"> 0 ? 'text-emerald-500' : 'text-foreground'}`}>
-                        ${Math.abs(tx.amount).toFixed(2)}
+                      <TableCell className={`font-bold text-sm ${tx.amount > 0 ? 'text-emerald-500' : 'text-foreground'}`}>
+                        {symbol}{Math.abs(tx.amount).toFixed(2)}
                       </TableCell>
-                      <TableCell className="text-sm text-muted-foreground max-w-[250px] truncate min-w-[1000px] whitespace-nowrap" title={tx.description || "N/A"}>
+                      <TableCell className="text-sm text-muted-foreground max-w-[250px] truncate" title={tx.description || "N/A"}>
                         {tx.description || "N/A"}
                       </TableCell>
-                      <TableCell className="text-sm text-muted-foreground min-w-[1000px] whitespace-nowrap">
+                      <TableCell className="text-sm text-muted-foreground">
                         {safeFormatDate(tx.created_at, "MMM dd, yyyy HH:mm")}
                       </TableCell>
                     </TableRow>
                   ))
                 ) : (
-                  <TableRow className="min-w-[1000px] whitespace-nowrap">
-                    <TableCell colSpan={5} className="h-40 text-center text-muted-foreground text-sm border-none min-w-[1000px] whitespace-nowrap">
+                  <TableRow>
+                    <TableCell colSpan={5} className="h-40 text-center text-muted-foreground text-sm border-none">
                       No recent transactions
                     </TableCell>
                   </TableRow>
@@ -598,33 +601,33 @@ export default function CustomerDetailsPage() {
         {activeHistoryTab === 'investments' && (
           <div className="overflow-x-auto p-0">
             <Table className="min-w-[1000px] whitespace-nowrap">
-              <TableHeader className="bg-muted/30 border-b border-border min-w-[1000px] whitespace-nowrap">
-                <TableRow className="hover:bg-transparent border-none min-w-[1000px] whitespace-nowrap">
-                  <TableHead className="font-bold text-muted-foreground uppercase text-xs tracking-wider py-4 min-w-[1000px] whitespace-nowrap">PLAN ID</TableHead>
-                  <TableHead className="font-bold text-muted-foreground uppercase text-xs tracking-wider py-4 min-w-[1000px] whitespace-nowrap">AMOUNT</TableHead>
-                  <TableHead className="font-bold text-muted-foreground uppercase text-xs tracking-wider py-4 min-w-[1000px] whitespace-nowrap">STATUS</TableHead>
-                  <TableHead className="font-bold text-muted-foreground uppercase text-xs tracking-wider py-4 min-w-[1000px] whitespace-nowrap">CREATED</TableHead>
+              <TableHeader className="bg-muted/30 border-b border-border">
+                <TableRow className="hover:bg-transparent border-none">
+                  <TableHead className="font-bold text-muted-foreground uppercase text-xs tracking-wider py-4">PLAN ID</TableHead>
+                  <TableHead className="font-bold text-muted-foreground uppercase text-xs tracking-wider py-4">AMOUNT</TableHead>
+                  <TableHead className="font-bold text-muted-foreground uppercase text-xs tracking-wider py-4">STATUS</TableHead>
+                  <TableHead className="font-bold text-muted-foreground uppercase text-xs tracking-wider py-4">CREATED</TableHead>
                 </TableRow>
               </TableHeader>
-              <TableBody className="min-w-[1000px] whitespace-nowrap">
+              <TableBody>
                 {Array.isArray(user.investments) && user.investments.length > 0 ? (
                   user.investments.map((inv) => (
-                    <TableRow key={inv.id} className="border-b border-border hover:bg-muted/20 min-w-[1000px] whitespace-nowrap">
-                      <TableCell className="font-medium text-sm text-foreground min-w-[1000px] whitespace-nowrap">{(inv.plan_id || "").substring(0, 8)}...</TableCell>
-                      <TableCell className="font-bold text-sm text-[#5A8DEE] min-w-[1000px] whitespace-nowrap">
-                        ${Number(inv.amount).toFixed(2)}
+                    <TableRow key={inv.id} className="border-b border-border hover:bg-muted/20">
+                      <TableCell className="font-medium text-sm text-foreground">{(inv.plan_id || "").substring(0, 8)}...</TableCell>
+                      <TableCell className="font-bold text-sm text-[#5A8DEE]">
+                        {symbol}{Number(inv.amount).toFixed(2)}
                       </TableCell>
-                      <TableCell className="min-w-[1000px] whitespace-nowrap">
+                      <TableCell>
                         <Badge showDot={false} className="bg-[#5A8DEE]/10 text-[#5A8DEE] border border-[#5A8DEE]/20 text-xs font-medium shadow-sm">{inv.status}</Badge>
                       </TableCell>
-                      <TableCell className="text-sm text-muted-foreground min-w-[1000px] whitespace-nowrap">
+                      <TableCell className="text-sm text-muted-foreground">
                         {safeFormatDate(inv.created_at, "MMM dd, yyyy")}
                       </TableCell>
                     </TableRow>
                   ))
                 ) : (
-                  <TableRow className="min-w-[1000px] whitespace-nowrap">
-                    <TableCell colSpan={4} className="h-40 text-center text-muted-foreground text-sm border-none min-w-[1000px] whitespace-nowrap">
+                  <TableRow>
+                    <TableCell colSpan={4} className="h-40 text-center text-muted-foreground text-sm border-none">
                       No active investments
                     </TableCell>
                   </TableRow>

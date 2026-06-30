@@ -46,6 +46,14 @@ export default function WithdrawalTable({ searchTerm = "", statusFilter = "all" 
   const [openMenuId, setOpenMenuId] = useState(null);
   const [isProcessingId, setIsProcessingId] = useState(null);
   const router = useRouter();
+  
+  let symbol = "$";
+  if (typeof window !== "undefined") {
+    try {
+      const cached = localStorage.getItem("admin-platform-settings-symbol");
+      if (cached) symbol = cached;
+    } catch (e) {}
+  }
   const [page, setPage] = useState(1);
   const limit = 10;
 
@@ -224,9 +232,9 @@ export default function WithdrawalTable({ searchTerm = "", statusFilter = "all" 
                     <TableCell className="truncate max-w-[200px] whitespace-nowrap">
                       {txn.user?.email || "N/A"}
                     </TableCell>
-                    <TableCell className="whitespace-nowrap font-semibold text-gray-500">${txn.amount?.toLocaleString()}</TableCell>
-                    <TableCell className="whitespace-nowrap font-medium text-red-500">-${txn.fee ? txn.fee.toLocaleString() : (txn.amount * 0.06).toLocaleString()}</TableCell>
-                    <TableCell className="whitespace-nowrap font-bold text-emerald-600">${txn.netAmount ? txn.netAmount.toLocaleString() : (txn.amount * 0.94).toLocaleString()}</TableCell>
+                    <TableCell className="whitespace-nowrap font-semibold text-gray-500">{symbol}{txn.amount?.toLocaleString()}</TableCell>
+                    <TableCell className="whitespace-nowrap font-medium text-red-500">-{symbol}{txn.fee ? txn.fee.toLocaleString() : (txn.amount * 0.06).toLocaleString()}</TableCell>
+                    <TableCell className="whitespace-nowrap font-bold text-emerald-600">{symbol}{txn.netAmount ? txn.netAmount.toLocaleString() : (txn.amount * 0.94).toLocaleString()}</TableCell>
                     <TableCell>
                       <Badge className={getStatusColor(txn.status)}>
                         {txn.status || "N/A"}

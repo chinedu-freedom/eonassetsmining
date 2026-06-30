@@ -32,7 +32,7 @@ const ValidatedInput = ({ label, requiredNote, subText, icon: Icon, register, na
       </div>
     </div>
     {requiredNote && (
-      <p className="text-[11px] text-blue-600 mt-1">○ Note: This field is required</p>
+      <p className="text-[11px] text-gray-400 mt-1">○ Note: This field is optional</p>
     )}
     {subText && (
       <p className="text-[11px] text-gray-400 mt-1">{subText}</p>
@@ -57,7 +57,7 @@ const RichTextEditor = ({ label, control, name }) => (
         )}
       />
     </div>
-    <p className="text-[11px] text-blue-600 mt-1">○ Note: This field is optional</p>
+    <p className="text-[11px] text-gray-400 mt-1">○ Note: This field is optional</p>
   </div>
 )
 
@@ -126,7 +126,8 @@ export default function BasicSettingsPage() {
         max_withdrawal: Number(settingsData.max_withdrawal) || 10000,
         withdrawal_charge: Number(settingsData.withdrawal_charge) || 2,
         max_deposit: Number(settingsData.max_deposit) || 10000,
-        min_deposit: Number(settingsData.min_deposit) || 10
+        min_deposit: Number(settingsData.min_deposit) || 10,
+        deposit_charge: Number(settingsData.deposit_charge) || 0
       })
     }
   }, [settingsData, reset])
@@ -153,10 +154,17 @@ export default function BasicSettingsPage() {
         min_investment_to_withdraw: Number(formData.min_investment_to_withdraw),
         min_withdrawal: Number(formData.min_withdrawal),
         max_withdrawal: Number(formData.max_withdrawal),
-        withdrawal_charge: Number(formData.withdrawal_charge)
+        withdrawal_charge: Number(formData.withdrawal_charge),
+        min_deposit: Number(formData.min_deposit),
+        max_deposit: Number(formData.max_deposit),
+        deposit_charge: Number(formData.deposit_charge)
       }
       await updateSettingsMutation.mutateAsync(payload)
-      // /* toast.success("Settings updated successfully") (removed per user) */
+      if (typeof window !== "undefined" && formData.currency_symbol) {
+        localStorage.setItem("admin-platform-settings-symbol", formData.currency_symbol);
+        window.dispatchEvent(new Event("storage"));
+      }
+      // toast call removed per user
     } catch (error) {
       // Error handled by useApi
     }
@@ -252,7 +260,7 @@ export default function BasicSettingsPage() {
                   </Select>
                 )}
               />
-              <p className="text-[11px] text-blue-600 mt-1">○ Note: This field is required</p>
+              <p className="text-[11px] text-gray-400 mt-1">○ Note: This field is optional</p>
             </div>
 
             <ValidatedInput label="Registration Bonus" name="registration_bonus" type="number" register={register} requiredNote={false} />

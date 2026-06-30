@@ -25,8 +25,16 @@ const mockDeposits = [
 ];
 
 export default function DepositsPage() {
-  const { data: depositsRes, isLoading, mutate } = useFetchData("/admin/transactions/deposits", ["deposits"]);
+  const { data: depositsRes, isLoading, refetch } = useFetchData("/admin/transactions/deposits", ["deposits"]);
   const deposits = Array.isArray(depositsRes) ? depositsRes : depositsRes?.data || [];
+  
+  let symbol = "$";
+  if (typeof window !== "undefined") {
+    try {
+      const cached = localStorage.getItem("admin-platform-settings-symbol");
+      if (cached) symbol = cached;
+    } catch (e) {}
+  }
   
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState("ALL");
@@ -53,13 +61,13 @@ export default function DepositsPage() {
       
       const data = await res.json();
       if (res.ok) {
-        /* toast.success(`Deposit ${type.toLowerCase() (removed per user) */} successfully`);
-        mutate();
+        // toast call removed per user
+        refetch();
       } else {
-        /* toast.error(data.error || `Failed to ${type.toLowerCase() (removed per user) */} deposit`);
+        // toast call removed per user
       }
     } catch (error) {
-      /* toast.error("Network error processing request") (removed per user) */;
+      // toast call removed per user
     } finally {
       setIsProcessing(false);
       setConfirmModal({ show: false, type: "", depositId: null });
@@ -165,7 +173,7 @@ export default function DepositsPage() {
                       {deposit.user?.full_name || "Unknown"}
                     </Link>
                   </td>
-                  <td className="px-6 py-4 font-bold text-emerald-400">${Number(deposit.amount).toFixed(2)}</td>
+                  <td className="px-6 py-4 font-bold text-emerald-400">{symbol}{Number(deposit.amount).toFixed(2)}</td>
                   <td className="px-6 py-4 text-slate-400">{deposit.cryptocurrency || deposit.payment_method?.method_name || "Crypto"}</td>
                   <td className="px-6 py-4">
                     <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${

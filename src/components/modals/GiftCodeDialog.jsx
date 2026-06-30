@@ -29,6 +29,14 @@ const giftCodeSchema = z.object({
 export default function GiftCodeDialog({ open, setOpen, initialData }) {
   const isEdit = !!initialData?.id;
 
+  let symbol = "$";
+  if (typeof window !== "undefined") {
+    try {
+      const cached = localStorage.getItem("admin-platform-settings-symbol");
+      if (cached) symbol = cached;
+    } catch (e) {}
+  }
+
   const {
     register,
     handleSubmit,
@@ -165,7 +173,7 @@ export default function GiftCodeDialog({ open, setOpen, initialData }) {
             <div>
               <Label className="text-blue-600 text-sm mb-1.5 flex items-center gap-1.5 font-medium">
                 <DollarSign className="w-4 h-4" />
-                Reward Amount ($) <span className="text-red-500">*</span>
+                Reward Amount ({symbol}) <span className="text-red-500">*</span>
               </Label>
               <Input
                 type="number"

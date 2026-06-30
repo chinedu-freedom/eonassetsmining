@@ -9,10 +9,10 @@ import { Loader2 } from "lucide-react";
 import { useImageSrc } from "@/hooks/useImageSrc";
 
 export default function ManageAccount() {
-  const patchProfile = usePatch("/api/admin/profile", "profile", true);
+  const patchProfile = usePatch("/admin/profile", "profile", false);
 
   const { data, refetch } = useFetchData(
-    "/api/admin/profile",
+    "/admin/profile",
     "profile"
   );
 
@@ -53,25 +53,28 @@ export default function ManageAccount() {
 
   const handleFileChange = (e) => {
     if (e.target.files && e.target.files[0]) {
-      setForm((prev) => ({ ...prev, image: e.target.files[0] }));
+      const file = e.target.files[0];
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setForm((prev) => ({ ...prev, image: reader.result }));
+      };
+      reader.readAsDataURL(file);
     }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const formData = new FormData();
+    const payload = {
+      username: form.username,
+      email: form.email,
+      dateOfBirth: form.dateOfBirth,
+      city: form.city,
+      postalCode: form.postalCode,
+      image: form.image,
+    };
 
-    formData.append("dateOfBirth", form.dateOfBirth);
-    formData.append("city", form.city);
-    formData.append("postalCode", form.postalCode);
-
-    if (form.image instanceof File) {
-      formData.append("image", form.image);
-    }
-
-    // ✅ same pattern as your signup (direct payload)
-    patchProfile.mutate(formData, {
+    patchProfile.mutate(payload, {
       onSuccess: () => {
         refetch();
       },
@@ -121,7 +124,7 @@ export default function ManageAccount() {
             type="file"
             accept="image/*"
             onChange={handleFileChange}
-            className="hidden"
+            style={{ display: "none" }}
           />
         </div>
       </div>
@@ -132,13 +135,13 @@ export default function ManageAccount() {
             placeholder="Full name"
             name="username"
             value={form.username}
-            disabled
+            onChange={handleChange}
           />
           <Input
             placeholder="Email Address"
             name="email"
             value={form.email}
-            disabled
+            onChange={handleChange}
           />
         </div>
 

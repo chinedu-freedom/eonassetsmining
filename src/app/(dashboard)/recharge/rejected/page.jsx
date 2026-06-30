@@ -12,6 +12,14 @@ export default function RejectedRechargePage() {
   const [searchTerm, setSearchTerm] = useState("");
   const { data: depositsRes, isLoading } = useFetchData("/admin/transactions/deposits", ["deposits"]);
   const deposits = Array.isArray(depositsRes) ? depositsRes : depositsRes?.data || [];
+
+  let symbol = "$";
+  if (typeof window !== "undefined") {
+    try {
+      const cached = localStorage.getItem("admin-platform-settings-symbol");
+      if (cached) symbol = cached;
+    } catch (e) {}
+  }
   
   const safeFormatDate = (dateString) => {
     try {
@@ -92,33 +100,33 @@ export default function RejectedRechargePage() {
         <CardContent className="p-0">
           <div className="overflow-x-auto">
             <Table className="min-w-[1000px] whitespace-nowrap">
-              <TableHeader className="bg-gray-50/50 border-b min-w-[1000px] whitespace-nowrap">
-                <TableRow className="hover:bg-transparent min-w-[1000px] whitespace-nowrap">
-                  <TableHead className="w-[60px] font-bold text-gray-600 uppercase text-[12px] tracking-wider py-4 pl-6 min-w-[1000px] whitespace-nowrap">S.N</TableHead>
-                  <TableHead className="font-bold text-gray-600 uppercase text-[12px] tracking-wider py-4 min-w-[1000px] whitespace-nowrap">USER INFO</TableHead>
-                  <TableHead className="font-bold text-gray-600 uppercase text-[12px] tracking-wider py-4 min-w-[1000px] whitespace-nowrap">PAYMENT INFO</TableHead>
-                  <TableHead className="font-bold text-gray-600 uppercase text-[12px] tracking-wider py-4 min-w-[1000px] whitespace-nowrap">PAYMENT AMOUNTS</TableHead>
-                  <TableHead className="font-bold text-gray-600 uppercase text-[12px] tracking-wider py-4 min-w-[1000px] whitespace-nowrap">PAYMENT OPERATION</TableHead>
-                  <TableHead className="font-bold text-gray-600 uppercase text-[12px] tracking-wider py-4 pr-6 min-w-[1000px] whitespace-nowrap">ACTIVE</TableHead>
+              <TableHeader className="bg-gray-50/50 border-b">
+                <TableRow className="hover:bg-transparent">
+                  <TableHead className="w-[60px] font-bold text-gray-600 uppercase text-[12px] tracking-wider py-4 pl-6">S.N</TableHead>
+                  <TableHead className="font-bold text-gray-600 uppercase text-[12px] tracking-wider py-4">USER INFO</TableHead>
+                  <TableHead className="font-bold text-gray-600 uppercase text-[12px] tracking-wider py-4">PAYMENT INFO</TableHead>
+                  <TableHead className="font-bold text-gray-600 uppercase text-[12px] tracking-wider py-4">PAYMENT AMOUNTS</TableHead>
+                  <TableHead className="font-bold text-gray-600 uppercase text-[12px] tracking-wider py-4">PAYMENT OPERATION</TableHead>
+                  <TableHead className="font-bold text-gray-600 uppercase text-[12px] tracking-wider py-4 pr-6">ACTIVE</TableHead>
                 </TableRow>
               </TableHeader>
-              <TableBody className="min-w-[1000px] whitespace-nowrap">
+              <TableBody className="">
                 {isLoading ? (
-                  <TableRow className="min-w-[1000px] whitespace-nowrap">
-                    <TableCell colSpan={6} className="text-center py-10 text-gray-500 bg-gray-50/30 min-w-[1000px] whitespace-nowrap">
+                  <TableRow className="">
+                    <TableCell colSpan={6} className="text-center py-10 text-gray-500 bg-gray-50/30">
                       <Loader2 className="w-6 h-6 animate-spin mx-auto mb-2" />
                       Loading rejected deposits...
                     </TableCell>
                   </TableRow>
                 ) : filteredData.length > 0 ? (
                   filteredData.map((item) => (
-                    <TableRow key={item.id} className="hover:bg-gray-50 border-b last:border-0 align-top min-w-[1000px] whitespace-nowrap">
-                      <TableCell className="font-medium text-gray-700 text-[13px] py-4 pl-6 min-w-[1000px] whitespace-nowrap">
+                    <TableRow key={item.id} className="hover:bg-gray-50 border-b last:border-0 align-top">
+                      <TableCell className="font-medium text-gray-700 text-[13px] py-4 pl-6">
                         {item.sn}
                       </TableCell>
                       
                       {/* USER INFO */}
-                      <TableCell className="py-4 min-w-[1000px] whitespace-nowrap">
+                      <TableCell className="py-4">
                         <div className="flex flex-col space-y-1.5">
                           <div className="text-[13px] text-gray-700">
                             Name: <span className="font-medium">{item.userInfo.name}</span>
@@ -134,7 +142,7 @@ export default function RejectedRechargePage() {
                       </TableCell>
 
                       {/* PAYMENT INFO */}
-                      <TableCell className="py-4 min-w-[1000px] whitespace-nowrap">
+                      <TableCell className="py-4">
                         <div className="flex flex-col space-y-1.5">
                           <div className="text-[13px] text-gray-700">
                             Payment Number: <br />
@@ -150,19 +158,18 @@ export default function RejectedRechargePage() {
                       </TableCell>
 
                       {/* PAYMENT AMOUNTS */}
-                      <TableCell className="py-4 min-w-[1000px] whitespace-nowrap">
+                      <TableCell className="py-4">
                         <div className="flex flex-col space-y-1.5">
                           <div className="text-[13px] text-gray-700">
-                            Payment Amount: <span className="font-medium">${item.amounts.paymentAmount.toFixed(2)}</span>
+                            Payment Amount: <span className="font-medium">{symbol}{item.amounts.paymentAmount.toFixed(2)}</span>
                           </div>
                           <div className="text-[13px] text-gray-700">
-                            Final Amount: <span className="font-bold text-gray-900">${item.amounts.finalAmount.toFixed(2)}</span>
+                            Final Amount: <span className="font-bold text-gray-900">{symbol}{item.amounts.finalAmount.toFixed(2)}</span>
                           </div>
                         </div>
                       </TableCell>
 
-                      {/* PAYMENT OPERATION */}
-                      <TableCell className="py-4 min-w-[1000px] whitespace-nowrap">
+                      <TableCell className="py-4">
                         <div className="flex flex-col space-y-2">
                           <div className="flex items-center gap-2 text-[13px] text-gray-700">
                             Status: 
@@ -170,25 +177,14 @@ export default function RejectedRechargePage() {
                               {item.operation.status}
                             </span>
                           </div>
-                          <div>
-                            <span className="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-sm font-bold bg-[#00CFDD] text-white">
-                              {item.operation.type}
-                            </span>
-                          </div>
                           <div className="text-[13px] text-gray-700">
                             Method Name: <span className="font-medium">{item.operation.methodName}</span>
-                          </div>
-                          <div className="flex items-center gap-2 text-[13px] text-gray-700">
-                            Gateway:
-                            <span className="text-[10px] lowercase tracking-wider px-2 py-0.5 rounded-sm font-medium bg-pink-100 text-[#ff5b5c]">
-                              {item.operation.gateway}
-                            </span>
                           </div>
                         </div>
                       </TableCell>
 
                       {/* ACTIVE */}
-                      <TableCell className="py-4 pr-6 align-middle min-w-[1000px] whitespace-nowrap">
+                      <TableCell className="py-4 pr-6 align-middle">
                         <div className="text-[#00CFDD] font-medium text-[14px]">
                           Already<br />processed
                         </div>
@@ -196,8 +192,8 @@ export default function RejectedRechargePage() {
                     </TableRow>
                   ))
                 ) : (
-                  <TableRow className="min-w-[1000px] whitespace-nowrap">
-                    <TableCell colSpan={6} className="text-center py-10 text-gray-500 bg-gray-50/30 min-w-[1000px] whitespace-nowrap">
+                  <TableRow className="">
+                    <TableCell colSpan={6} className="text-center py-10 text-gray-500 bg-gray-50/30">
                       No data available in table
                     </TableCell>
                   </TableRow>

@@ -123,8 +123,15 @@ export default function DepositTable({ searchTerm = "", statusFilter = "all" }) 
   };
 
   const formatCurrency = (amount) => {
-    if (!amount) return "$0";
-    return `$${amount.toLocaleString()}`;
+    let symbol = "$";
+    if (typeof window !== "undefined") {
+      try {
+        const cached = localStorage.getItem("admin-platform-settings-symbol");
+        if (cached) symbol = cached;
+      } catch (e) {}
+    }
+    if (!amount) return `${symbol}0`;
+    return `${symbol}${amount.toLocaleString()}`;
   };
 
   const handleDeleteClick = (deposit) => {

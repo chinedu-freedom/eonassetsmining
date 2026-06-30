@@ -11,6 +11,15 @@ import { format } from "date-fns"
 export default function ApprovedWithdrawPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const { data: withdrawalsRes, isLoading } = useFetchData("/admin/transactions/withdrawals", ["withdrawals"]);
+  
+  let symbol = "$";
+  if (typeof window !== "undefined") {
+    try {
+      const cached = localStorage.getItem("admin-platform-settings-symbol");
+      if (cached) symbol = cached;
+    } catch (e) {}
+  }
+
   const withdrawals = Array.isArray(withdrawalsRes) ? withdrawalsRes : withdrawalsRes?.data || [];
   
   const safeFormatDate = (dateString) => {
@@ -86,33 +95,33 @@ export default function ApprovedWithdrawPage() {
         <CardContent className="p-0">
           <div className="overflow-x-auto">
             <Table className="min-w-[1000px] whitespace-nowrap">
-              <TableHeader className="bg-gray-50/50 border-b min-w-[1000px] whitespace-nowrap">
-                <TableRow className="hover:bg-transparent min-w-[1000px] whitespace-nowrap">
-                  <TableHead className="w-[60px] font-bold text-gray-600 uppercase text-[12px] tracking-wider py-4 pl-6 min-w-[1000px] whitespace-nowrap">S.N</TableHead>
-                  <TableHead className="font-bold text-gray-600 uppercase text-[12px] tracking-wider py-4 min-w-[1000px] whitespace-nowrap">USER INFO</TableHead>
-                  <TableHead className="font-bold text-gray-600 uppercase text-[12px] tracking-wider py-4 min-w-[1000px] whitespace-nowrap">WITHDRAW INFO</TableHead>
-                  <TableHead className="font-bold text-gray-600 uppercase text-[12px] tracking-wider py-4 min-w-[1000px] whitespace-nowrap">AMOUNT DETAILS</TableHead>
-                  <TableHead className="font-bold text-gray-600 uppercase text-[12px] tracking-wider py-4 min-w-[1000px] whitespace-nowrap">STATUS</TableHead>
-                  <TableHead className="font-bold text-gray-600 uppercase text-[12px] tracking-wider py-4 pr-6 min-w-[1000px] whitespace-nowrap">ACTIONS</TableHead>
+              <TableHeader className="bg-gray-50/50 border-b">
+                <TableRow className="hover:bg-transparent">
+                  <TableHead className="w-[60px] font-bold text-gray-600 uppercase text-[12px] tracking-wider py-4 pl-6">S.N</TableHead>
+                  <TableHead className="font-bold text-gray-600 uppercase text-[12px] tracking-wider py-4">USER INFO</TableHead>
+                  <TableHead className="font-bold text-gray-600 uppercase text-[12px] tracking-wider py-4">WITHDRAW INFO</TableHead>
+                  <TableHead className="font-bold text-gray-600 uppercase text-[12px] tracking-wider py-4">AMOUNT DETAILS</TableHead>
+                  <TableHead className="font-bold text-gray-600 uppercase text-[12px] tracking-wider py-4">STATUS</TableHead>
+                  <TableHead className="font-bold text-gray-600 uppercase text-[12px] tracking-wider py-4 pr-6">ACTIONS</TableHead>
                 </TableRow>
               </TableHeader>
-              <TableBody className="min-w-[1000px] whitespace-nowrap">
+              <TableBody className="">
                 {isLoading ? (
-                  <TableRow className="min-w-[1000px] whitespace-nowrap">
-                    <TableCell colSpan={6} className="text-center py-10 text-gray-500 bg-gray-50/30 min-w-[1000px] whitespace-nowrap">
+                  <TableRow className="">
+                    <TableCell colSpan={6} className="text-center py-10 text-gray-500 bg-gray-50/30">
                       <Loader2 className="w-6 h-6 animate-spin mx-auto mb-2" />
                       Loading approved withdrawals...
                     </TableCell>
                   </TableRow>
                 ) : filteredData.length > 0 ? (
                   filteredData.map((item) => (
-                    <TableRow key={item.id} className="hover:bg-gray-50 border-b last:border-0 align-top min-w-[1000px] whitespace-nowrap">
-                      <TableCell className="font-medium text-gray-700 text-[13px] py-4 pl-6 min-w-[1000px] whitespace-nowrap">
+                    <TableRow key={item.id} className="hover:bg-gray-50 border-b last:border-0 align-top">
+                      <TableCell className="font-medium text-gray-700 text-[13px] py-4 pl-6">
                         {item.sn}
                       </TableCell>
                       
                       {/* USER INFO */}
-                      <TableCell className="py-4 min-w-[1000px] whitespace-nowrap">
+                      <TableCell className="py-4">
                         <div className="flex flex-col space-y-1.5">
                           <div className="text-[13px] text-gray-700">
                             Name: <span className="font-medium">{item.userInfo.name}</span>
@@ -125,7 +134,7 @@ export default function ApprovedWithdrawPage() {
                       </TableCell>
 
                       {/* WITHDRAW INFO */}
-                      <TableCell className="py-4 min-w-[1000px] whitespace-nowrap">
+                      <TableCell className="py-4">
                         <div className="flex flex-col space-y-1.5">
                           <div className="text-[13px] text-gray-700">
                             Method: <span className="font-medium">{item.withdrawInfo.method}</span>
@@ -140,29 +149,29 @@ export default function ApprovedWithdrawPage() {
                       </TableCell>
 
                       {/* AMOUNT DETAILS */}
-                      <TableCell className="py-4 min-w-[1000px] whitespace-nowrap">
+                      <TableCell className="py-4">
                         <div className="flex flex-col space-y-1.5">
                           <div className="text-[13px] text-gray-700">
-                            Amount: <span className="font-medium">${item.amountDetails.amount.toFixed(2)}</span>
+                            Amount: <span className="font-medium">{symbol}{item.amountDetails.amount.toFixed(2)}</span>
                           </div>
                           <div className="text-[13px] text-gray-700">
-                            Charge: <span className="text-red-500">${item.amountDetails.charge.toFixed(2)}</span>
+                            Charge: <span className="text-red-500">{symbol}{item.amountDetails.charge.toFixed(2)}</span>
                           </div>
                           <div className="text-[13px] text-gray-700">
-                            Payable: <span className="font-bold text-gray-900">${item.amountDetails.payable.toFixed(2)}</span>
+                            Payable: <span className="font-bold text-gray-900">{symbol}{item.amountDetails.payable.toFixed(2)}</span>
                           </div>
                         </div>
                       </TableCell>
 
                       {/* STATUS */}
-                      <TableCell className="py-4 min-w-[1000px] whitespace-nowrap">
+                      <TableCell className="py-4">
                         <span className="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-sm font-bold bg-blue-600 text-white">
                           APPROVED
                         </span>
                       </TableCell>
 
                       {/* ACTIONS */}
-                      <TableCell className="py-4 pr-6 align-middle min-w-[1000px] whitespace-nowrap">
+                      <TableCell className="py-4 pr-6 align-middle">
                         <div className="text-[#00CFDD] font-medium text-[14px]">
                           Already<br />processed
                         </div>
@@ -170,8 +179,8 @@ export default function ApprovedWithdrawPage() {
                     </TableRow>
                   ))
                 ) : (
-                  <TableRow className="min-w-[1000px] whitespace-nowrap">
-                    <TableCell colSpan={6} className="text-center py-10 text-gray-500 bg-gray-50/30 min-w-[1000px] whitespace-nowrap">
+                  <TableRow className="">
+                    <TableCell colSpan={6} className="text-center py-10 text-gray-500 bg-gray-50/30">
                       No data available in table
                     </TableCell>
                   </TableRow>

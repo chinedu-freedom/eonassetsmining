@@ -16,6 +16,14 @@ export default function TasksPage() {
   const [searchTerm, setSearchTerm] = useState("")
   const [statusFilter, setStatusFilter] = useState("all")
   
+  let symbol = "$";
+  if (typeof window !== "undefined") {
+    try {
+      const cached = localStorage.getItem("admin-platform-settings-symbol");
+      if (cached) symbol = cached;
+    } catch (e) {}
+  }
+
   const [isTaskDialogOpen, setIsTaskDialogOpen] = useState(false)
   const [selectedTask, setSelectedTask] = useState(null)
 
@@ -216,7 +224,7 @@ export default function TasksPage() {
                         <span className="font-medium text-gray-700 text-[13px]">{task.required_referrals}</span>
                       </TableCell>
                       <TableCell className="py-4 whitespace-nowrap">
-                        <span className="font-medium text-gray-700 text-[13px]">${Number(task.reward_amount || 0).toFixed(2)}</span>
+                        <span className="font-medium text-gray-700 text-[13px]">{symbol}{Number(task.reward_amount || 0).toFixed(2)}</span>
                       </TableCell>
                       <TableCell className="py-4 max-w-[300px] truncate text-gray-500 text-[13px] whitespace-nowrap" title={task.description}>
                         {task.description}

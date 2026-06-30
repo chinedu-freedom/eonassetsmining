@@ -35,6 +35,14 @@ const taskSchema = z.object({
 export default function TaskDialog({ open, setOpen, initialData }) {
   const isEdit = !!initialData?.id;
 
+  let symbol = "$";
+  if (typeof window !== "undefined") {
+    try {
+      const cached = localStorage.getItem("admin-platform-settings-symbol");
+      if (cached) symbol = cached;
+    } catch (e) {}
+  }
+
   const {
     register,
     handleSubmit,
@@ -160,7 +168,7 @@ export default function TaskDialog({ open, setOpen, initialData }) {
               </div>
 
               <div>
-                <Label className="text-gray-600 text-sm mb-1.5 block">Reward Amount ($)</Label>
+                <Label className="text-gray-600 text-sm mb-1.5 block">Reward Amount ({symbol})</Label>
                 <Input
                   type="number"
                   step="0.01"

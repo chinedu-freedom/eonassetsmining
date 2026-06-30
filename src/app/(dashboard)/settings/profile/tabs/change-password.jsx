@@ -14,7 +14,7 @@ export default function ChangePassword() {
     confirmPassword: "",
   });
 
-  const postChangePassword = usePost("/api/admin/change-password");
+  const postChangePassword = usePost("/admin/profile/change-password");
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -26,12 +26,12 @@ export default function ChangePassword() {
     if (postChangePassword.isPending) return;
 
     if (!form.currentPassword || !form.newPassword || !form.confirmPassword) {
-      /* toast.error("Please fill all fields") (removed per user) */;
+      // toast call removed per user
       return;
     }
 
     if (form.newPassword !== form.confirmPassword) {
-      /* toast.error("New passwords do not match") (removed per user) */;
+      // toast call removed per user
       return;
     }
 
@@ -47,7 +47,7 @@ export default function ChangePassword() {
             newPassword: "",
             confirmPassword: "",
           });
-          /* toast.success("Password updated successfully") (removed per user) */;
+          // toast call removed per user
         },
       }
     );
@@ -134,11 +134,11 @@ export default function ChangePassword() {
 //   const handleSubmit = (e) => {
 //     e.preventDefault();
 //     if (!form.currentPassword || !form.newPassword || !form.confirmPassword) {
-//       /* toast.error("Please fill all fields") (removed per user) */;
+// toast call removed per user
 //       return;
 //     }
 //     if (form.newPassword !== form.confirmPassword) {
-//       /* toast.error("New passwords do not match") (removed per user) */;
+// toast call removed per user
 //       return;
 //     }
 

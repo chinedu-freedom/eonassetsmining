@@ -44,6 +44,92 @@ const getActionDetails = (actionStr) => {
   return ACTION_MAP.default;
 }
 
+const parseUserAgent = (userAgent) => {
+  if (!userAgent || userAgent === "Unknown") return "";
+  
+  const ua = userAgent.toLowerCase();
+  let browser = "";
+  let os = "";
+  
+  // OS Detection
+  if (ua.includes("windows")) os = "Windows";
+  else if (ua.includes("macintosh") || ua.includes("mac os")) os = "macOS";
+  else if (ua.includes("iphone") || ua.includes("ipad")) os = "iOS";
+  else if (ua.includes("android")) os = "Android";
+  else if (ua.includes("linux")) os = "Linux";
+  
+  // Browser Detection
+  if (ua.includes("chrome") || ua.includes("crios")) browser = "Chrome";
+  else if (ua.includes("safari") && !ua.includes("chrome")) browser = "Safari";
+  else if (ua.includes("firefox")) browser = "Firefox";
+  else if (ua.includes("edge")) browser = "Edge";
+  
+  if (browser && os) return `${browser} on ${os}`;
+  return browser || os || "";
+}
+
+const formatDetails = (details, action, userAgent) => {
+  if (!details) {
+    const actionKey = action ? action.toLowerCase() : "";
+    if (actionKey.includes("login") || actionKey.includes("register") || actionKey.includes("password")) {
+      const device = parseUserAgent(userAgent);
+      return device ? `via ${device}` : "Success";
+    }
+    return "-";
+  }
+  try {
+    const parsed = typeof details === "string" ? JSON.parse(details) : details;
+    const actionKey = action ? action.toLowerCase() : "";
+
+    if (actionKey.includes("package purchase") || actionKey.includes("investment")) {
+      return `${parsed.planName || "Plan"} ($${parsed.amount || 0})`;
+    }
+    if (actionKey.includes("daily check in") || actionKey.includes("checkin")) {
+      return `Day ${parsed.day || "-"} reward ($${parsed.amount || 0})`;
+    }
+    if (actionKey.includes("bonus claimed")) {
+      return `Code: ${parsed.code || "-"} ($${parsed.amount || 0})`;
+    }
+    if (actionKey.includes("spin wheel") || actionKey.includes("spin")) {
+      return `Won ${parsed.prizeName || "Reward"} ($${parsed.rewardAmount || 0})`;
+    }
+    if (actionKey.includes("deposit initiated")) {
+      return `Requested $${parsed.amount || 0} (${parsed.cryptocurrency || "Crypto"})`;
+    }
+    if (actionKey.includes("deposit completed")) {
+      return `Credited $${parsed.amount || 0}`;
+    }
+    if (actionKey.includes("withdrawal requested")) {
+      return `Requested $${parsed.amount || 0} (${parsed.network || "Crypto"})`;
+    }
+    if (actionKey.includes("admin credit")) {
+      return `${parsed.balance_type === "gift" ? "Gift" : "Main"} Credit: $${parsed.amount || 0} (${parsed.reason || "No reason"})`;
+    }
+    if (actionKey.includes("admin debit")) {
+      return `${parsed.balance_type === "gift" ? "Gift" : "Main"} Debit: $${parsed.amount || 0} (${parsed.reason || "No reason"})`;
+    }
+    if (actionKey.includes("profile updated")) {
+      if (parsed.description) return parsed.description;
+      if (parsed.updatedFields) {
+        const fields = Object.keys(parsed.updatedFields).filter(k => parsed.updatedFields[k] !== undefined);
+        return `Updated: ${fields.join(", ")}`;
+      }
+    }
+    if (parsed.description) return parsed.description;
+    
+    if (typeof parsed === "object" && parsed !== null) {
+      const keys = Object.keys(parsed);
+      if (keys.length === 1) {
+        return `${keys[0]}: ${parsed[keys[0]]}`;
+      }
+      return JSON.stringify(parsed);
+    }
+    return String(parsed);
+  } catch (e) {
+    return typeof details === "string" ? details : JSON.stringify(details);
+  }
+};
+
 export default function ActivityMonitorPage() {
   const [searchTerm, setSearchTerm] = useState("")
   const [debouncedSearch, setDebouncedSearch] = useState("")
@@ -243,27 +329,27 @@ export default function ActivityMonitorPage() {
           ) : (
             <>
               <Table className="min-w-[1000px] whitespace-nowrap">
-                <TableHeader className="bg-gray-50/50 border-y min-w-[1000px] whitespace-nowrap">
-                  <TableRow className="hover:bg-transparent min-w-[1000px] whitespace-nowrap">
-                    <TableHead className="font-bold text-gray-500 uppercase text-[11px] tracking-wider py-4 w-[60px] pl-6 min-w-[1000px] whitespace-nowrap">ID</TableHead>
-                    <TableHead className="font-bold text-gray-500 uppercase text-[11px] tracking-wider py-4 min-w-[140px] whitespace-nowrap">TIME</TableHead>
-                    <TableHead className="font-bold text-gray-500 uppercase text-[11px] tracking-wider py-4 min-w-[250px] whitespace-nowrap">USER</TableHead>
-                    <TableHead className="font-bold text-gray-500 uppercase text-[11px] tracking-wider py-4 min-w-[180px] whitespace-nowrap">ACTION</TableHead>
-                    <TableHead className="font-bold text-gray-500 uppercase text-[11px] tracking-wider py-4 min-w-[140px] whitespace-nowrap">DETAILS</TableHead>
-                    <TableHead className="font-bold text-gray-500 uppercase text-[11px] tracking-wider py-4 min-w-[130px] whitespace-nowrap">IP ADDRESS</TableHead>
+                <TableHeader className="bg-gray-50/50 border-y">
+                  <TableRow className="hover:bg-transparent">
+                    <TableHead className="font-bold text-gray-500 uppercase text-[11px] tracking-wider py-4 w-[60px] pl-6">ID</TableHead>
+                    <TableHead className="font-bold text-gray-500 uppercase text-[11px] tracking-wider py-4 min-w-[140px]">TIME</TableHead>
+                    <TableHead className="font-bold text-gray-500 uppercase text-[11px] tracking-wider py-4 min-w-[250px]">USER</TableHead>
+                    <TableHead className="font-bold text-gray-500 uppercase text-[11px] tracking-wider py-4 min-w-[180px]">ACTION</TableHead>
+                    <TableHead className="font-bold text-gray-500 uppercase text-[11px] tracking-wider py-4 min-w-[140px]">DETAILS</TableHead>
+                    <TableHead className="font-bold text-gray-500 uppercase text-[11px] tracking-wider py-4 min-w-[130px]">IP ADDRESS</TableHead>
                   </TableRow>
                 </TableHeader>
-                <TableBody className="min-w-[1000px] whitespace-nowrap">
+                <TableBody className="">
                   {activities.map((record, index) => {
                     const actionInfo = getActionDetails(record.action)
                     const dateObj = new Date(record.created_at)
                     
                     return (
-                      <TableRow key={record.id} className="hover:bg-gray-50 border-b last:border-0 min-w-[1000px] whitespace-nowrap">
-                        <TableCell className="font-medium text-gray-500 text-[13px] py-4 pl-6 min-w-[1000px] whitespace-nowrap">
+                      <TableRow key={record.id} className="hover:bg-gray-50 border-b last:border-0">
+                        <TableCell className="font-medium text-gray-500 text-[13px] py-4 pl-6">
                           #{record.id.substring(0, 5)}...
                         </TableCell>
-                        <TableCell className="py-4 min-w-[1000px] whitespace-nowrap">
+                        <TableCell className="py-4">
                           <div className="font-bold text-gray-800 text-[12px]">
                             {dateObj.toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' })}
                           </div>
@@ -271,30 +357,26 @@ export default function ActivityMonitorPage() {
                             {dateObj.toLocaleTimeString()}
                           </div>
                         </TableCell>
-                        <TableCell className="py-4 min-w-[1000px] whitespace-nowrap">
+                        <TableCell className="py-4">
                           <div className="font-bold text-[#5A8DEE] text-[13px] hover:underline cursor-pointer">
                             {record.user?.email || "Unknown User"}
                           </div>
                           <div className="text-[12px] text-gray-500 mt-1">ID: {record.user?.id || "-"}</div>
                         </TableCell>
-                        <TableCell className="py-4 min-w-[1000px] whitespace-nowrap">
-                          <Badge className={`${actionInfo.color} text-white border-0 px-3 py-1 rounded-full font-bold text-[10px] tracking-wide uppercase flex items-center w-fit gap-1.5`}>
+                        <TableCell className="py-4">
+                          <Badge showDot={false} className={`${actionInfo.color} text-white border-0 px-3 py-1 rounded-full font-bold text-[10px] tracking-wide uppercase flex items-center w-fit gap-1.5`}>
                             <actionInfo.icon className="w-3.5 h-3.5" />
                             {record.action}
                           </Badge>
                         </TableCell>
-                        <TableCell className="py-4 min-w-[1000px] whitespace-nowrap">
-                          <div className="text-[11px] text-gray-600 max-w-[200px] truncate" title={record.details ? JSON.stringify(record.details) : "No specific details"}>
-                            {record.details ? (
-                              <span className="font-mono bg-gray-100 px-1 rounded">JSON</span>
-                            ) : (
-                              "-"
-                            )}
+                        <TableCell className="py-4">
+                          <div className="text-[11px] text-gray-600 max-w-[250px] truncate" title={record.details ? (typeof record.details === 'string' ? record.details : JSON.stringify(record.details)) : (record.user_agent || "No specific details")}>
+                            {formatDetails(record.details, record.action, record.user_agent)}
                           </div>
                         </TableCell>
-                        <TableCell className="py-4 min-w-[1000px] whitespace-nowrap">
-                          <Badge className="bg-gray-100 text-gray-700 hover:bg-gray-200 border-0 px-2 py-1 rounded-[4px] font-bold text-[11px]">
-                            {record.ip_address || "Unknown IP"}
+                        <TableCell className="py-4">
+                          <Badge showDot={false} className="bg-gray-100 text-gray-700 hover:bg-gray-200 border-0 px-2 py-1 rounded-[4px] font-bold text-[11px]">
+                            {record.ip_address === "::1" ? "127.0.0.1 (Local)" : (record.ip_address || "Unknown IP")}
                           </Badge>
                         </TableCell>
                       </TableRow>

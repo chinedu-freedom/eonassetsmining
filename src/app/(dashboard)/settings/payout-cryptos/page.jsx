@@ -124,14 +124,14 @@ export default function PayoutCryptosPage() {
               <Table className="min-w-[1000px]">
                 <TableHeader className="bg-gray-50/50">
                   <TableRow>
-                    <TableHead className="w-[60px] font-bold text-gray-500 uppercase text-xs whitespace-nowrap">S.N</TableHead>
-                    <TableHead className="w-[60px] font-bold text-gray-500 uppercase text-xs whitespace-nowrap">ICON</TableHead>
-                    <TableHead className="font-bold text-gray-500 uppercase text-xs whitespace-nowrap">NAME</TableHead>
-                    <TableHead className="font-bold text-gray-500 uppercase text-xs whitespace-nowrap">SYMBOL</TableHead>
-                    <TableHead className="font-bold text-gray-500 uppercase text-xs whitespace-nowrap">NETWORK</TableHead>
-                    <TableHead className="font-bold text-gray-500 uppercase text-xs whitespace-nowrap">SORT ORDER</TableHead>
-                    <TableHead className="font-bold text-gray-500 uppercase text-xs whitespace-nowrap">STATUS</TableHead>
-                    <TableHead className="font-bold text-gray-500 uppercase text-xs text-right pr-6 whitespace-nowrap">ACTIONS</TableHead>
+                    <TableHead className="w-[60px] font-bold text-gray-500 uppercase text-xs">S.N</TableHead>
+                    <TableHead className="w-[60px] font-bold text-gray-500 uppercase text-xs">ICON</TableHead>
+                    <TableHead className="font-bold text-gray-500 uppercase text-xs">NAME</TableHead>
+                    <TableHead className="font-bold text-gray-500 uppercase text-xs">SYMBOL</TableHead>
+                    <TableHead className="font-bold text-gray-500 uppercase text-xs">NETWORK</TableHead>
+                    <TableHead className="font-bold text-gray-500 uppercase text-xs">SORT ORDER</TableHead>
+                    <TableHead className="font-bold text-gray-500 uppercase text-xs">STATUS</TableHead>
+                    <TableHead className="font-bold text-gray-500 uppercase text-xs text-right pr-6">ACTIONS</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>

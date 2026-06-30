@@ -114,12 +114,6 @@ export default function SliderDialog({ open, setOpen, initialData, onSuccess }) 
           <DialogTitle className="text-xl font-medium text-gray-700">
             {isEdit ? "Edit Slider" : "Create New Slider"}
           </DialogTitle>
-          <DialogClose asChild>
-            <Button variant="default" className="bg-[#5A8DEE] hover:bg-[#4778d9] text-white flex items-center gap-2 px-4 py-2 h-auto">
-              <ArrowLeft className="w-4 h-4" />
-              Slider List
-            </Button>
-          </DialogClose>
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="px-8 py-6 space-y-6">

@@ -195,3 +195,7 @@
     @apply font-sans;
   }
 }
+
+.hidden {
+  display: none !important;
+}

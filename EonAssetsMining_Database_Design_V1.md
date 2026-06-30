@@ -69,7 +69,6 @@ model users {
   password_hash    String
   full_name        String
   username         String?   @unique
-  phone_number     String?
   profile_image    String?
   country_id       String    @db.Uuid
   language_id      String    @db.Uuid
@@ -202,7 +201,7 @@ model gift_codes {
   code          String        @unique
   reward_type   GiftRewardType
   reward_amount Decimal       @db.Decimal(18, 8)
-  max_uses      Int
+  max_uses      Inta
   used_count    Int           @default(0)
   status        Boolean       @default(true)
   expires_at    DateTime?

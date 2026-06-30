@@ -33,6 +33,11 @@ export function useImageSrc(image, fallback = "/placeholder-image.jpg") {
       };
     }
 
+    if (typeof image === "string") {
+      setSrc(image);
+      return;
+    }
+
     if (image?.asset?._ref) {
       setSrc(buildSanityImage(image));
       return;

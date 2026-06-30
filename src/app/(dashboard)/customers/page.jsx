@@ -22,6 +22,14 @@ export default function CustomersManagementPage() {
   const [statusFilter, setStatusFilter] = useState("all-status")
   const [countryFilter, setCountryFilter] = useState("all-countries")
 
+  let symbol = "$";
+  if (typeof window !== "undefined") {
+    try {
+      const cached = localStorage.getItem("admin-platform-settings-symbol");
+      if (cached) symbol = cached;
+    } catch (e) {}
+  }
+
   const { data: usersRes, isLoading, mutate } = useFetchData("/admin/users", ["adminUsers"]);
   const usersData = Array.isArray(usersRes) ? usersRes : usersRes?.data || [];
 
@@ -99,7 +107,7 @@ export default function CustomersManagementPage() {
             <div className="relative flex-1 min-w-[300px]">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
               <Input
-                placeholder="Search users by name, email or phone number..."
+                placeholder="Search users by name or email..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-9 border-gray-300 h-10 rounded-md text-[13px]"
@@ -135,30 +143,30 @@ export default function CustomersManagementPage() {
 
         {/* Table Section */}
         <div className="overflow-x-auto">
-          <Table className="min-w-[1000px] whitespace-nowrap">
-            <TableHeader className="bg-gray-50/50 border-b min-w-[1000px] whitespace-nowrap">
-              <TableRow className="hover:bg-transparent min-w-[1000px] whitespace-nowrap">
-                <TableHead className="font-bold text-gray-600 uppercase text-[11px] tracking-wider w-[50px] py-4 min-w-[1000px] whitespace-nowrap">#</TableHead>
-                <TableHead className="font-bold text-gray-600 uppercase text-[11px] tracking-wider py-4 min-w-[1000px] whitespace-nowrap">USER</TableHead>
-                <TableHead className="font-bold text-gray-600 uppercase text-[11px] tracking-wider py-4 min-w-[1000px] whitespace-nowrap">COUNTRY</TableHead>
-                <TableHead className="font-bold text-gray-600 uppercase text-[11px] tracking-wider py-4 min-w-[1000px] whitespace-nowrap">MAIN BALANCE</TableHead>
-                <TableHead className="font-bold text-gray-600 uppercase text-[11px] tracking-wider py-4 min-w-[1000px] whitespace-nowrap">GIFT BALANCE</TableHead>
-                <TableHead className="font-bold text-gray-600 uppercase text-[11px] tracking-wider py-4 min-w-[1000px] whitespace-nowrap">REGISTERED</TableHead>
-                <TableHead className="font-bold text-gray-600 uppercase text-[11px] tracking-wider py-4 min-w-[1000px] whitespace-nowrap">STATUS</TableHead>
-                <TableHead className="font-bold text-gray-600 uppercase text-[11px] tracking-wider py-4 min-w-[1000px] whitespace-nowrap">ACTIONS</TableHead>
+          <Table>
+            <TableHeader className="bg-gray-50/50 border-b">
+              <TableRow className="hover:bg-transparent">
+                <TableHead className="font-bold text-gray-600 uppercase text-[11px] tracking-wider w-[50px] py-4">#</TableHead>
+                <TableHead className="font-bold text-gray-600 uppercase text-[11px] tracking-wider py-4">USER</TableHead>
+                <TableHead className="font-bold text-gray-600 uppercase text-[11px] tracking-wider py-4">COUNTRY</TableHead>
+                <TableHead className="font-bold text-gray-600 uppercase text-[11px] tracking-wider py-4">MAIN BALANCE</TableHead>
+                <TableHead className="font-bold text-gray-600 uppercase text-[11px] tracking-wider py-4">GIFT BALANCE</TableHead>
+                <TableHead className="font-bold text-gray-600 uppercase text-[11px] tracking-wider py-4">REGISTERED</TableHead>
+                <TableHead className="font-bold text-gray-600 uppercase text-[11px] tracking-wider py-4">STATUS</TableHead>
+                <TableHead className="font-bold text-gray-600 uppercase text-[11px] tracking-wider py-4">ACTIONS</TableHead>
               </TableRow>
             </TableHeader>
-            <TableBody className="min-w-[1000px] whitespace-nowrap">
+            <TableBody>
               {isLoading ? (
-                <TableRow className="min-w-[1000px] whitespace-nowrap">
-                  <TableCell colSpan={8} className="text-center py-10 text-gray-500 bg-gray-50/30 min-w-[1000px] whitespace-nowrap">
-                    <Loader2 className="w-6 h-6 animate-spin mx-auto mb-2" />
+                <TableRow>
+                  <TableCell colSpan={8} className="text-center py-10 text-gray-500 bg-gray-50/30">
+                    <Loader2 className="w-6 h-6 animate-spin mx-auto mb-2 text-[#5A8DEE]" />
                     Loading users...
                   </TableCell>
                 </TableRow>
               ) : filteredUsers.length === 0 ? (
-                <TableRow className="min-w-[1000px] whitespace-nowrap">
-                  <TableCell colSpan={8} className="h-[400px] text-center min-w-[1000px] whitespace-nowrap">
+                <TableRow>
+                  <TableCell colSpan={8} className="h-[400px] text-center">
                     <div className="flex flex-col items-center justify-center text-gray-500">
                       <Search className="w-12 h-12 mb-4 text-gray-300" />
                       <p className="text-lg font-medium text-gray-600">No users found</p>
@@ -168,11 +176,11 @@ export default function CustomersManagementPage() {
                 </TableRow>
               ) : (
                 filteredUsers.map((user) => (
-                <TableRow key={user.id} className="hover:bg-gray-50 border-b last:border-0 min-w-[1000px] whitespace-nowrap">
-                  <TableCell className="font-medium text-gray-700 text-[13px] py-4 min-w-[1000px] whitespace-nowrap">
+                <TableRow key={user.id} className="hover:bg-gray-50 border-b last:border-0">
+                  <TableCell className="font-medium text-gray-700 text-[13px] py-4">
                     {user.id.substring(0, 8)}...
                   </TableCell>
-                  <TableCell className="py-4 min-w-[1000px] whitespace-nowrap">
+                  <TableCell className="py-4">
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 rounded-full bg-[#5A8DEE] text-white flex items-center justify-center font-bold text-sm shrink-0">
                         {user.email.charAt(0).toUpperCase()}
@@ -184,24 +192,24 @@ export default function CustomersManagementPage() {
                     </div>
                   </TableCell>
 
-                  <TableCell className="py-4 min-w-[1000px] whitespace-nowrap">
+                  <TableCell className="py-4">
                     <Badge showDot={false} className="bg-gray-400 hover:bg-gray-500 text-white border-0 px-2.5 py-0.5 rounded-[4px] font-medium text-[11px]">
                       {user.country?.country_code || "N/A"}
                     </Badge>
                   </TableCell>
-                  <TableCell className="py-4 min-w-[1000px] whitespace-nowrap">
-                    <span className="font-bold text-[#5A8DEE] text-[13px]">${Number(user.balance || 0).toFixed(2)}</span>
+                  <TableCell className="py-4">
+                    <span className="font-bold text-[#5A8DEE] text-[13px]">{symbol}{Number(user.balance || 0).toFixed(2)}</span>
                   </TableCell>
-                  <TableCell className="py-4 min-w-[1000px] whitespace-nowrap">
-                    <span className="font-bold text-blue-600 text-[13px]">${Number(user.gift_balance || 0).toFixed(2)}</span>
+                  <TableCell className="py-4">
+                    <span className="font-bold text-blue-600 text-[13px]">{symbol}{Number(user.gift_balance || 0).toFixed(2)}</span>
                   </TableCell>
-                  <TableCell className="text-[12px] text-gray-600 py-4 min-w-[1000px] whitespace-nowrap">
+                  <TableCell className="text-[12px] text-gray-600 py-4 whitespace-nowrap">
                     {format(new Date(user.created_at), "MMM dd, yyyy")}
                   </TableCell>
-                  <TableCell className="py-4 min-w-[1000px] whitespace-nowrap">
+                  <TableCell className="py-4">
                     <StatusBadge status={user.is_active ? "ACTIVE" : "BANNED"} />
                   </TableCell>
-                  <TableCell className="py-4 min-w-[1000px] whitespace-nowrap">
+                  <TableCell className="py-4">
                     <div className="flex items-center gap-1.5">
                       <Link href={`/customers/${user.id}`}>
                         <Button variant="outline" size="icon" className="h-7 w-7 text-blue-500 border-gray-200 hover:bg-blue-50" title="Edit">
