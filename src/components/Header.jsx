@@ -7,7 +7,10 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export function Header({ onMenuClick }) {
   const { data, isLoading } = useFetchData("/admin/profile", "profile");
+  const { data: settingsData } = useFetchData("/settings", "platform-settings");
+  
   const admin = data?.success && data?.data ? data.data : null;
+  const siteLogo = settingsData?.settings?.platform_logo;
 
   const displayName = admin?.username || (admin?.email ? admin.email.split("@")[0] : "eonassets");
   const avatarLetter = (admin?.username ? admin.username[0] : (admin?.email ? admin.email[0] : "E")).toUpperCase();
@@ -35,13 +38,16 @@ export function Header({ onMenuClick }) {
               <div className="flex flex-col items-end">
                 <span className="text-[14px] font-semibold text-[#475f7b] capitalize">{displayName}</span>
               </div>
-              <Avatar.Root className="inline-flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-blue-600 border-none shadow-sm">
-                {admin?.image && (
+              <Avatar.Root className={`inline-flex h-10 w-10 items-center justify-center overflow-hidden rounded-full shadow-sm ${(!siteLogo && !admin?.image) ? 'bg-blue-600' : 'bg-transparent'}`}>
+                {admin?.image ? (
                   <Avatar.Image src={admin.image} className="h-full w-full object-cover" />
+                ) : siteLogo ? (
+                  <Avatar.Image src={siteLogo} className="h-full w-full object-cover" />
+                ) : (
+                  <Avatar.Fallback className="text-xl font-bold text-white leading-1 font-sans">
+                    {avatarLetter}
+                  </Avatar.Fallback>
                 )}
-                <Avatar.Fallback className="text-xl font-bold text-white leading-1 font-sans">
-                  {avatarLetter}
-                </Avatar.Fallback>
               </Avatar.Root>
             </>
           )}
