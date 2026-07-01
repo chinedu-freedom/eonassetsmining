@@ -1,6 +1,21 @@
-export function Card({ className = "", children }) {
+export function Card({ className = "", children, ...props }) {
+  // Remove conflicting utility classes to ensure a standardized premium card style
+  const cleanedClassName = className
+    .replace(/\bborder-none\b/g, '')
+    .replace(/\bborder-border\b/g, '')
+    .replace(/\bbg-card\b/g, '')
+    .replace(/\bbg-white\b/g, '')
+    .replace(/\brounded-(?:sm|md|lg|xl|2xl|3xl|none)\b/g, '')
+    .replace(/\brounded-\[[^\]]+\]\b/g, '')
+    .replace(/\bshadow-sm\b/g, '')
+    .replace(/\bshadow-\[[^\]]+\]\b/g, '')
+    .trim();
+
   return (
-    <div className={`bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-sm ${className}`}>
+    <div 
+      className={`bg-white border border-gray-100 rounded-2xl shadow-sm transition-all duration-200 overflow-hidden ${cleanedClassName}`}
+      {...props}
+    >
       {children}
     </div>
   );
