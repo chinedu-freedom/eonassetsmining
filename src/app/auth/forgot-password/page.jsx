@@ -73,7 +73,7 @@ export default function ForgotPasswordPage() {
 
             <Button
               type="submit"
-              className="w-full bg-purple-600 text-white hover:bg-purple-700 rounded-md py-3 font-medium transition-all"
+              className="w-full bg-purple-600 text-white hover:bg-purple-700 rounded-md py-4.5 font-medium transition-all"
               disabled={requestOtpMutation.isPending}
             >
               {requestOtpMutation.isPending ? (
