@@ -18,48 +18,55 @@ const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false })
 
 const ValidatedInput = ({ label, requiredNote, subText, icon: Icon, register, name, type="text" }) => (
   <div className="flex flex-col space-y-1">
-    <label className="text-[13px] font-medium text-[#475f7b]">{label}</label>
+    <label className="text-[13px] font-bold text-gray-700">{label}</label>
     <div className="relative">
       <Input 
         type={type}
         step={type === 'number' ? 'any' : undefined}
         {...register(name)}
-        className="border-blue-500 focus-visible:ring-0 focus-visible:border-blue-500 h-10 pr-10 text-gray-700"
+        className="border-gray-200 focus-visible:ring-0 focus-visible:border-blue-500/50 focus:border-blue-500/50 h-10 pr-10 text-gray-700 bg-white rounded-lg"
       />
       <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center space-x-1">
         {Icon && <Icon className="w-4 h-4 text-gray-400" />}
-        <Check className="w-5 h-5 text-blue-600" />
+        <Check className="w-4 h-4 text-blue-500" />
       </div>
     </div>
-    {requiredNote && (
-      <p className="text-[11px] text-gray-400 mt-1">○ Note: This field is optional</p>
-    )}
-    {subText && (
-      <p className="text-[11px] text-gray-400 mt-1">{subText}</p>
-    )}
   </div>
 )
 
-const RichTextEditor = ({ label, control, name }) => (
-  <div className="flex flex-col space-y-1 h-full">
-    <label className="text-[13px] font-medium text-[#475f7b]">{label}</label>
-    <div className="rounded-sm flex-1 flex flex-col bg-white">
-      <Controller
-        name={name}
-        control={control}
-        render={({ field }) => (
-          <ReactQuill 
-            theme="snow"
-            value={field.value || ''} 
-            onChange={field.onChange} 
-            className="h-[150px] pb-10"
-          />
-        )}
-      />
+const RichTextEditor = ({ label, control, name }) => {
+  const modules = {
+    toolbar: [
+      [{ header: [1, 2, 3, false] }],
+      ["bold", "italic", "underline", "strike"],
+      [{ color: [] }, { background: [] }],
+      ["link"],
+      [{ list: "ordered" }, { list: "bullet" }],
+      ["clean"]
+    ]
+  };
+
+  return (
+    <div className="flex flex-col space-y-1 h-full">
+      <label className="text-[13px] font-bold text-gray-700">{label}</label>
+      <div className="rounded-lg border border-gray-200 overflow-hidden flex-1 flex flex-col bg-white">
+        <Controller
+          name={name}
+          control={control}
+          render={({ field }) => (
+            <ReactQuill 
+              theme="snow"
+              modules={modules}
+              value={field.value || ''} 
+              onChange={field.onChange} 
+              className="h-[150px] pb-10"
+            />
+          )}
+        />
+      </div>
     </div>
-    <p className="text-[11px] text-gray-400 mt-1">○ Note: This field is optional</p>
-  </div>
-)
+  );
+}
 
 export default function BasicSettingsPage() {
   const [fileName, setFileName] = useState("");
@@ -166,9 +173,7 @@ export default function BasicSettingsPage() {
         localStorage.setItem("admin-platform-settings-symbol", formData.currency_symbol);
         window.dispatchEvent(new Event("storage"));
       }
-      // toast call removed per user
     } catch (error) {
-      // Error handled by useApi
     }
   }
 
@@ -187,22 +192,22 @@ export default function BasicSettingsPage() {
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 pb-10">
       
       {/* Section 1: Update Settings */}
-      <Card className="border-none shadow-sm bg-white rounded-md">
+      <Card className="border-none shadow-sm bg-white rounded-lg">
         <CardContent className="p-8">
-          <h2 className="text-[1.2rem] font-medium text-[#475f7b] mb-6">Update Settings</h2>
+          <h2 className="text-[1.2rem] font-bold text-gray-800 mb-6">Update Settings</h2>
           
           {/* Logo Upload Section */}
           <div className="flex flex-col md:flex-row gap-8 mb-8">
             <div className="flex-1">
-              <label className="text-[13px] font-medium text-[#475f7b] flex items-center gap-1 mb-1">
+              <label className="text-[13px] font-bold text-gray-700 flex items-center gap-1 mb-1">
                 Platform Logo <span className="text-[11px] font-normal text-gray-400">(For header display)</span>
               </label>
-              <div className="border border-gray-200 rounded-sm flex items-center h-10 w-full overflow-hidden relative">
+              <div className="border border-gray-200 rounded-lg flex items-center h-10 w-full overflow-hidden relative bg-white shadow-sm">
                 <input 
                   id="platform-logo-upload"
                   type="file" 
                   accept="image/*"
-                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
                   onChange={(e) => {
                     const file = e.target.files[0];
                     if (file) {
@@ -216,7 +221,7 @@ export default function BasicSettingsPage() {
                     }
                   }}
                 />
-                <button type="button" className="bg-gray-100 border-r border-gray-200 px-4 h-full text-sm font-medium text-gray-700 hover:bg-gray-200 transition-colors pointer-events-none">
+                <button type="button" className="bg-gray-50 border-r border-gray-200 px-4 h-full text-sm font-semibold text-gray-700 hover:bg-gray-100 transition-colors pointer-events-none">
                   Choose file
                 </button>
                 <span className="px-4 text-sm text-gray-400 truncate flex-1">{fileName || "No file chosen"}</span>
@@ -224,7 +229,7 @@ export default function BasicSettingsPage() {
               <p className="text-[11px] text-gray-400 mt-1">Suggested size: 48x48px (Square image)</p>
             </div>
             <div className="flex-1">
-              <label htmlFor="platform-logo-upload" className="w-24 h-24 bg-gray-50 border border-dashed border-gray-300 rounded-md flex items-center justify-center cursor-pointer hover:bg-gray-100 transition-colors block overflow-hidden">
+              <label htmlFor="platform-logo-upload" className="w-24 h-24 bg-gray-50 border border-dashed border-gray-300 rounded-lg flex items-center justify-center cursor-pointer hover:bg-gray-100 transition-colors block overflow-hidden shadow-sm">
                 <div className="w-full h-full flex items-center justify-center relative">
                   {(previewUrl || settingsData?.platform_logo) ? (
                     <img src={previewUrl || settingsData?.platform_logo} alt="Logo preview" className="w-full h-full object-cover" />
@@ -244,13 +249,13 @@ export default function BasicSettingsPage() {
             <ValidatedInput label="Currency Symbol" name="currency_symbol" register={register} requiredNote={true} />
             
             <div className="flex flex-col space-y-1">
-              <label className="text-[13px] font-medium text-[#475f7b]">Timezone</label>
+              <label className="text-[13px] font-bold text-gray-700">Timezone</label>
               <Controller
                 name="timezone"
                 control={control}
                 render={({ field }) => (
                   <Select value={field.value} onValueChange={field.onChange}>
-                    <SelectTrigger className="border-blue-500 focus:ring-0 h-10">
+                    <SelectTrigger className="border-gray-200 focus:border-blue-500/50 focus:ring-0 h-10 rounded-lg text-gray-700 text-[13px] bg-white">
                       <SelectValue placeholder="Select Timezone" />
                     </SelectTrigger>
                     <SelectContent>
@@ -262,19 +267,18 @@ export default function BasicSettingsPage() {
                   </Select>
                 )}
               />
-              <p className="text-[11px] text-gray-400 mt-1">○ Note: This field is optional</p>
             </div>
 
             <ValidatedInput label="Registration Bonus" name="registration_bonus" type="number" register={register} requiredNote={false} />
 
             <div className="flex flex-col space-y-1">
-              <label className="text-[13px] font-medium text-[#475f7b]">Welcome Bonus Balance Destination</label>
+              <label className="text-[13px] font-bold text-gray-700">Welcome Bonus Balance Destination</label>
               <Controller
                 name="welcome_bonus_destination"
                 control={control}
                 render={({ field }) => (
                   <Select value={field.value} onValueChange={field.onChange}>
-                    <SelectTrigger className="border-blue-500 focus:ring-0 h-10">
+                    <SelectTrigger className="border-gray-200 focus:border-blue-500/50 focus:ring-0 h-10 rounded-lg text-gray-700 text-[13px] bg-white">
                       <SelectValue placeholder="Select Destination" />
                     </SelectTrigger>
                     <SelectContent>
@@ -284,17 +288,17 @@ export default function BasicSettingsPage() {
                   </Select>
                 )}
               />
-              <p className="text-[11px] text-gray-400 mt-1">Choose which balance the welcome bonus will be credited to</p>
+              <p className="text-[11px] text-blue-600 mt-1">Choose which balance the welcome bonus will be credited to</p>
             </div>
           </div>
         </CardContent>
       </Card>
 
       {/* Section 2: Contact & Support Links */}
-      <Card className="border-none shadow-sm bg-white rounded-md">
+      <Card className="border-none shadow-sm bg-white rounded-lg pb-10">
         <CardContent className="p-8">
           <div className="mb-6">
-            <h2 className="text-[1.2rem] font-medium text-[#5A8DEE] flex items-center gap-2">
+            <h2 className="text-[1.2rem] font-bold text-blue-600 flex items-center gap-2">
               <HeadphonesIcon className="w-5 h-5" />
               Contact & Support Links
             </h2>
@@ -333,30 +337,31 @@ export default function BasicSettingsPage() {
               subText="WhatsApp group link for the official information popup modal in the user dashboard" 
             />
             
-            <div className="mt-2 h-full">
-              <RichTextEditor 
-                label="Recharge Notice"
-                name="deposit_notice"
-                control={control}
-              />
-            </div>
-
-            <div className="mt-2 h-full">
-              <RichTextEditor 
-                label="Withdraw Notice"
-                name="withdrawal_notice"
-                control={control}
-              />
+            <div className="col-span-1 md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 mt-2">
+              <div className="h-full">
+                <RichTextEditor 
+                  label="Recharge Notice"
+                  name="deposit_notice"
+                  control={control}
+                />
+              </div>
+              <div className="h-full">
+                <RichTextEditor 
+                  label="Withdraw Notice"
+                  name="withdrawal_notice"
+                  control={control}
+                />
+              </div>
             </div>
           </div>
         </CardContent>
       </Card>
 
       {/* Section 3: Deposit & Withdrawal Settings */}
-      <Card className="border-none shadow-sm bg-white rounded-md">
+      <Card className="border-none shadow-sm bg-white rounded-lg">
         <CardContent className="p-8">
           <div className="mb-6">
-            <h2 className="text-[1.2rem] font-medium text-[#5A8DEE] flex items-center gap-2 mb-4">
+            <h2 className="text-[1.2rem] font-bold text-blue-600 flex items-center gap-2 mb-4">
               <Settings2 className="w-5 h-5" />
               Deposit & Withdrawal Settings
             </h2>
@@ -374,7 +379,7 @@ export default function BasicSettingsPage() {
                 )}
               />
               <div>
-                <label className="text-[13px] font-bold text-[#475f7b] block mb-0.5">Auto Withdrawal</label>
+                <label className="text-[13px] font-bold text-gray-700 block mb-0.5">Auto Withdrawal</label>
                 <p className="text-[12px] text-gray-500 leading-relaxed">
                   If enabled, withdrawals will be automatically processed using the configured automatic gateway for the user's country. When disabled, all withdrawals will be queued for manual admin approval.
                 </p>
@@ -455,13 +460,13 @@ export default function BasicSettingsPage() {
             />
             
             <div className="flex flex-col space-y-1">
-              <label className="text-[13px] font-medium text-[#475f7b]">Require Investment to Withdraw</label>
+              <label className="text-[13px] font-bold text-gray-700">Require Investment to Withdraw</label>
               <Controller
                 name="require_investment_to_withdraw"
                 control={control}
                 render={({ field }) => (
                   <Select value={field.value ? "yes" : "no"} onValueChange={(val) => field.onChange(val === "yes")}>
-                    <SelectTrigger className="border-blue-500 focus:ring-0 h-10">
+                    <SelectTrigger className="border-gray-200 focus:border-blue-500/50 focus:ring-0 h-10 rounded-lg text-gray-700 text-[13px] bg-white">
                       <SelectValue placeholder="Select Requirement" />
                     </SelectTrigger>
                     <SelectContent>
@@ -471,7 +476,7 @@ export default function BasicSettingsPage() {
                   </Select>
                 )}
               />
-              <p className="text-[11px] text-gray-400 mt-1">If enabled, users must have at least 1 active mining plan to withdraw</p>
+              <p className="text-[11px] text-blue-600 mt-1">If enabled, users must have at least 1 active mining plan to withdraw</p>
             </div>
 
             <ValidatedInput 
@@ -487,7 +492,7 @@ export default function BasicSettingsPage() {
             <Button 
               type="submit"
               disabled={isSubmitting}
-              className="bg-[#5A8DEE] hover:bg-[#4778d9] text-white px-8 py-2 h-10 font-medium rounded-sm shadow-sm border-0"
+              className="bg-blue-600 hover:bg-blue-700 text-white px-8 h-10 font-bold rounded-lg shadow-sm border-0 flex items-center justify-center"
             >
               {isSubmitting ? (
                 <>

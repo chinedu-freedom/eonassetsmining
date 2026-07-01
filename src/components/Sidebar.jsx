@@ -135,12 +135,12 @@ export function Sidebar({ isOpen, onClose }) {
                       <button
                         onClick={() => toggleMenu(item.name)}
                         className={`w-full flex items-center justify-between px-3 py-[12px] transition-all duration-200 group ${
-                          !isMenuOpen && active ? "bg-[#e6ebf5] rounded-[4px]" : !isMenuOpen ? "hover:bg-slate-50 hover:pl-4 rounded-[4px]" : "border-b border-gray-100"
+                          !isMenuOpen && active ? "bg-blue-50 rounded-[4px]" : !isMenuOpen ? "hover:bg-slate-50 hover:pl-4 rounded-[4px]" : "border-b border-gray-100"
                         }`}
                       >
                         <div className="flex items-center gap-4">
-                          {item.icon && <item.icon className={`w-[22px] h-[22px] ${(active || isMenuOpen) ? "text-[#5A8DEE]" : "text-[#475f7b] group-hover:text-[#5A8DEE] transition-colors"}`} />}
-                          <span className={`text-[15px] ${(!isMenuOpen && active) ? "text-[#5A8DEE] font-medium" : "text-[#475f7b]"}`}>{item.name}</span>
+                          {item.icon && <item.icon className={`w-[22px] h-[22px] ${(active || isMenuOpen) ? "text-blue-600" : "text-[#475f7b] group-hover:text-blue-600 transition-colors"}`} />}
+                          <span className={`text-[15px] ${(!isMenuOpen && active) ? "text-blue-600 font-medium" : "text-[#475f7b]"}`}>{item.name}</span>
                         </div>
                         <ChevronDown className={`w-4 h-4 text-[#828d99] transition-transform duration-200 ${isMenuOpen ? 'rotate-180' : ''}`} />
                       </button>
@@ -155,10 +155,10 @@ export function Sidebar({ isOpen, onClose }) {
                                 href={child.href}
                                 onClick={handleLinkClick}
                                 className={`flex items-center gap-4 pl-[20px] pr-3 py-[8px] transition-all duration-200 group ${
-                                  childActive ? "text-[#5A8DEE] font-medium" : "text-[#475f7b] hover:text-[#5A8DEE]"
+                                  childActive ? "text-blue-600 font-medium" : "text-[#475f7b] hover:text-blue-600"
                                 }`}
                               >
-                                <ArrowRight className={`w-[18px] h-[18px] ml-1 ${childActive ? "text-[#5A8DEE]" : "text-[#1a233a] group-hover:text-[#5A8DEE]"}`} />
+                                <ArrowRight className={`w-[18px] h-[18px] ml-1 ${childActive ? "text-blue-600" : "text-[#1a233a] group-hover:text-blue-600"}`} />
                                 <span className="text-[15px]">{child.name}</span>
                               </Link>
                             );
@@ -176,15 +176,15 @@ export function Sidebar({ isOpen, onClose }) {
                     href={item.href || "#"}
                     onClick={handleLinkClick}
                     className={`flex items-center gap-4 px-3 py-[12px] rounded-[4px] transition-all duration-200 group ${
-                      active ? "bg-[#e6ebf5] text-[#5A8DEE] font-medium" : "text-[#475f7b] hover:bg-slate-50 hover:pl-4"
+                      active ? "bg-blue-50 text-blue-600 font-medium" : "text-[#475f7b] hover:bg-slate-50 hover:pl-4"
                     }`}
                   >
                     {item.icon ? (
-                      <item.icon className={`w-[22px] h-[22px] ${active ? "text-[#5A8DEE]" : "text-[#475f7b] group-hover:text-[#5A8DEE] transition-colors"}`} />
+                      <item.icon className={`w-[22px] h-[22px] ${active ? "text-blue-600" : "text-[#475f7b] group-hover:text-blue-600 transition-colors"}`} />
                     ) : (
                       <div className="w-[22px] h-[22px]" /> // Placeholder for items without icon
                     )}
-                    <span className={`text-[15px] ${active ? "text-[#5A8DEE]" : "text-[#475f7b]"}`}>{item.name}</span>
+                    <span className={`text-[15px] ${active ? "text-blue-600" : "text-[#475f7b]"}`}>{item.name}</span>
                   </Link>
                 </div>
               );

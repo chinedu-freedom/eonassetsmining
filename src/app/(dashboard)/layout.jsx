@@ -18,7 +18,7 @@ export default function DashboardLayout({ children }) {
   }, [settingsData]);
 
   return (
-    <div className="flex w-full overflow-hidden bg-[#F2F4F4] font-['Rubik',sans-serif]" style={{ height: 'calc(100vh / 0.9)' }}>
+    <div className="flex w-full h-screen overflow-hidden bg-[#F2F4F4] font-['Rubik',sans-serif]">
       <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
       <div className="flex-1 flex flex-col overflow-hidden relative">
         <Header onMenuClick={() => setIsSidebarOpen(true)} />

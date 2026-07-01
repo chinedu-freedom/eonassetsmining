@@ -1,17 +1,17 @@
 export function Card({ className = "", children }) {
   return (
-    <div className={`bg-[#131823] border border-white/5 rounded-2xl overflow-hidden ${className}`}>
+    <div className={`bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-sm ${className}`}>
       {children}
     </div>
   );
 }
 
 export function CardHeader({ className = "", children }) {
-  return <div className={`px-6 py-5 border-b border-white/5 ${className}`}>{children}</div>;
+  return <div className={`px-6 py-5 border-b border-gray-100 ${className}`}>{children}</div>;
 }
 
 export function CardTitle({ className = "", children }) {
-  return <h3 className={`text-lg font-medium text-white ${className}`}>{children}</h3>;
+  return <h3 className={`text-lg font-semibold text-[#475f7b] ${className}`}>{children}</h3>;
 }
 
 export function CardContent({ className = "", children }) {
@@ -19,7 +19,7 @@ export function CardContent({ className = "", children }) {
 }
 
 export function CardDescription({ className = "", children }) {
-  return <p className={`text-sm text-gray-500 dark:text-gray-400 ${className}`}>{children}</p>;
+  return <p className={`text-sm text-gray-500 ${className}`}>{children}</p>;
 }
 
 export function CardFooter({ className = "", children }) {

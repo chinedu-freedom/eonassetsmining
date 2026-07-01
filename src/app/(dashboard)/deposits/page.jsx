@@ -103,17 +103,21 @@ export default function DepositsPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white mb-1">Deposits</h1>
-          <p className="text-slate-400 text-sm">Monitor and approve user deposits.</p>
+          <h1 className="text-2xl font-bold text-[#475f7b] mb-1">Deposits</h1>
+          <p className="text-[#828d99] text-sm">Monitor and approve user deposits.</p>
         </div>
         
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-          <div className="flex bg-[#131823] border border-white/10 rounded-xl p-1">
+          <div className="flex bg-gray-100 border border-gray-200 rounded-xl p-1">
             {['ALL', 'PENDING', 'APPROVED', 'REJECTED'].map(tab => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`px-4 py-1.5 text-xs font-medium rounded-lg transition-all ${activeTab === tab ? 'bg-blue-500/20 text-blue-400' : 'text-slate-400 hover:text-slate-200 hover:bg-white/5'}`}
+                className={`px-4 py-1.5 text-xs font-medium rounded-lg transition-all ${
+                  activeTab === tab 
+                    ? 'bg-white text-blue-600 shadow-sm' 
+                    : 'text-gray-500 hover:text-gray-900 hover:bg-white/50'
+                }`}
               >
                 {tab.charAt(0) + tab.slice(1).toLowerCase()}
               </button>
@@ -121,13 +125,13 @@ export default function DepositsPage() {
           </div>
 
           <div className="relative">
-            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
+            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
             <input 
               type="text" 
               placeholder="Search TXN ID or User..." 
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="bg-[#131823] border border-white/10 rounded-xl py-2 pl-9 pr-4 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:border-blue-500/50 w-full sm:w-64 transition-all"
+              className="bg-white border border-gray-200 rounded-xl py-2 pl-9 pr-4 text-sm text-gray-700 placeholder:text-gray-400 focus:outline-none focus:border-blue-500/50 w-full sm:w-64 transition-all shadow-sm"
             />
           </div>
         </div>
@@ -135,51 +139,51 @@ export default function DepositsPage() {
 
       <Card className="overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm text-slate-300">
-            <thead className="bg-white/5 border-b border-white/5 text-slate-400">
+          <table className="w-full text-left text-sm text-gray-600 bg-white">
+            <thead className="bg-gray-50 border-b border-gray-100 text-gray-600 font-semibold">
               <tr>
-                <th className="px-6 py-4 font-medium">Transaction ID</th>
-                <th className="px-6 py-4 font-medium">User</th>
-                <th className="px-6 py-4 font-medium">Amount</th>
-                <th className="px-6 py-4 font-medium">Method</th>
-                <th className="px-6 py-4 font-medium">Status</th>
-                <th className="px-6 py-4 font-medium text-right">Actions</th>
+                <th className="px-6 py-4 font-semibold text-[13px]">Transaction ID</th>
+                <th className="px-6 py-4 font-semibold text-[13px]">User</th>
+                <th className="px-6 py-4 font-semibold text-[13px]">Amount</th>
+                <th className="px-6 py-4 font-semibold text-[13px]">Method</th>
+                <th className="px-6 py-4 font-semibold text-[13px]">Status</th>
+                <th className="px-6 py-4 font-semibold text-[13px] text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/5">
+            <tbody className="divide-y divide-gray-100 bg-white">
               {isLoading && deposits.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="px-6 py-8 text-center text-slate-500">
+                  <td colSpan={6} className="px-6 py-8 text-center text-gray-400">
                     <Loader2 className="w-6 h-6 animate-spin mx-auto mb-2" />
                     Loading deposits...
                   </td>
                 </tr>
               ) : filteredDeposits.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="px-6 py-8 text-center text-slate-500">
+                  <td colSpan={6} className="px-6 py-8 text-center text-gray-400">
                     No deposits found matching "{searchTerm}"
                   </td>
                 </tr>
               ) : filteredDeposits.map((deposit) => (
-                <tr key={deposit.id} className="hover:bg-white/[0.02] transition-colors">
+                <tr key={deposit.id} className="hover:bg-gray-50/50 transition-colors">
                   <td className="px-6 py-4">
                     <div className="flex flex-col">
-                      <span className="font-medium text-white">{(deposit.id || "").substring(0, 12)}...</span>
-                      <span className="text-xs text-slate-500">{safeFormatDate(deposit.created_at)}</span>
+                      <span className="font-medium text-gray-800">{(deposit.id || "").substring(0, 12)}...</span>
+                      <span className="text-xs text-gray-400">{safeFormatDate(deposit.created_at)}</span>
                     </div>
                   </td>
-                  <td className="px-6 py-4 font-medium text-slate-200">
-                    <Link href={`/customers/${deposit.user_id}`} className="hover:text-blue-400 hover:underline transition-colors">
+                  <td className="px-6 py-4 font-medium text-gray-700">
+                    <Link href={`/customers/${deposit.user_id}`} className="hover:text-blue-600 hover:underline transition-colors">
                       {deposit.user?.full_name || "Unknown"}
                     </Link>
                   </td>
-                  <td className="px-6 py-4 font-bold text-emerald-400">{symbol}{Number(deposit.amount).toFixed(2)}</td>
-                  <td className="px-6 py-4 text-slate-400">{deposit.cryptocurrency || deposit.payment_method?.method_name || "Crypto"}</td>
+                  <td className="px-6 py-4 font-bold text-emerald-600">{symbol}{Number(deposit.amount).toFixed(2)}</td>
+                  <td className="px-6 py-4 text-gray-500">{deposit.cryptocurrency || deposit.payment_method?.method_name || "Crypto"}</td>
                   <td className="px-6 py-4">
                     <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${
-                      deposit.status === 'APPROVED' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 
-                      deposit.status === 'REJECTED' ? 'bg-red-500/10 text-red-400 border border-red-500/20' : 
-                      'bg-orange-500/10 text-orange-400 border border-orange-500/20'
+                      deposit.status === 'APPROVED' ? 'bg-emerald-100 text-emerald-700 border border-emerald-200' : 
+                      deposit.status === 'REJECTED' ? 'bg-red-100 text-red-700 border border-red-200' : 
+                      'bg-orange-100 text-orange-700 border border-orange-200'
                     }`}>
                       {deposit.status === 'APPROVED' && <CheckCircle2 className="w-3 h-3" />}
                       {deposit.status === 'PENDING' && <Clock className="w-3 h-3" />}
@@ -190,15 +194,15 @@ export default function DepositsPage() {
                   <td className="px-6 py-4 text-right">
                     {deposit.status === 'PENDING' ? (
                       <div className="flex items-center justify-end gap-2">
-                        <button onClick={() => setConfirmModal({ show: true, type: 'APPROVED', depositId: deposit.id })} className="px-3 py-1.5 text-xs font-medium bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 rounded-lg transition-colors border border-emerald-500/20">
+                        <button onClick={() => setConfirmModal({ show: true, type: 'APPROVED', depositId: deposit.id })} className="px-3 py-1.5 text-xs font-medium bg-emerald-100 text-emerald-700 hover:bg-emerald-200 rounded-lg transition-colors border border-emerald-200">
                           Approve
                         </button>
-                        <button onClick={() => setConfirmModal({ show: true, type: 'REJECTED', depositId: deposit.id })} className="px-3 py-1.5 text-xs font-medium bg-red-500/10 text-red-400 hover:bg-red-500/20 rounded-lg transition-colors border border-red-500/20">
+                        <button onClick={() => setConfirmModal({ show: true, type: 'REJECTED', depositId: deposit.id })} className="px-3 py-1.5 text-xs font-medium bg-red-100 text-red-700 hover:bg-red-200 rounded-lg transition-colors border border-red-200">
                           Reject
                         </button>
                       </div>
                     ) : (
-                      <button className="text-xs text-slate-500 hover:text-white transition-colors">
+                      <button className="text-xs text-gray-500 hover:text-gray-900 transition-colors">
                         View Details
                       </button>
                     )}

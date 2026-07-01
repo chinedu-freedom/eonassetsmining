@@ -82,8 +82,8 @@ export default function ManageAccount() {
   };
 
   return (
-    <div className="bg-white border rounded-md p-6 shadow-sm w-full md:w-[65%]">
-      <h2 className="text-base text-center font-medium mb-1">
+    <div className="bg-white border border-gray-150 rounded-lg p-6 shadow-sm w-full md:w-[65%]">
+      <h2 className="text-base text-center font-bold text-gray-800 mb-1">
         Manage your profile and security settings
       </h2>
       <p className="text-sm text-center text-muted-foreground mb-8">
@@ -114,7 +114,7 @@ export default function ManageAccount() {
         </div>
 
         <div>
-          <p className="text-sm font-medium">Profile photo</p>
+          <p className="text-sm font-semibold text-gray-700">Profile photo</p>
           <p className="text-xs text-muted-foreground">
             Click the avatar to upload a new one.
           </p>
@@ -136,12 +136,14 @@ export default function ManageAccount() {
             name="username"
             value={form.username}
             onChange={handleChange}
+            className="border-gray-200 focus-visible:ring-0 focus-visible:border-blue-500/50 focus:border-blue-500/50 bg-white h-10 text-gray-700 rounded-lg"
           />
           <Input
             placeholder="Email Address"
             name="email"
             value={form.email}
             onChange={handleChange}
+            className="border-gray-200 focus-visible:ring-0 focus-visible:border-blue-500/50 focus:border-blue-500/50 bg-white h-10 text-gray-700 rounded-lg"
           />
         </div>
 
@@ -152,12 +154,14 @@ export default function ManageAccount() {
             type="date"
             value={form.dateOfBirth}
             onChange={handleChange}
+            className="border-gray-200 focus-visible:ring-0 focus-visible:border-blue-500/50 focus:border-blue-500/50 bg-white h-10 text-gray-700 rounded-lg"
           />
           <Input
             placeholder="City"
             name="city"
             value={form.city}
             onChange={handleChange}
+            className="border-gray-200 focus-visible:ring-0 focus-visible:border-blue-500/50 focus:border-blue-500/50 bg-white h-10 text-gray-700 rounded-lg"
           />
         </div>
 
@@ -167,12 +171,13 @@ export default function ManageAccount() {
             name="postalCode"
             value={form.postalCode}
             onChange={handleChange}
+            className="border-gray-200 focus-visible:ring-0 focus-visible:border-blue-500/50 focus:border-blue-500/50 bg-white h-10 text-gray-700 rounded-lg"
           />
         </div>
 
         <Button
           type="submit"
-          className="mt-4 bg-[#3C3CF6] text-white hover:bg-[#2e2ee6] min-w-[140px] flex items-center justify-center gap-2"
+          className="mt-4 bg-blue-600 hover:bg-blue-700 text-white min-w-[140px] rounded-lg shadow-sm border-0 flex items-center justify-center gap-2 font-bold h-10"
           disabled={patchProfile.isPending}
         >
           {patchProfile.isPending ? "Saving" : "Save Changes"}

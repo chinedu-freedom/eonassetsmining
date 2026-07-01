@@ -104,7 +104,7 @@ export default function EmailSettingsPage() {
         </div>
       </div>
 
-      <Card className="border-none shadow-sm bg-white rounded-md">
+      <Card className="border-none shadow-sm bg-white rounded-lg">
         <CardContent className="p-8">
           {isLoadingSettings ? (
             <div className="flex justify-center items-center py-20">
@@ -115,8 +115,8 @@ export default function EmailSettingsPage() {
               
               {/* Notification Preferences */}
               <div className="mb-10">
-                <h2 className="text-[1.1rem] font-medium text-[#5A8DEE] flex items-center gap-2 mb-2">
-                  <Bell className="w-5 h-5" />
+                <h2 className="text-[1.1rem] font-bold text-gray-800 flex items-center gap-2 mb-2">
+                  <Bell className="w-5 h-5 text-blue-600" />
                   Notification Preferences
                 </h2>
                 <p className="text-[13px] text-gray-500 mb-8">Select which events should trigger email notifications to users.</p>
@@ -130,72 +130,72 @@ export default function EmailSettingsPage() {
                     </h3>
                     <Controller name="notify_deposit_processing" control={control} render={({ field }) => (
                       <div className="flex items-center space-x-2">
-                        <Checkbox id="dep-proc" checked={field.value} onCheckedChange={field.onChange} className="border-[#5A8DEE] data-[state=checked]:bg-[#5A8DEE] data-[state=checked]:text-white rounded-[4px]" />
-                        <label htmlFor="dep-proc" className="text-[13px] font-medium text-[#475f7b] cursor-pointer">Processing</label>
+                        <Checkbox id="dep-proc" checked={field.value} onCheckedChange={field.onChange} className="border-gray-300 data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600 text-white rounded" />
+                        <label htmlFor="dep-proc" className="text-[13px] font-medium text-gray-600 cursor-pointer">Processing</label>
                       </div>
                     )} />
                     <Controller name="notify_deposit_approved" control={control} render={({ field }) => (
                       <div className="flex items-center space-x-2">
-                        <Checkbox id="dep-appr" checked={field.value} onCheckedChange={field.onChange} className="border-[#5A8DEE] data-[state=checked]:bg-[#5A8DEE] data-[state=checked]:text-white rounded-[4px]" />
-                        <label htmlFor="dep-appr" className="text-[13px] font-medium text-[#475f7b] cursor-pointer">Approved</label>
+                        <Checkbox id="dep-appr" checked={field.value} onCheckedChange={field.onChange} className="border-gray-300 data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600 text-white rounded" />
+                        <label htmlFor="dep-appr" className="text-[13px] font-medium text-gray-600 cursor-pointer">Approved</label>
                       </div>
                     )} />
                     <Controller name="notify_deposit_rejected" control={control} render={({ field }) => (
                       <div className="flex items-center space-x-2">
-                        <Checkbox id="dep-rej" checked={field.value} onCheckedChange={field.onChange} className="border-[#5A8DEE] data-[state=checked]:bg-[#5A8DEE] data-[state=checked]:text-white rounded-[4px]" />
-                        <label htmlFor="dep-rej" className="text-[13px] font-medium text-[#475f7b] cursor-pointer">Rejected</label>
+                        <Checkbox id="dep-rej" checked={field.value} onCheckedChange={field.onChange} className="border-gray-300 data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600 text-white rounded" />
+                        <label htmlFor="dep-rej" className="text-[13px] font-medium text-gray-600 cursor-pointer">Rejected</label>
                       </div>
                     )} />
                   </div>
 
                   {/* Withdrawal */}
                   <div className="space-y-4">
-                    <h3 className="text-[13px] font-bold text-[#ff5b5c] flex items-center gap-2 mb-4">
+                    <h3 className="text-[13px] font-bold text-red-500 flex items-center gap-2 mb-4">
                       <ArrowUpFromLine className="w-4 h-4" />
                       Withdrawal Notifications
                     </h3>
                     <Controller name="notify_withdrawal_processing" control={control} render={({ field }) => (
                       <div className="flex items-center space-x-2">
-                        <Checkbox id="with-proc" checked={field.value} onCheckedChange={field.onChange} className="border-[#5A8DEE] data-[state=checked]:bg-[#5A8DEE] data-[state=checked]:text-white rounded-[4px]" />
-                        <label htmlFor="with-proc" className="text-[13px] font-medium text-[#475f7b] cursor-pointer">Processing</label>
+                        <Checkbox id="with-proc" checked={field.value} onCheckedChange={field.onChange} className="border-gray-300 data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600 text-white rounded" />
+                        <label htmlFor="with-proc" className="text-[13px] font-medium text-gray-600 cursor-pointer">Processing</label>
                       </div>
                     )} />
                     <Controller name="notify_withdrawal_approved" control={control} render={({ field }) => (
                       <div className="flex items-center space-x-2">
-                        <Checkbox id="with-appr" checked={field.value} onCheckedChange={field.onChange} className="border-[#5A8DEE] data-[state=checked]:bg-[#5A8DEE] data-[state=checked]:text-white rounded-[4px]" />
-                        <label htmlFor="with-appr" className="text-[13px] font-medium text-[#475f7b] cursor-pointer">Approved</label>
+                        <Checkbox id="with-appr" checked={field.value} onCheckedChange={field.onChange} className="border-gray-300 data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600 text-white rounded" />
+                        <label htmlFor="with-appr" className="text-[13px] font-medium text-gray-600 cursor-pointer">Approved</label>
                       </div>
                     )} />
                     <Controller name="notify_withdrawal_rejected" control={control} render={({ field }) => (
                       <div className="flex items-center space-x-2">
-                        <Checkbox id="with-rej" checked={field.value} onCheckedChange={field.onChange} className="border-[#5A8DEE] data-[state=checked]:bg-[#5A8DEE] data-[state=checked]:text-white rounded-[4px]" />
-                        <label htmlFor="with-rej" className="text-[13px] font-medium text-[#475f7b] cursor-pointer">Rejected</label>
+                        <Checkbox id="with-rej" checked={field.value} onCheckedChange={field.onChange} className="border-gray-300 data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600 text-white rounded" />
+                        <label htmlFor="with-rej" className="text-[13px] font-medium text-gray-600 cursor-pointer">Rejected</label>
                       </div>
                     )} />
                   </div>
 
                   {/* Other */}
                   <div className="space-y-4">
-                    <h3 className="text-[13px] font-bold text-[#00CFDD] flex items-center gap-2 mb-4">
+                    <h3 className="text-[13px] font-bold text-cyan-600 flex items-center gap-2 mb-4">
                       <Activity className="w-4 h-4" />
                       Other Notifications
                     </h3>
                     <Controller name="notify_profit_return" control={control} render={({ field }) => (
                       <div className="flex items-center space-x-2">
-                        <Checkbox id="oth-prof" checked={field.value} onCheckedChange={field.onChange} className="border-[#5A8DEE] data-[state=checked]:bg-[#5A8DEE] data-[state=checked]:text-white rounded-[4px]" />
-                        <label htmlFor="oth-prof" className="text-[13px] font-medium text-[#475f7b] cursor-pointer">Profit Return</label>
+                        <Checkbox id="oth-prof" checked={field.value} onCheckedChange={field.onChange} className="border-gray-300 data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600 text-white rounded" />
+                        <label htmlFor="oth-prof" className="text-[13px] font-medium text-gray-600 cursor-pointer">Profit Return</label>
                       </div>
                     )} />
                     <Controller name="notify_capital_return" control={control} render={({ field }) => (
                       <div className="flex items-center space-x-2">
-                        <Checkbox id="oth-cap" checked={field.value} onCheckedChange={field.onChange} className="border-[#5A8DEE] data-[state=checked]:bg-[#5A8DEE] data-[state=checked]:text-white rounded-[4px]" />
-                        <label htmlFor="oth-cap" className="text-[13px] font-medium text-[#475f7b] cursor-pointer">Capital Return</label>
+                        <Checkbox id="oth-cap" checked={field.value} onCheckedChange={field.onChange} className="border-gray-300 data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600 text-white rounded" />
+                        <label htmlFor="oth-cap" className="text-[13px] font-medium text-gray-600 cursor-pointer">Capital Return</label>
                       </div>
                     )} />
                     <Controller name="notify_news_update" control={control} render={({ field }) => (
                       <div className="flex items-center space-x-2">
-                        <Checkbox id="oth-news" checked={field.value} onCheckedChange={field.onChange} className="border-[#5A8DEE] data-[state=checked]:bg-[#5A8DEE] data-[state=checked]:text-white rounded-[4px]" />
-                        <label htmlFor="oth-news" className="text-[13px] font-medium text-[#475f7b] cursor-pointer">News Updates</label>
+                        <Checkbox id="oth-news" checked={field.value} onCheckedChange={field.onChange} className="border-gray-300 data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600 text-white rounded" />
+                        <label htmlFor="oth-news" className="text-[13px] font-medium text-gray-600 cursor-pointer">News Updates</label>
                       </div>
                     )} />
                   </div>
@@ -205,7 +205,7 @@ export default function EmailSettingsPage() {
               <div className="h-px bg-gray-100 w-full mb-6 mt-8"></div>
 
               <div>
-                <Button type="submit" disabled={updateSettingsMutation.isPending} className="bg-[#5A8DEE] hover:bg-[#4778d9] text-white px-6 py-2 h-10 font-medium rounded-sm shadow-sm border-0 flex items-center gap-2">
+                <Button type="submit" disabled={updateSettingsMutation.isPending} className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 h-10 font-bold rounded-lg shadow-sm border-0 flex items-center gap-2">
                   {updateSettingsMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
                   Save Settings
                 </Button>

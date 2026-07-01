@@ -12,11 +12,11 @@ export function Header({ onMenuClick }) {
   const avatarLetter = (admin?.username ? admin.username[0] : (admin?.email ? admin.email[0] : "E")).toUpperCase();
 
   return (
-    <header className="h-[60px] flex items-center justify-between px-6 bg-white/95 backdrop-blur-md shadow-[0_4px_24px_0_rgba(34,41,47,0.1)] sticky top-0 z-20 font-['Rubik',sans-serif]">
+    <header className="h-[60px] flex items-center justify-between px-6 bg-white/95 backdrop-blur-md border-b border-gray-150 sticky top-0 z-20 font-['Rubik',sans-serif]">
       <div className="flex items-center gap-4">
         <button 
           onClick={onMenuClick}
-          className="p-2 -ml-2 text-[#475f7b] hover:text-[#5A8DEE] lg:hidden"
+          className="p-2 -ml-2 text-[#475f7b] hover:text-blue-600 lg:hidden"
         >
           <Menu className="w-6 h-6" />
         </button>

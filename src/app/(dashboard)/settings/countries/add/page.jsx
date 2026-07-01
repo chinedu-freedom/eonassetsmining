@@ -41,14 +41,14 @@ export default function AddCountryPage() {
   return (
     <div className="space-y-6 pb-10">
       <form onSubmit={handleSubmit(onSubmit)}>
-      <Card className="border-none shadow-sm bg-white rounded-md">
+      <Card className="border-none shadow-sm bg-white rounded-lg">
         <CardContent className="p-0">
           
           {/* Header Section */}
-          <div className="p-6 border-b border-gray-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-            <h2 className="text-[1.2rem] font-medium text-[#475f7b]">Add New Country</h2>
+          <div className="p-6 border-b border-gray-150 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <h2 className="text-[1.2rem] font-bold text-gray-800">Add New Country</h2>
             <Link href="/settings/countries">
-              <Button className="bg-[#5A8DEE] hover:bg-[#4778d9] text-white px-4 h-9 text-[13px] font-medium rounded-sm-[4px] shadow-sm border-0 flex items-center gap-1.5">
+              <Button className="bg-blue-600 hover:bg-blue-700 text-white px-4 h-10 text-[13px] font-bold rounded-lg shadow-sm border-0 flex items-center gap-1.5">
                 <ChevronLeft className="w-4 h-4" />
                 Back
               </Button>
@@ -61,39 +61,39 @@ export default function AddCountryPage() {
               
               {/* Row 1 */}
               <div>
-                <label className="text-[13px] font-medium text-[#475f7b] block mb-1">Country Code (ISO)</label>
-                <Input {...register("country_code", { required: true })} placeholder="e.g. NG, IN, US" className="border-gray-200 h-10 text-[13px] placeholder:text-gray-400" />
+                <label className="text-[13px] font-bold text-gray-700 block mb-1">Country Code (ISO)</label>
+                <Input {...register("country_code", { required: true })} placeholder="e.g. NG, IN, US" className="border-gray-200 focus-visible:ring-0 focus-visible:border-blue-500/50 focus:border-blue-500/50 h-10 text-gray-700 text-[13px] placeholder:text-gray-400 rounded-lg bg-white" />
                 <p className="text-[11px] text-gray-400 mt-1.5">2-letter ISO country code</p>
               </div>
               <div>
-                <label className="text-[13px] font-medium text-[#475f7b] block mb-1">Country Name</label>
-                <Input {...register("country_name", { required: true })} placeholder="e.g. Nigeria, India" className="border-gray-200 h-10 text-[13px] placeholder:text-gray-400" />
+                <label className="text-[13px] font-bold text-gray-700 block mb-1">Country Name</label>
+                <Input {...register("country_name", { required: true })} placeholder="e.g. Nigeria, India" className="border-gray-200 focus-visible:ring-0 focus-visible:border-blue-500/50 focus:border-blue-500/50 h-10 text-gray-700 text-[13px] placeholder:text-gray-400 rounded-lg bg-white" />
               </div>
 
               {/* Row 2 */}
               <div>
-                <label className="text-[13px] font-medium text-[#475f7b] block mb-1">Currency Symbol</label>
-                <Input {...register("currency_symbol", { required: true })} placeholder="e.g. ₦, $, ₹" className="border-gray-200 h-10 text-[13px] placeholder:text-gray-400" />
+                <label className="text-[13px] font-bold text-gray-700 block mb-1">Currency Symbol</label>
+                <Input {...register("currency_symbol", { required: true })} placeholder="e.g. ₦, $, ₹" className="border-gray-200 focus-visible:ring-0 focus-visible:border-blue-500/50 focus:border-blue-500/50 h-10 text-gray-700 text-[13px] placeholder:text-gray-400 rounded-lg bg-white" />
               </div>
               <div>
-                <label className="text-[13px] font-medium text-[#475f7b] block mb-1">Currency Code</label>
-                <Input {...register("currency_code", { required: true })} placeholder="e.g. NGN, USD, INR" className="border-gray-200 h-10 text-[13px] placeholder:text-gray-400" />
+                <label className="text-[13px] font-bold text-gray-700 block mb-1">Currency Code</label>
+                <Input {...register("currency_code", { required: true })} placeholder="e.g. NGN, USD, INR" className="border-gray-200 focus-visible:ring-0 focus-visible:border-blue-500/50 focus:border-blue-500/50 h-10 text-gray-700 text-[13px] placeholder:text-gray-400 rounded-lg bg-white" />
               </div>
 
               {/* Row 3 */}
               <div>
-                <label className="text-[13px] font-medium text-[#475f7b] block mb-1">Exchange Rate</label>
-                <Input type="number" step="any" {...register("exchange_rate", { required: true, min: 0 })} className="border-gray-200 h-10 text-[13px]" />
+                <label className="text-[13px] font-bold text-gray-700 block mb-1">Exchange Rate</label>
+                <Input type="number" step="any" {...register("exchange_rate", { required: true, min: 0 })} className="border-gray-200 focus-visible:ring-0 focus-visible:border-blue-500/50 focus:border-blue-500/50 h-10 text-gray-700 text-[13px] rounded-lg bg-white" />
                 <p className="text-[11px] text-gray-400 mt-1.5">How much 1 unit of local currency equals in site currency</p>
               </div>
               <div>
-                <label className="text-[13px] font-medium text-[#475f7b] block mb-1">Status</label>
+                <label className="text-[13px] font-bold text-gray-700 block mb-1">Status</label>
                 <Controller
                   name="status"
                   control={control}
                   render={({ field }) => (
                     <Select value={field.value} onValueChange={field.onChange}>
-                      <SelectTrigger className="border-gray-200 h-10 w-full text-[13px] focus:ring-0">
+                      <SelectTrigger className="border-gray-200 focus:border-blue-500/50 focus:ring-0 h-10 w-full text-gray-700 text-[13px] rounded-lg bg-white">
                         <SelectValue placeholder="Select Status" />
                       </SelectTrigger>
                       <SelectContent>
@@ -108,7 +108,7 @@ export default function AddCountryPage() {
 
             {/* Auto Rate Update Section */}
             <div className="pt-2">
-              <label className="text-[13px] font-medium text-[#475f7b] block mb-3">Auto Rate Update</label>
+              <label className="text-[13px] font-bold text-gray-700 block mb-3">Auto Rate Update</label>
               <div className="flex items-start gap-2">
                 <Controller
                   name="auto_update"
@@ -118,12 +118,12 @@ export default function AddCountryPage() {
                       id="auto-rate" 
                       checked={field.value}
                       onCheckedChange={field.onChange}
-                      className="mt-0.5 border-gray-300 data-[state=checked]:bg-[#5A8DEE] data-[state=checked]:border-[#5A8DEE]" 
+                      className="mt-0.5 border-gray-300 data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600 rounded" 
                     />
                   )}
                 />
                 <div className="grid gap-1">
-                  <label htmlFor="auto-rate" className="text-[13px] font-bold text-[#475f7b] leading-none cursor-pointer">
+                  <label htmlFor="auto-rate" className="text-[13px] font-bold text-gray-700 leading-none cursor-pointer">
                     Enable automatic exchange rate updates
                   </label>
                   <p className="text-[11px] text-gray-400">
@@ -135,7 +135,7 @@ export default function AddCountryPage() {
 
             {/* Submit Button */}
             <div className="pt-6">
-              <Button disabled={createCountryMutation.isPending} type="submit" className="bg-blue-600 hover:bg-blue-700 text-white px-5 h-10 font-medium rounded-sm-[4px] shadow-sm border-0 flex items-center gap-2">
+              <Button disabled={createCountryMutation.isPending} type="submit" className="bg-blue-600 hover:bg-blue-700 text-white px-5 h-10 font-bold rounded-lg shadow-sm border-0 flex items-center gap-2">
                 {createCountryMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
                 Add Country
               </Button>

@@ -103,44 +103,44 @@ export default function AboutUsSettingsPage() {
 
   return (
     <div className="space-y-6 pb-10">
-      <Card className="border-none shadow-sm bg-white rounded-md">
+      <Card className="border-none shadow-sm bg-white rounded-lg">
         <CardContent className="p-8">
           
-          <h2 className="text-[1.2rem] font-medium text-[#475f7b] mb-8">About Us Management</h2>
+          <h2 className="text-[1.2rem] font-bold text-gray-800 mb-8">About Us Management</h2>
 
           {/* About Page Banners Section */}
           <div className="mb-12">
-            <div className="flex items-center gap-2 mb-6 border-b border-gray-100 pb-4">
-              <ImageIcon className="w-5 h-5 text-[#5A8DEE]" />
-              <h3 className="text-[1.1rem] font-medium text-[#475f7b]">About Page Banners</h3>
+            <div className="flex items-center gap-2 mb-6 border-b border-gray-150 pb-4">
+              <ImageIcon className="w-5 h-5 text-blue-600" />
+              <h3 className="text-[1.1rem] font-bold text-blue-600">About Page Banners</h3>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {banners.map((banner) => (
-                <div key={banner.id} className="border border-gray-100 rounded-sm p-4 hover:shadow-sm transition-shadow">
-                  <h4 className="text-[12px] font-medium text-[#475f7b] mb-3">{banner.title}</h4>
+                <div key={banner.id} className="border border-gray-150 rounded-lg p-4 hover:shadow-md transition-all bg-gray-50/30">
+                  <h4 className="text-[12px] font-bold text-gray-700 mb-3">{banner.title}</h4>
                   
                   {/* Image Preview */}
-                  <div className="w-full h-36 bg-gray-50 rounded-md mb-6 overflow-hidden flex items-center justify-center border border-gray-100 relative">
+                  <div className="w-full h-36 bg-gray-50 rounded-lg mb-6 overflow-hidden flex items-center justify-center border border-gray-150 relative">
                     {banner.image ? (
                       <img src={banner.image} alt={banner.title} className="w-full h-full object-cover" />
                     ) : (
                       <div className="w-full h-full flex flex-col justify-center items-center text-gray-400">
-                        <ImageIcon className="w-8 h-8 mb-2 opacity-50" />
+                        <ImageIcon className="w-8 h-8 mb-2 opacity-50 text-gray-300" />
                         <span className="text-[10px]">No image uploaded</span>
                       </div>
                     )}
                   </div>
 
                   {/* File Input */}
-                  <div className="relative border border-gray-200 rounded-sm flex items-center h-8 w-full overflow-hidden bg-gray-50">
+                  <div className="relative border border-gray-200 rounded-lg flex items-center h-10 w-full overflow-hidden bg-white shadow-sm">
                     <input 
                       type="file" 
                       accept="image/*"
                       onChange={(e) => handleBannerFileChange(banner.id, e.target.files[0])}
-                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
                     />
-                    <div className="bg-gray-100 border-r border-gray-200 px-3 flex items-center h-full text-xs font-medium text-gray-700 pointer-events-none">
+                    <div className="bg-gray-50 border-r border-gray-200 px-3 flex items-center h-full text-xs font-semibold text-gray-700 pointer-events-none">
                       Choose file
                     </div>
                     <span className="px-3 text-xs text-gray-400 pointer-events-none whitespace-nowrap overflow-hidden text-ellipsis">
@@ -154,19 +154,19 @@ export default function AboutUsSettingsPage() {
 
           {/* Team Members Section */}
           <div className="mb-10">
-            <div className="flex items-center gap-2 mb-6 border-b border-gray-100 pb-4">
-              <Users className="w-5 h-5 text-[#5A8DEE]" />
-              <h3 className="text-[1.1rem] font-medium text-[#475f7b]">Team Members</h3>
+            <div className="flex items-center gap-2 mb-6 border-b border-gray-150 pb-4">
+              <Users className="w-5 h-5 text-blue-600" />
+              <h3 className="text-[1.1rem] font-bold text-blue-600">Team Members</h3>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {teamMembers.map((member, index) => (
-                <div key={member.id} className="border border-gray-100 rounded-sm p-4 hover:shadow-sm transition-shadow">
-                  <h4 className="text-[12px] font-medium text-[#475f7b] mb-6">Team Member {index + 1}</h4>
+                <div key={member.id} className="border border-gray-150 rounded-lg p-4 hover:shadow-md transition-all bg-gray-50/30">
+                  <h4 className="text-[12px] font-bold text-gray-700 mb-6">Team Member {index + 1}</h4>
                   
                   {/* Image Preview */}
                   <div className="w-full flex justify-center mb-8">
-                    <div className="w-24 h-24 rounded-full flex items-center justify-center text-gray-400 bg-gray-50 border border-gray-200 overflow-hidden">
+                    <div className="w-24 h-24 rounded-full flex items-center justify-center text-gray-400 bg-gray-50 border border-gray-200 overflow-hidden shadow-sm">
                       {member.image ? (
                         <img src={member.image} alt={member.name} className="w-full h-full object-cover" />
                       ) : (
@@ -176,14 +176,14 @@ export default function AboutUsSettingsPage() {
                   </div>
 
                   {/* File Input */}
-                  <div className="relative border border-gray-200 rounded-sm flex items-center h-8 w-full overflow-hidden bg-gray-50 mb-6">
+                  <div className="relative border border-gray-200 rounded-lg flex items-center h-10 w-full overflow-hidden bg-white shadow-sm mb-6">
                     <input 
                       type="file" 
                       accept="image/*"
                       onChange={(e) => handleTeamMemberFileChange(member.id, e.target.files[0])}
-                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
                     />
-                    <div className="bg-gray-100 border-r border-gray-200 px-3 flex items-center h-full text-xs font-medium text-gray-700 pointer-events-none">
+                    <div className="bg-gray-50 border-r border-gray-200 px-3 flex items-center h-full text-xs font-semibold text-gray-700 pointer-events-none">
                       Choose file
                     </div>
                     <span className="px-3 text-xs text-gray-400 pointer-events-none whitespace-nowrap overflow-hidden text-ellipsis">
@@ -193,19 +193,19 @@ export default function AboutUsSettingsPage() {
 
                   <div className="space-y-5">
                     <div>
-                      <label className="text-[12px] font-medium text-[#475f7b] block mb-1">Name</label>
+                      <label className="text-[12px] font-bold text-gray-600 block mb-1">Name</label>
                       <Input 
                         value={member.name || ""} 
                         onChange={(e) => handleTeamMemberChange(member.id, "name", e.target.value)}
-                        className="border-gray-200 h-10 text-[13px]" 
+                        className="border-gray-200 focus-visible:ring-0 focus-visible:border-blue-500/50 focus:border-blue-500/50 bg-white h-10 text-gray-700 text-[13px] rounded-lg" 
                       />
                     </div>
                     <div>
-                      <label className="text-[12px] font-medium text-[#475f7b] block mb-1">Role/Position</label>
+                      <label className="text-[12px] font-bold text-gray-600 block mb-1">Role/Position</label>
                       <Input 
                         value={member.position || ""} 
                         onChange={(e) => handleTeamMemberChange(member.id, "position", e.target.value)}
-                        className="border-gray-200 h-10 text-[13px]" 
+                        className="border-gray-200 focus-visible:ring-0 focus-visible:border-blue-500/50 focus:border-blue-500/50 bg-white h-10 text-gray-700 text-[13px] rounded-lg" 
                       />
                     </div>
                   </div>
@@ -214,11 +214,11 @@ export default function AboutUsSettingsPage() {
             </div>
           </div>
 
-          <div className="pt-6 border-t border-gray-100">
+          <div className="pt-6 border-t border-gray-150">
             <Button 
               onClick={handleSaveAll}
               disabled={isSaving}
-              className="bg-[#5A8DEE] hover:bg-[#4778d9] text-white px-6 h-10 font-medium rounded-[4px] shadow-sm border-0 flex items-center gap-2"
+              className="bg-blue-600 hover:bg-blue-700 text-white px-6 h-10 font-bold rounded-lg shadow-sm border-0 flex items-center gap-2"
             >
               {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
               Save Changes
