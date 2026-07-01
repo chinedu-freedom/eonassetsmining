@@ -74,44 +74,53 @@ export default function DashboardOverview() {
   }, []);
 
   const mainStats = [
-    { title: "Total Assets", value: `${symbol}${Number(stats.totalAssets || 0).toFixed(2)}`, icon: Briefcase, colorClasses: "bg-[#e2ffe8] text-blue-600" },
+    { title: "Total Assets", value: `${symbol}${Number(stats.totalAssets || 0).toFixed(2)}`, icon: Briefcase, colorClasses: "bg-[#f0f7ff] text-blue-600" },
     { title: "Total Users", value: (stats.totalUsers || 0).toString(), icon: User, colorClasses: "bg-[#ffeded] text-[#FF5B5C]" },
-    { title: "Assets Value", value: `${symbol}${Number(stats.assetsValue || 0).toFixed(2)}`, icon: CircleDollarSign, colorClasses: "bg-[#e2ffe8] text-blue-600" },
+    { title: "Assets Value", value: `${symbol}${Number(stats.assetsValue || 0).toFixed(2)}`, icon: CircleDollarSign, colorClasses: "bg-[#e2ffe8] text-emerald-600" },
     { title: "In-Progress Assets", value: (stats.inProgressAssetsCount || 0).toString(), icon: Clock, colorClasses: "bg-[#ffeded] text-[#FF5B5C]" }
   ];
 
   const countStats = [
     { title: "Pending Withdraw", value: (stats.pendingWithdrawalsCount || 0).toString(), icon: FileText, colorClasses: "bg-[#ffeded] text-[#FF5B5C]" },
-    { title: "Approved Withdraw", value: (stats.approvedWithdrawalsCount || 0).toString(), icon: FileText, colorClasses: "bg-[#ffeded] text-[#FF5B5C]" },
+    { title: "Approved Withdraw", value: (stats.approvedWithdrawalsCount || 0).toString(), icon: FileText, colorClasses: "bg-[#e2ffe8] text-emerald-600" },
     { title: "Pending Deposit", value: (stats.pendingDepositsCount || 0).toString(), icon: FileText, colorClasses: "bg-[#ffeded] text-[#FF5B5C]" },
-    { title: "Approved Deposit", value: (stats.approvedDepositsCount || 0).toString(), icon: FileText, colorClasses: "bg-[#ffeded] text-[#FF5B5C]" },
+    { title: "Approved Deposit", value: (stats.approvedDepositsCount || 0).toString(), icon: FileText, colorClasses: "bg-[#e2ffe8] text-emerald-600" },
   ];
 
   const sumStats = [
-    { title: "Pending Withdraw", value: `${symbol}${Number(stats.pendingWithdrawalsSum || 0).toFixed(2)}`, icon: DollarSign, colorClasses: "bg-[#e2ffe8] text-blue-600" },
-    { title: "Approved Withdraw", value: `${symbol}${Number(stats.approvedWithdrawalsSum || 0).toFixed(2)}`, icon: DollarSign, colorClasses: "bg-[#e2ffe8] text-blue-600" },
-    { title: "Pending Deposit", value: `${symbol}${Number(stats.pendingDepositsSum || 0).toFixed(2)}`, icon: DollarSign, colorClasses: "bg-[#e2ffe8] text-blue-600" },
-    { title: "Approved Deposit", value: `${symbol}${Number(stats.approvedDepositsSum || 0).toFixed(2)}`, icon: DollarSign, colorClasses: "bg-[#e2ffe8] text-blue-600" },
+    { title: "Pending Withdraw", value: `${symbol}${Number(stats.pendingWithdrawalsSum || 0).toFixed(2)}`, icon: DollarSign, colorClasses: "bg-[#ffeded] text-[#FF5B5C]" },
+    { title: "Approved Withdraw", value: `${symbol}${Number(stats.approvedWithdrawalsSum || 0).toFixed(2)}`, icon: DollarSign, colorClasses: "bg-[#e2ffe8] text-emerald-600" },
+    { title: "Pending Deposit", value: `${symbol}${Number(stats.pendingDepositsSum || 0).toFixed(2)}`, icon: DollarSign, colorClasses: "bg-[#ffeded] text-[#FF5B5C]" },
+    { title: "Approved Deposit", value: `${symbol}${Number(stats.approvedDepositsSum || 0).toFixed(2)}`, icon: DollarSign, colorClasses: "bg-[#e2ffe8] text-emerald-600" },
   ];
 
   const todayStats = [
-    { title: "Today Deposit", value: `${symbol}${Number(stats.todayDepositsSum || 0).toFixed(2)}`, icon: DollarSign, colorClasses: "bg-[#e2ffe8] text-blue-600" },
-    { title: "Today Withdraw", value: `${symbol}${Number(stats.todayWithdrawalsSum || 0).toFixed(2)}`, icon: DollarSign, colorClasses: "bg-[#e2ffe8] text-blue-600" },
-    { title: "Today Users", value: (stats.todayUsers || 0).toString(), icon: User, colorClasses: "bg-[#e2ffe8] text-blue-600" },
-    { title: "Today Assets", value: `${symbol}${Number(stats.todayInvestmentsSum || 0).toFixed(2)}`, icon: Briefcase, colorClasses: "bg-[#e2ffe8] text-blue-600" },
+    { title: "Today Deposit", value: `${symbol}${Number(stats.todayDepositsSum || 0).toFixed(2)}`, icon: DollarSign, colorClasses: "bg-[#f0f7ff] text-blue-600" },
+    { title: "Today Withdraw", value: `${symbol}${Number(stats.todayWithdrawalsSum || 0).toFixed(2)}`, icon: DollarSign, colorClasses: "bg-[#ffeded] text-[#FF5B5C]" },
+    { title: "Today Users", value: (stats.todayUsers || 0).toString(), icon: User, colorClasses: "bg-[#f0f7ff] text-blue-600" },
+    { title: "Today Assets", value: `${symbol}${Number(stats.todayInvestmentsSum || 0).toFixed(2)}`, icon: Briefcase, colorClasses: "bg-[#e2ffe8] text-emerald-600" },
   ];
 
-  const StatCard = ({ title, value, icon: Icon, colorClasses }) => (
-    <Card className="border-none shadow-[0_4px_24px_0_rgba(34,41,47,0.1)] rounded-[0.5rem] bg-white">
-      <CardContent className="p-4 sm:p-6 text-center flex flex-col items-center justify-center">
-        <div className={`w-[50px] h-[50px] sm:w-[60px] sm:h-[60px] rounded-full flex items-center justify-center mb-3 sm:mb-4 ${colorClasses}`}>
-          <Icon className="w-6 h-6 sm:w-8 h-8" />
-        </div>
-        <div className="text-[#828d99] text-[12px] sm:text-[14px] truncate w-full mb-1">{title}</div>
-        <h3 className="text-[1.3rem] sm:text-[1.8rem] font-medium text-[#475f7b] mb-0 leading-[1.2] truncate w-full">{value}</h3>
-      </CardContent>
-    </Card>
-  );
+  const StatCard = ({ title, value, icon: Icon, colorClasses }) => {
+    const textColorClass = colorClasses.split(' ').find(c => c.startsWith('text-')) || 'text-blue-600';
+    return (
+      <Card className="border border-gray-100 shadow-[0_4px_24px_0_rgba(34,41,47,0.05)] rounded-[10px] bg-white">
+        <CardContent className="p-5 flex items-center justify-between text-left">
+          <div className="flex flex-col items-start min-w-0">
+            <h3 className={`text-2xl sm:text-[28px] font-bold tracking-tight ${textColorClass} leading-tight mb-1 truncate w-full`}>
+              {value}
+            </h3>
+            <div className="text-gray-500 text-[13px] sm:text-[14px] font-normal truncate w-full">
+              {title}
+            </div>
+          </div>
+          <div className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 ml-4 ${colorClasses}`}>
+            <Icon className="w-5 h-5" />
+          </div>
+        </CardContent>
+      </Card>
+    );
+  };
 
   if (isLoading) {
     return (
@@ -125,7 +134,7 @@ export default function DashboardOverview() {
   return (
     <div className="p-4 md:p-6 max-w-7xl mx-auto space-y-4 sm:space-y-6 font-['Rubik',sans-serif]">
       {/* Top Row: Main Stats 4-column Grid */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+      <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
         {mainStats.map((stat, i) => (
           <StatCard key={i} {...stat} />
         ))}
@@ -135,20 +144,16 @@ export default function DashboardOverview() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6">
         
         {/* Visits Chart Card - takes ~40% space */}
-        <Card className="lg:col-span-5 border-none shadow-[0_4px_24px_0_rgba(34,41,47,0.1)] rounded-[0.5rem] bg-white">
+        {/* <Card className="lg:col-span-5 border-none shadow-[0_4px_24px_0_rgba(34,41,47,0.1)] rounded-[0.5rem] bg-white">
           <div className="p-4 sm:p-6 pb-0 flex justify-between items-center">
             <h4 className="text-[1.1rem] sm:text-[1.2rem] text-[#475f7b] font-medium tracking-[0.5px]">Visits Of {currentMonthYear}</h4>
             <MoreVertical className="w-5 h-5 text-[#828d99] cursor-pointer" />
           </div>
           <CardContent className="p-4 sm:p-6 pt-0 flex flex-col items-center justify-center h-full min-h-[260px] sm:min-h-[300px]">
-            {/* Improved Radial Chart Representation */}
             <div className="relative w-[200px] h-[200px] sm:w-[240px] sm:h-[240px] flex items-center justify-center">
               <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
-                {/* Outer Ring - Target */}
                 <circle cx="50" cy="50" r="42" fill="none" stroke="#5A8DEE" strokeWidth="3" strokeDasharray="263" strokeDashoffset="50" strokeLinecap="round" opacity="0.8" />
-                {/* Middle Ring - Mart */}
                 <circle cx="50" cy="50" r="35" fill="none" stroke="#FF5B5C" strokeWidth="3" strokeDasharray="219" strokeDashoffset="70" strokeLinecap="round" opacity="0.8" />
-                {/* Inner Ring - Ebay */}
                 <circle cx="50" cy="50" r="28" fill="none" stroke="#FDAC41" strokeWidth="3" strokeDasharray="175" strokeDashoffset="90" strokeLinecap="round" opacity="0.8" />
               </svg>
               
@@ -164,10 +169,10 @@ export default function DashboardOverview() {
               <li className="flex items-center"><span className="w-2 h-2 rounded-full bg-[#FDAC41] mr-1.5 sm:mr-2"></span>Ebay</li>
             </ul>
           </CardContent>
-        </Card>
+        </Card> */}
 
         {/* Greeting Card - takes ~60% space */}
-        <Card className="lg:col-span-7 border-none shadow-[0_4px_24px_0_rgba(34,41,47,0.1)] rounded-[0.5rem] bg-white relative overflow-hidden">
+        {/* <Card className="lg:col-span-7 border-none shadow-[0_4px_24px_0_rgba(34,41,47,0.1)] rounded-[0.5rem] bg-white relative overflow-hidden">
           <div className="p-6 sm:p-8 z-10 relative">
             <h3 className="text-[1.4rem] sm:text-[1.8rem] text-[#475f7b] font-medium mb-1.5 sm:mb-2 leading-[1.2]">Congratulations eonassets!</h3>
             <p className="text-[#828d99] text-[13px] sm:text-[15px] mb-4 sm:mb-8">Today mostly Invested</p>
@@ -181,26 +186,26 @@ export default function DashboardOverview() {
           <div className="absolute right-[10px] bottom-[10px] z-0 hidden sm:block">
             <div className="w-[180px] h-[180px] md:w-[280px] md:h-[280px] bg-[url('https://eonassetsmining.com/admin/app-assets/images/icon/cup.png')] bg-contain bg-no-repeat bg-right-bottom opacity-100" />
           </div>
-        </Card>
+        </Card> */}
 
       </div>
 
       {/* Counts Row */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+      <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
         {countStats.map((stat, i) => (
           <StatCard key={i} {...stat} />
         ))}
       </div>
 
       {/* Sums Row */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+      <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
         {sumStats.map((stat, i) => (
           <StatCard key={i} {...stat} />
         ))}
       </div>
 
       {/* Today Sums Row */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+      <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
         {todayStats.map((stat, i) => (
           <StatCard key={i} {...stat} />
         ))}
