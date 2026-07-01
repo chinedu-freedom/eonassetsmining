@@ -9,8 +9,8 @@ const plusJakartaSans = Plus_Jakarta_Sans({
 });
 
 export const metadata = {
-  title: "Eon Assets Mining Dashboard",
-  description: "Eon Assets Mining Dashboard Administration",
+  title: "Polychainapp Dashboard",
+  description: "Polychainapp Dashboard Administration",
 };
 
 export default function RootLayout({ children }) {

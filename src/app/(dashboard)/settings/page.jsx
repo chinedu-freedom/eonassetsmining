@@ -26,7 +26,7 @@ export default function SettingsPage() {
                 <label className="text-sm font-semibold text-gray-600">Platform Name</label>
                 <input 
                   type="text" 
-                  defaultValue="Eon Assets Mining"
+                  defaultValue="Polychainapp"
                   className="w-full bg-white border border-gray-200 rounded-lg py-2.5 px-4 text-gray-800 focus:outline-none focus:border-blue-500/50 transition-colors placeholder-gray-400 text-sm"
                 />
               </div>
