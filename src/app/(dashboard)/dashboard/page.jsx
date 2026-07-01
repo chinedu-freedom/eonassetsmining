@@ -126,7 +126,7 @@ export default function DashboardOverview() {
   }
 
   return (
-    <div className="p-4 md:p-6 max-w-7xl mx-auto space-y-4 sm:space-y-6 font-['Rubik',sans-serif]">
+    <div className="max-w-7xl mx-auto space-y-4 sm:space-y-6 font-['Rubik',sans-serif]">
       {/* Grid of all stats cards mapped once in 3-column layout */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
         {allStats.map((stat, i) => (
