@@ -2,34 +2,22 @@
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { loginSchema } from "@/lib/schemas";
+import { forgotPasswordSchema } from "@/lib/schemas";
 import { usePost, useFetchData } from "@/hooks/useApi";
 import { Input } from "@/components/ui/auth-input";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Controller } from "react-hook-form";
-import { useEffect, useState } from "react";
-import { CookieManager } from "@/utils/cookie-utils";
 
-export default function LoginPage() {
+export default function ForgotPasswordPage() {
   const router = useRouter();
-  const [isMounted, setIsMounted] = useState(false);
 
   const {
     register,
     handleSubmit,
-    control,
-    setValue,
     formState: { errors },
   } = useForm({
-    resolver: zodResolver(loginSchema),
-    defaultValues: {
-      email: "",
-      password: "",
-      keepMeLoggedIn: false,
-    },
+    resolver: zodResolver(forgotPasswordSchema),
   });
 
   const { data: settingsResponse } = useFetchData("/settings", ["platform-settings"]);
@@ -37,38 +25,14 @@ export default function LoginPage() {
   const siteName = settings.site_name || "Polychainapp";
   const siteLogo = settings.platform_logo || null;
 
-  useEffect(() => {
-    setIsMounted(true);
-    const rememberedEmail = localStorage.getItem("rememberedEmail");
-    if (rememberedEmail) {
-      setValue("email", rememberedEmail);
-      setValue("keepMeLoggedIn", true);
-    }
-  }, [setValue]);
-
-  const loginMutation = usePost("/auth/admin/login", null, false, { showToast: false });
-
-  if (!isMounted) {
-    return null; // Prevents hydration mismatch
-  }
+  const requestOtpMutation = usePost("/auth/admin/forgot-password", null);
 
   const onSubmit = (data) => {
-    const keepMeLoggedIn = data.keepMeLoggedIn ?? false;
+    localStorage.setItem("resetEmail", data.email);
 
-    if (keepMeLoggedIn) {
-      localStorage.setItem("rememberedEmail", data.email);
-    } else {
-      localStorage.removeItem("rememberedEmail");
-    }
-
-    loginMutation.mutate({ email: data.email, password: data.password }, {
+    requestOtpMutation.mutate(data, {
       onSuccess: (res) => {
-        if (res?.token) {
-          CookieManager.set("satrixnow-admin-token", res.token);
-          localStorage.setItem("adminToken", res.token);
-          localStorage.setItem("adminUser", JSON.stringify(res.admin));
-        }
-        router.push("/dashboard");
+        router.push("/auth/verify-otp");
       },
     });
   };
@@ -89,72 +53,30 @@ export default function LoginPage() {
                 </div>
               </div>
             )}
-            <h1 className="text-2xl font-bold text-gray-900 mb-1">
-              Welcome back
-            </h1>
+            <h1 className="text-2xl font-bold text-gray-900 mb-1">Forgot Password?</h1>
             <p className="text-gray-500 text-sm">
-              Sign in to {siteName} Admin Panel
+              Enter your registered email and we’ll send you a password reset link for {siteName} Admin Panel.
             </p>
           </div>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
             <div>
-              <Input label="Email" type="email" {...register("email")} />
-              {errors.email && (
-                <p className="text-red-500 text-sm mt-1">
-                  {errors.email.message}
-                </p>
-              )}
-            </div>
-
-            <div>
               <Input
-                label="Password"
-                type="password"
-                {...register("password")}
+                label="Email Address"
+                type="email"
+                {...register("email")}
               />
-              {errors.password && (
-                <p className="text-red-500 text-sm mt-1">
-                  {errors.password.message}
-                </p>
+              {errors.email && (
+                <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
               )}
-            </div>
-
-            <div className="flex items-center justify-between -mt-2">
-              <Controller
-                name="keepMeLoggedIn"
-                control={control}
-                defaultValue={false}
-                render={({ field }) => (
-                  <label className="flex items-center space-x-2 cursor-pointer">
-                    <Checkbox
-                      checked={field.value}
-                      onCheckedChange={(checked) => {
-                        field.onChange(checked === true);
-                      }}
-                      id="keepMeLoggedIn"
-                    />
-                    <span className="text-sm text-gray-600">
-                     Remember me
-                    </span>
-                  </label>
-                )}
-              />
-
-              <Link
-                href="/auth/forgot-password"
-                className="text-sm text-purple-600 hover:underline cursor-pointer"
-              >
-                Forgot password?
-              </Link>
             </div>
 
             <Button
               type="submit"
               className="w-full bg-purple-600 text-white hover:bg-purple-700 rounded-md py-3 font-medium transition-all"
-              disabled={loginMutation.isPending}
+              disabled={requestOtpMutation.isPending}
             >
-              {loginMutation.isPending ? (
+              {requestOtpMutation.isPending ? (
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
                   <rect width="10" height="10" x="1" y="1" fill="currentColor" rx="1">
                     <animate id="SVG7WybndBt" fill="freeze" attributeName="x" begin="0;SVGo3aOUHlJ.end" dur="0.2s" values="1;13" />
@@ -176,9 +98,16 @@ export default function LoginPage() {
                   </rect>
                 </svg>
               ) : (
-                "Login"
+                "Send Verification Code"
               )}
             </Button>
+
+            <p className="text-center text-sm text-gray-500 mt-6">
+              Remembered your password?{" "}
+              <Link href="/" className="text-purple-600 font-medium hover:underline cursor-pointer">
+                Back to Login
+              </Link>
+            </p>
           </form>
         </div>
       </div>

@@ -17,6 +17,7 @@ import {
   ChevronDown,
   ChevronUp
 } from "lucide-react";
+import { CookieManager } from "@/utils/cookie-utils";
 
 const navigation = [
   { name: "Home", href: "/dashboard", icon: Home },
@@ -192,14 +193,18 @@ export function Sidebar({ isOpen, onClose }) {
         </div>
         
         <div className="p-4 border-t border-slate-100">
-          <Link 
-            href="/ktdevpro/login"
-            onClick={handleLinkClick}
-            className="flex items-center gap-4 px-3 py-3 rounded-[4px] text-[#475f7b] hover:bg-red-50 hover:text-red-500 transition-all group"
+          <button 
+            onClick={() => {
+              CookieManager.remove("satrixnow-admin-token");
+              localStorage.removeItem("adminToken");
+              localStorage.removeItem("adminUser");
+              window.location.href = "/";
+            }}
+            className="w-full flex items-center gap-4 px-3 py-3 rounded-[4px] text-[#475f7b] hover:bg-red-50 hover:text-red-500 transition-all group"
           >
             <LogOut className="w-[22px] h-[22px] group-hover:text-red-500 transition-colors" />
             <span className="font-medium text-[15px]">Sign Out</span>
-          </Link>
+          </button>
         </div>
       </div>
     </>
