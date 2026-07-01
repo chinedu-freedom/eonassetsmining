@@ -3,9 +3,10 @@
 import { Bell, Search, Menu } from "lucide-react";
 import * as Avatar from "@radix-ui/react-avatar";
 import { useFetchData } from "@/hooks/useApi";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export function Header({ onMenuClick }) {
-  const { data } = useFetchData("/admin/profile", "profile");
+  const { data, isLoading } = useFetchData("/admin/profile", "profile");
   const admin = data?.success && data?.data ? data.data : null;
 
   const displayName = admin?.username || (admin?.email ? admin.email.split("@")[0] : "eonassets");
@@ -23,19 +24,27 @@ export function Header({ onMenuClick }) {
       </div>
       
       <div className="flex items-center gap-4">
-        
         <div className="flex items-center gap-3 cursor-pointer">
-          <div className="flex flex-col items-end">
-            <span className="text-[14px] font-semibold text-[#475f7b] capitalize">{displayName}</span>
-          </div>
-          <Avatar.Root className="inline-flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-blue-600 border-none shadow-sm">
-            {admin?.image && (
-              <Avatar.Image src={admin.image} className="h-full w-full object-cover" />
-            )}
-            <Avatar.Fallback className="text-xl font-bold text-white leading-1 font-sans">
-              {avatarLetter}
-            </Avatar.Fallback>
-          </Avatar.Root>
+          {isLoading ? (
+            <>
+              <Skeleton className="h-4 w-24" />
+              <Skeleton className="h-10 w-10 rounded-full" />
+            </>
+          ) : (
+            <>
+              <div className="flex flex-col items-end">
+                <span className="text-[14px] font-semibold text-[#475f7b] capitalize">{displayName}</span>
+              </div>
+              <Avatar.Root className="inline-flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-blue-600 border-none shadow-sm">
+                {admin?.image && (
+                  <Avatar.Image src={admin.image} className="h-full w-full object-cover" />
+                )}
+                <Avatar.Fallback className="text-xl font-bold text-white leading-1 font-sans">
+                  {avatarLetter}
+                </Avatar.Fallback>
+              </Avatar.Root>
+            </>
+          )}
         </div>
       </div>
     </header>

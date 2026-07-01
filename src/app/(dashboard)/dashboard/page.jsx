@@ -16,6 +16,8 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 
+import { Skeleton } from "@/components/ui/skeleton";
+
 export default function DashboardOverview() {
   const currentMonthYear = new Date().toLocaleString('default', { month: 'short', year: 'numeric' }).replace(' ', '-'); // e.g., 2026-Jun
 
@@ -118,9 +120,20 @@ export default function DashboardOverview() {
 
   if (isLoading) {
     return (
-      <div className="min-h-[60vh] flex flex-col items-center justify-center space-y-4">
-        <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
-        <p className="text-muted-foreground text-sm">Loading dashboard stats...</p>
+      <div className="max-w-7xl mx-auto space-y-4 sm:space-y-6 font-['Rubik',sans-serif]">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+          {Array.from({ length: 16 }).map((_, i) => (
+            <Card key={i} className="border border-gray-100 shadow-[0_4px_24px_0_rgba(34,41,47,0.05)] rounded-[12px] bg-white">
+              <CardContent className="p-5 flex items-center justify-between">
+                <div className="flex flex-col items-start gap-3 w-[70%]">
+                  <Skeleton className="h-8 w-24" />
+                  <Skeleton className="h-4 w-32" />
+                </div>
+                <Skeleton className="w-11 h-11 rounded-xl shrink-0 ml-4" />
+              </CardContent>
+            </Card>
+          ))}
+        </div>
       </div>
     );
   }
