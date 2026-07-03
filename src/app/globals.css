@@ -199,3 +199,12 @@
 .hidden {
   display: none !important;
 }
+
+/* Fix autofill background and text color */
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active {
+  -webkit-text-fill-color: black !important;
+  -webkit-box-shadow: 0 0 0 1000px white inset !important;
+}
