@@ -199,7 +199,7 @@ export default function CustomerDetailsPage() {
         const isLocal = window.location.hostname.includes('localhost');
         const targetUrl = isLocal ? 'http://localhost:3002/dashboard' : 'https://polychainapp.com/dashboard';
         
-        document.cookie = \`sec-prd-token=\${data.token}; path=/; max-age=7200; SameSite=Lax\${!isLocal ? '; domain=.polychainapp.com; Secure' : ''}\`;
+        document.cookie = `sec-prd-token=${data.token}; path=/; max-age=7200; SameSite=Lax${!isLocal ? '; domain=.polychainapp.com; Secure' : ''}`;
         
         window.open(targetUrl, '_blank')
       } else {
