@@ -308,13 +308,20 @@ export default function CustomerDetailsPage() {
             {/* Right Col: Balances & Edit Form */}
             <div className="lg:col-span-8 p-6 space-y-8">
               {/* Balances */}
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div className="bg-blue-500/5 border border-blue-500/10 rounded-xl p-4 flex items-center justify-between">
                   <div>
                     <p className="text-xs font-bold text-blue-500 uppercase tracking-wider mb-1">Main Balance</p>
                     <h3 className="text-2xl font-bold text-foreground">{symbol}{Number(user.balance || 0).toFixed(2)}</h3>
                   </div>
                   <div className="p-2.5 bg-blue-500/10 rounded-xl hidden sm:block"><CreditCard className="w-5 h-5 text-blue-500" /></div>
+                </div>
+                <div className="bg-purple-500/5 border border-purple-500/10 rounded-xl p-4 flex items-center justify-between">
+                  <div>
+                    <p className="text-xs font-bold text-purple-500 uppercase tracking-wider mb-1">Withdrawable</p>
+                    <h3 className="text-2xl font-bold text-foreground">{symbol}{Number(user.withdrawable_balance || 0).toFixed(2)}</h3>
+                  </div>
+                  <div className="p-2.5 bg-purple-500/10 rounded-xl hidden sm:block"><WalletCards className="w-5 h-5 text-purple-500" /></div>
                 </div>
                 <div className="bg-emerald-500/5 border border-emerald-500/10 rounded-xl p-4 flex items-center justify-between">
                   <div>
@@ -403,6 +410,7 @@ export default function CustomerDetailsPage() {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="main">Main Balance</SelectItem>
+                    <SelectItem value="withdrawable">Withdrawable Balance</SelectItem>
                     <SelectItem value="gift">Gift Balance</SelectItem>
                   </SelectContent>
                 </Select>
@@ -449,6 +457,7 @@ export default function CustomerDetailsPage() {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="main">Main Balance</SelectItem>
+                    <SelectItem value="withdrawable">Withdrawable Balance</SelectItem>
                     <SelectItem value="gift">Gift Balance</SelectItem>
                   </SelectContent>
                 </Select>
