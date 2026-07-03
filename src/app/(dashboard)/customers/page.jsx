@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Search, Edit, Lock, LogIn, Users, CheckCircle, Clock, Ban, UserCog, History, RotateCcw } from "lucide-react"
+import { Search, Edit, Lock, LogIn, Users, CheckCircle, Clock, Ban, UserCog, History, RotateCcw, Trash2, AlertTriangle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -21,6 +21,8 @@ export default function CustomersManagementPage() {
   const [searchTerm, setSearchTerm] = useState("")
   const [statusFilter, setStatusFilter] = useState("all-status")
   const [countryFilter, setCountryFilter] = useState("all-countries")
+  const [userToDelete, setUserToDelete] = useState(null)
+  const [isDeleting, setIsDeleting] = useState(false)
 
   let symbol = "$";
   if (typeof window !== "undefined") {
@@ -32,6 +34,37 @@ export default function CustomersManagementPage() {
 
   const { data: usersRes, isLoading, mutate } = useFetchData("/admin/users", ["adminUsers"]);
   const usersData = Array.isArray(usersRes) ? usersRes : usersRes?.data || [];
+
+  const handleDeleteClick = (user) => {
+    setUserToDelete(user)
+  }
+
+  const executeDeleteUser = async () => {
+    if (!userToDelete) return
+    setIsDeleting(true)
+    try {
+      const token = document.cookie.split("; ").find(row => row.startsWith("satrixnow-admin-token="))?.split("=")[1];
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/admin/users/${userToDelete.id}`, {
+        method: "DELETE",
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      })
+      
+      if (res.ok) {
+        toast.success("User deleted successfully")
+        mutate() // Refresh data
+      } else {
+        const data = await res.json()
+        toast.error(data.error || "Failed to delete user")
+      }
+    } catch (error) {
+      toast.error("An error occurred while deleting user")
+    } finally {
+      setIsDeleting(false)
+      setUserToDelete(null)
+    }
+  }
 
 
 
@@ -222,6 +255,9 @@ export default function CustomersManagementPage() {
                       <Button variant="outline" size="icon" className="h-7 w-7 text-orange-400 border-gray-200 hover:bg-orange-50" title="Lock">
                         <Lock className="w-3.5 h-3.5" />
                       </Button>
+                      <Button onClick={() => handleDeleteClick(user)} variant="outline" size="icon" className="h-7 w-7 text-red-500 border-gray-200 hover:bg-red-50" title="Delete">
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </Button>
                     </div>
                   </TableCell>
                 </TableRow>
@@ -233,6 +269,30 @@ export default function CustomersManagementPage() {
         
       </Card>
 
+      {/* Delete Confirmation Modal */}
+      {userToDelete && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-lg shadow-xl w-full max-w-md overflow-hidden">
+            <div className="p-6">
+              <div className="flex items-center justify-center w-12 h-12 rounded-full bg-red-100 mx-auto mb-4">
+                <AlertTriangle className="w-6 h-6 text-red-600" />
+              </div>
+              <h3 className="text-lg font-bold text-center text-gray-900 mb-2">Delete User Account</h3>
+              <p className="text-sm text-center text-gray-500">
+                Are you sure you want to delete <strong>{userToDelete.email}</strong>? This will permanently wipe all of their history, transactions, and investments. This action cannot be undone.
+              </p>
+            </div>
+            <div className="bg-gray-50 px-6 py-4 flex items-center justify-end gap-3 border-t">
+              <Button variant="outline" onClick={() => setUserToDelete(null)} disabled={isDeleting} className="h-10 text-gray-600 border-gray-300">
+                Cancel
+              </Button>
+              <Button onClick={executeDeleteUser} disabled={isDeleting} className="h-10 bg-red-600 hover:bg-red-700 text-white min-w-[100px]">
+                {isDeleting ? <Loader2 className="w-4 h-4 animate-spin mx-auto" /> : "Yes, Delete"}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
 
     </div>
   )
