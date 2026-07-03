@@ -15,10 +15,12 @@ import {
   Loader2
 } from "lucide-react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function DashboardOverview() {
+  const router = useRouter();
   const currentMonthYear = new Date().toLocaleString('default', { month: 'short', year: 'numeric' }).replace(' ', '-'); // e.g., 2026-Jun
 
   const [stats, setStats] = useState({
@@ -76,31 +78,34 @@ export default function DashboardOverview() {
   }, []);
 
   const allStats = [
-    { title: "Total Assets", value: `${symbol}${Number(stats.totalAssets || 0).toFixed(2)}`, icon: Briefcase, colorClasses: "bg-[#f0f7ff] text-blue-600" },
-    { title: "Total Users", value: (stats.totalUsers || 0).toString(), icon: User, colorClasses: "bg-[#ffeded] text-[#FF5B5C]" },
-    { title: "Assets Value", value: `${symbol}${Number(stats.assetsValue || 0).toFixed(2)}`, icon: CircleDollarSign, colorClasses: "bg-[#e2ffe8] text-emerald-600" },
-    { title: "In-Progress Assets", value: (stats.inProgressAssetsCount || 0).toString(), icon: Clock, colorClasses: "bg-[#ffeded] text-[#FF5B5C]" },
+    { title: "Total Assets", value: `${symbol}${Number(stats.totalAssets || 0).toFixed(2)}`, icon: Briefcase, colorClasses: "bg-[#f0f7ff] text-blue-600", link: "/dashboard/packages" },
+    { title: "Total Users", value: (stats.totalUsers || 0).toString(), icon: User, colorClasses: "bg-[#ffeded] text-[#FF5B5C]", link: "/dashboard/customers" },
+    { title: "Assets Value", value: `${symbol}${Number(stats.assetsValue || 0).toFixed(2)}`, icon: CircleDollarSign, colorClasses: "bg-[#e2ffe8] text-emerald-600", link: "/dashboard/packages" },
+    { title: "In-Progress Assets", value: (stats.inProgressAssetsCount || 0).toString(), icon: Clock, colorClasses: "bg-[#ffeded] text-[#FF5B5C]", link: "/dashboard/packages" },
 
-    { title: "Pending Withdraw Count", value: (stats.pendingWithdrawalsCount || 0).toString(), icon: FileText, colorClasses: "bg-[#ffeded] text-[#FF5B5C]" },
-    { title: "Approved Withdraw Count", value: (stats.approvedWithdrawalsCount || 0).toString(), icon: FileText, colorClasses: "bg-[#e2ffe8] text-emerald-600" },
-    { title: "Pending Deposit Count", value: (stats.pendingDepositsCount || 0).toString(), icon: FileText, colorClasses: "bg-[#ffeded] text-[#FF5B5C]" },
-    { title: "Approved Deposit Count", value: (stats.approvedDepositsCount || 0).toString(), icon: FileText, colorClasses: "bg-[#e2ffe8] text-emerald-600" },
+    { title: "Pending Withdraw Count", value: (stats.pendingWithdrawalsCount || 0).toString(), icon: FileText, colorClasses: "bg-[#ffeded] text-[#FF5B5C]", link: "/dashboard/withdrawals?status=pending" },
+    { title: "Approved Withdraw Count", value: (stats.approvedWithdrawalsCount || 0).toString(), icon: FileText, colorClasses: "bg-[#e2ffe8] text-emerald-600", link: "/dashboard/withdrawals?status=approved" },
+    { title: "Pending Deposit Count", value: (stats.pendingDepositsCount || 0).toString(), icon: FileText, colorClasses: "bg-[#ffeded] text-[#FF5B5C]", link: "/dashboard/deposits?status=pending" },
+    { title: "Approved Deposit Count", value: (stats.approvedDepositsCount || 0).toString(), icon: FileText, colorClasses: "bg-[#e2ffe8] text-emerald-600", link: "/dashboard/deposits?status=approved" },
 
-    { title: "Pending Withdraw Amount", value: `${symbol}${Number(stats.pendingWithdrawalsSum || 0).toFixed(2)}`, icon: DollarSign, colorClasses: "bg-[#ffeded] text-[#FF5B5C]" },
-    { title: "Approved Withdraw Amount", value: `${symbol}${Number(stats.approvedWithdrawalsSum || 0).toFixed(2)}`, icon: DollarSign, colorClasses: "bg-[#e2ffe8] text-emerald-600" },
-    { title: "Pending Deposit Amount", value: `${symbol}${Number(stats.pendingDepositsSum || 0).toFixed(2)}`, icon: DollarSign, colorClasses: "bg-[#ffeded] text-[#FF5B5C]" },
-    { title: "Approved Deposit Amount", value: `${symbol}${Number(stats.approvedDepositsSum || 0).toFixed(2)}`, icon: DollarSign, colorClasses: "bg-[#e2ffe8] text-emerald-600" },
+    { title: "Pending Withdraw Amount", value: `${symbol}${Number(stats.pendingWithdrawalsSum || 0).toFixed(2)}`, icon: DollarSign, colorClasses: "bg-[#ffeded] text-[#FF5B5C]", link: "/dashboard/withdrawals?status=pending" },
+    { title: "Approved Withdraw Amount", value: `${symbol}${Number(stats.approvedWithdrawalsSum || 0).toFixed(2)}`, icon: DollarSign, colorClasses: "bg-[#e2ffe8] text-emerald-600", link: "/dashboard/withdrawals?status=approved" },
+    { title: "Pending Deposit Amount", value: `${symbol}${Number(stats.pendingDepositsSum || 0).toFixed(2)}`, icon: DollarSign, colorClasses: "bg-[#ffeded] text-[#FF5B5C]", link: "/dashboard/deposits?status=pending" },
+    { title: "Approved Deposit Amount", value: `${symbol}${Number(stats.approvedDepositsSum || 0).toFixed(2)}`, icon: DollarSign, colorClasses: "bg-[#e2ffe8] text-emerald-600", link: "/dashboard/deposits?status=approved" },
 
-    { title: "Today Deposit", value: `${symbol}${Number(stats.todayDepositsSum || 0).toFixed(2)}`, icon: DollarSign, colorClasses: "bg-[#f0f7ff] text-blue-600" },
-    { title: "Today Withdraw", value: `${symbol}${Number(stats.todayWithdrawalsSum || 0).toFixed(2)}`, icon: DollarSign, colorClasses: "bg-[#ffeded] text-[#FF5B5C]" },
-    { title: "Today Users", value: (stats.todayUsers || 0).toString(), icon: User, colorClasses: "bg-[#f0f7ff] text-blue-600" },
-    { title: "Today Assets", value: `${symbol}${Number(stats.todayInvestmentsSum || 0).toFixed(2)}`, icon: Briefcase, colorClasses: "bg-[#e2ffe8] text-emerald-600" }
+    { title: "Today Deposit", value: `${symbol}${Number(stats.todayDepositsSum || 0).toFixed(2)}`, icon: DollarSign, colorClasses: "bg-[#f0f7ff] text-blue-600", link: "/dashboard/deposits" },
+    { title: "Today Withdraw", value: `${symbol}${Number(stats.todayWithdrawalsSum || 0).toFixed(2)}`, icon: DollarSign, colorClasses: "bg-[#ffeded] text-[#FF5B5C]", link: "/dashboard/withdrawals" },
+    { title: "Today Users", value: (stats.todayUsers || 0).toString(), icon: User, colorClasses: "bg-[#f0f7ff] text-blue-600", link: "/dashboard/customers" },
+    { title: "Today Assets", value: `${symbol}${Number(stats.todayInvestmentsSum || 0).toFixed(2)}`, icon: Briefcase, colorClasses: "bg-[#e2ffe8] text-emerald-600", link: "/dashboard/packages" }
   ];
 
-  const StatCard = ({ title, value, icon: Icon, colorClasses }) => {
+  const StatCard = ({ title, value, icon: Icon, colorClasses, link }) => {
     const textColorClass = colorClasses.split(' ').find(c => c.startsWith('text-')) || 'text-blue-600';
     return (
-      <Card className="border border-gray-100 shadow-[0_4px_24px_0_rgba(34,41,47,0.05)] rounded-[12px] bg-white">
+      <Card 
+        onClick={() => link && router.push(link)}
+        className={`border border-gray-100 shadow-[0_4px_24px_0_rgba(34,41,47,0.05)] rounded-[12px] bg-white ${link ? 'cursor-pointer hover:shadow-md transition-shadow hover:border-gray-200' : ''}`}
+      >
         <CardContent className="p-5 flex items-center justify-between text-left">
           <div className="flex flex-col items-start min-w-0">
             <h3 className={`text-2xl sm:text-[28px] font-bold tracking-tight ${textColorClass} leading-tight mb-1 truncate w-full`}>
