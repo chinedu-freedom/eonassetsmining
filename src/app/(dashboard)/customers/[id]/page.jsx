@@ -84,7 +84,7 @@ export default function CustomerDetailsPage() {
   const executeSave = async () => {
     setIsSaving(true)
     try {
-      const token = document.cookie.split("; ").find(row => row.startsWith("satrixnow-admin-token="))?.split("=")[1];
+      const token = document.cookie.split("; ").find(row => row.startsWith("sec-admin-token="))?.split("=")[1];
       const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/admin/users/${id}`, {
         method: "PUT",
         headers: {
@@ -120,7 +120,7 @@ export default function CustomerDetailsPage() {
     
     setProcessing(true)
     try {
-      const token = document.cookie.split("; ").find(row => row.startsWith("satrixnow-admin-token="))?.split("=")[1];
+      const token = document.cookie.split("; ").find(row => row.startsWith("sec-admin-token="))?.split("=")[1];
       const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/admin/users/${id}/${actionType}`, {
         method: "POST",
         headers: {
@@ -160,7 +160,7 @@ export default function CustomerDetailsPage() {
   const executeDeleteUser = async () => {
     setIsDeleting(true)
     try {
-      const token = document.cookie.split("; ").find(row => row.startsWith("satrixnow-admin-token="))?.split("=")[1];
+      const token = document.cookie.split("; ").find(row => row.startsWith("sec-admin-token="))?.split("=")[1];
       const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/admin/users/${id}`, {
         method: "DELETE",
         headers: {
@@ -186,7 +186,7 @@ export default function CustomerDetailsPage() {
   const handleImpersonate = async () => {
     setIsImpersonating(true)
     try {
-      const adminToken = document.cookie.split("; ").find(row => row.startsWith("satrixnow-admin-token="))?.split("=")[1];
+      const adminToken = document.cookie.split("; ").find(row => row.startsWith("sec-admin-token="))?.split("=")[1];
       const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/admin/users/${id}/impersonate`, {
         method: "POST",
         headers: {

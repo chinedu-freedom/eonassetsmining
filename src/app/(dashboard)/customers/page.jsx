@@ -43,7 +43,7 @@ export default function CustomersManagementPage() {
     if (!userToDelete) return
     setIsDeleting(true)
     try {
-      const token = document.cookie.split("; ").find(row => row.startsWith("satrixnow-admin-token="))?.split("=")[1];
+      const token = document.cookie.split("; ").find(row => row.startsWith("sec-admin-token="))?.split("=")[1];
       const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/admin/users/${userToDelete.id}`, {
         method: "DELETE",
         headers: {

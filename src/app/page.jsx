@@ -64,7 +64,7 @@ export default function LoginPage() {
     loginMutation.mutate({ email: data.email, password: data.password }, {
       onSuccess: (res) => {
         if (res?.token) {
-          CookieManager.set("satrixnow-admin-token", res.token);
+          CookieManager.set("sec-admin-token", res.token);
           localStorage.setItem("adminToken", res.token);
           localStorage.setItem("adminUser", JSON.stringify(res.admin));
         }

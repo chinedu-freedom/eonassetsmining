@@ -195,7 +195,7 @@ export function Sidebar({ isOpen, onClose }) {
         <div className="p-4 border-t border-slate-100">
           <button 
             onClick={() => {
-              CookieManager.remove("satrixnow-admin-token");
+              CookieManager.remove("sec-admin-token");
               localStorage.removeItem("adminToken");
               localStorage.removeItem("adminUser");
               window.location.href = "/";

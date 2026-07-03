@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 export function middleware(req) {
   const { pathname } = req.nextUrl;
 
-  const adminToken = req.cookies.get("satrixnow-admin-token")?.value;
+  const adminToken = req.cookies.get("sec-admin-token")?.value;
 
   // List of public paths that don't require authentication
   const isPublicPath = pathname === "/" || pathname.startsWith("/auth");
