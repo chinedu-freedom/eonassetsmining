@@ -195,9 +195,13 @@ export default function CustomerDetailsPage() {
       })
       const data = await res.json()
       if (res.ok && data.token) {
-        document.cookie = `sec-prd-token=${data.token}; path=/; max-age=7200; SameSite=Lax`
-        // toast call removed per user
-        window.open('http://localhost:3002/dashboard', '_blank')
+        // Set cookie on main domain if in production
+        const isLocal = window.location.hostname.includes('localhost');
+        const targetUrl = isLocal ? 'http://localhost:3002/dashboard' : 'https://polychainapp.com/dashboard';
+        
+        document.cookie = \`sec-prd-token=\${data.token}; path=/; max-age=7200; SameSite=Lax\${!isLocal ? '; domain=.polychainapp.com; Secure' : ''}\`;
+        
+        window.open(targetUrl, '_blank')
       } else {
         // toast call removed per user
       }
