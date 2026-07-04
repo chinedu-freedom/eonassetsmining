@@ -28,7 +28,7 @@ axiosInstance.interceptors.request.use(
 axiosInstance.interceptors.response.use(
   (response) => response,
   async (error) => {
-    if (error?.response?.status === 401 && typeof window !== "undefined") {
+    if ((error?.response?.status === 401 || error?.response?.status === 403) && typeof window !== "undefined") {
       // Clear all auth-related cookies
       CookieManager.remove("sec-admin-token");
       CookieManager.remove("isAuthenticated");
