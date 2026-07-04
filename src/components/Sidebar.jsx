@@ -15,7 +15,8 @@ import {
   Activity,
   LogOut,
   ChevronDown,
-  ChevronUp
+  ChevronUp,
+  TrendingUp
 } from "lucide-react";
 import { CookieManager } from "@/utils/cookie-utils";
 
@@ -36,7 +37,7 @@ const navigation = [
   { name: "Spin Wheel", href: "/spin-wheel", icon: Loader },
   { name: "News", href: "/news", icon: Newspaper },
   { name: "Partners", href: "/partners", icon: Building },
-  { name: "Live Market", href: "/live-market" }, // No icon
+  { name: "Live Market", href: "/live-market", icon: TrendingUp }, 
   { name: "Customers", href: "/customers", icon: ArrowRight },
   { name: "Activity Monitor", href: "/activity-monitor", icon: Activity },
   // { name: "Purchase Record", href: "/purchase-record", icon: ArrowRight },
