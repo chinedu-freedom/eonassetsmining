@@ -96,13 +96,13 @@ export default function CustomerDetailsPage() {
       
       const data = await res.json()
       if (res.ok) {
-        // toast call removed per user
+        toast.success(data.message || "Customer profile updated successfully")
         refetch()
       } else {
-        // toast call removed per user
+        toast.error(data.message || data.error || "Failed to update customer profile")
       }
     } catch (error) {
-      // toast call removed per user
+      toast.error(error.message || "An error occurred while saving changes")
     } finally {
       setIsSaving(false)
       setShowSaveConfirm(false)
@@ -114,7 +114,7 @@ export default function CustomerDetailsPage() {
     const setProcessing = actionType === 'credit' ? setIsCreditProcessing : setIsDebitProcessing;
     
     if (!dataObj.amount || Number(dataObj.amount) <= 0) {
-      // toast call removed per user
+      toast.error("Please enter a valid amount")
       return;
     }
     
@@ -136,7 +136,7 @@ export default function CustomerDetailsPage() {
       
       const resData = await res.json()
       if (res.ok) {
-        // toast call removed per user
+        toast.success(resData.message || `Customer balance ${actionType}ed successfully`)
         if (actionType === 'credit') {
           setCreditData({ balance_type: "main", amount: "", reason: "" })
         } else {
@@ -144,10 +144,10 @@ export default function CustomerDetailsPage() {
         }
         refetch()
       } else {
-        // toast call removed per user
+        toast.error(resData.message || resData.error || `Failed to ${actionType} customer balance`)
       }
     } catch (error) {
-      // toast call removed per user
+      toast.error(error.message || "An error occurred while processing transaction")
     } finally {
       setProcessing(false)
     }
@@ -169,14 +169,14 @@ export default function CustomerDetailsPage() {
       })
       
       if (res.ok) {
-        // toast call removed per user
+        toast.success("User deleted successfully")
         router.push("/customers")
       } else {
         const data = await res.json()
-        // toast call removed per user
+        toast.error(data.message || data.error || "Failed to delete user")
       }
     } catch (error) {
-      // toast call removed per user
+      toast.error(error.message || "An error occurred while deleting user")
     } finally {
       setIsDeleting(false)
       setShowDeleteConfirm(false)
@@ -203,10 +203,10 @@ export default function CustomerDetailsPage() {
         
         window.open(targetUrl, '_blank')
       } else {
-        // toast call removed per user
+        toast.error(data.message || data.error || "Failed to impersonate user")
       }
     } catch (error) {
-      // toast call removed per user
+      toast.error(error.message || "An error occurred during impersonation")
     } finally {
       setIsImpersonating(false)
     }
