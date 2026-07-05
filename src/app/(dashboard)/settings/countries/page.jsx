@@ -12,7 +12,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { useFetchData, useDelete } from "@/hooks/useApi"
+import { useFetchData, useDelete, usePost } from "@/hooks/useApi"
 import { toast } from "sonner"
 import { useRouter } from "next/navigation"
 
@@ -20,6 +20,7 @@ export default function CountriesRatesPage() {
   const router = useRouter()
   const { data: countries, isLoading } = useFetchData("/admin/countries")
   const deleteCountryMutation = useDelete((id) => `/admin/countries/${id}`, "/admin/countries")
+  const updateRatesMutation = usePost("/admin/countries/update-rates", "/admin/countries")
 
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this country? This action cannot be undone.")) {
@@ -28,6 +29,14 @@ export default function CountriesRatesPage() {
       } catch (error) {
         // Handled by useApi
       }
+    }
+  }
+
+  const handleUpdateRates = async () => {
+    try {
+      await updateRatesMutation.mutateAsync({})
+    } catch (error) {
+      // Handled by useApi
     }
   }
 
@@ -48,7 +57,12 @@ export default function CountriesRatesPage() {
           <div className="p-6 border-b border-gray-150 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <h2 className="text-[1.2rem] font-bold text-gray-800">Country & Currency Management</h2>
             <div className="flex items-center gap-3">
-              <Button className="bg-blue-600 hover:bg-blue-700 text-white px-4 h-10 font-bold rounded-lg shadow-sm border-0">
+              <Button 
+                onClick={handleUpdateRates}
+                disabled={updateRatesMutation.isPending}
+                className="bg-blue-600 hover:bg-blue-700 text-white px-4 h-10 font-bold rounded-lg shadow-sm border-0 flex items-center gap-2"
+              >
+                {updateRatesMutation.isPending && <Loader2 className="w-4 h-4 animate-spin" />}
                 Update All Rates
               </Button>
               <Link href="/settings/countries/add">
