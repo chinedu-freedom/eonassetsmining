@@ -61,9 +61,86 @@ export const useFetchData = (endpoint, queryKey, options = {}) => {
   });
 };
 
+/* ================= SUCCESS MESSAGE MAPPER ================= */
+const getSuccessMessage = (method, endpoint, res) => {
+  if (res?.message && !["Request successful", "Updated successfully", "Deleted successfully", "Success", "Request completed successfully"].includes(res.message)) {
+    return res.message;
+  }
+  
+  const path = typeof endpoint === "function" ? endpoint("") : endpoint;
+  
+  if (method === "POST") {
+    if (path.includes("/auth/admin/login") || path.includes("/auth/login")) return "Logged in successfully!";
+    if (path.includes("/auth/admin/forgot-password") || path.includes("/auth/forgot-password")) return "OTP sent successfully to your email!";
+    if (path.includes("/auth/admin/verify-otp") || path.includes("/auth/verify-otp")) return "OTP verified successfully!";
+    if (path.includes("/auth/admin/reset-password") || path.includes("/auth/reset-password")) return "Password reset successfully!";
+    if (path.includes("/admin/rewards/tasks")) return "Task reward created successfully!";
+    if (path.includes("/admin/rewards/spin-prizes")) return "Spin prize created successfully!";
+    if (path.includes("/admin/plans")) return "Investment plan created successfully!";
+    if (path.includes("/admin/news")) return "News article created successfully!";
+    if (path.includes("/admin/partners")) return "Partner created successfully!";
+    if (path.includes("/admin/live-market")) return "Live market asset created successfully!";
+    if (path.includes("/admin/rewards/gift-codes")) return "Gift code created successfully!";
+    if (path.includes("/admin/sliders")) return "Slider image added successfully!";
+    if (path.includes("/admin/profile/change-password")) return "Password updated successfully!";
+    if (path.includes("/admin/settings/payout-cryptos")) return "Payout cryptocurrency added successfully!";
+    if (path.includes("/admin/countries/update-rates")) return "Exchange rates updated successfully!";
+    if (path.includes("/admin/countries")) return "Country added successfully!";
+    if (path.includes("/admin/languages")) return "Language added successfully!";
+    return "Request successful!";
+  }
+  
+  if (method === "PUT" || method === "PATCH") {
+    if (path.includes("/admin/rewards/gift-codes")) return "Gift code updated successfully!";
+    if (path.includes("/admin/live-market")) return "Live market asset updated successfully!";
+    if (path.includes("/admin/partners")) return "Partner updated successfully!";
+    if (path.includes("/admin/sliders")) return "Slider updated successfully!";
+    if (path.includes("/admin/rewards/spin-prizes")) return "Spin prize updated successfully!";
+    if (path.includes("/admin/rewards/spin-settings")) return "Spin settings updated successfully!";
+    if (path.includes("/admin/rewards/tasks")) return "Task reward updated successfully!";
+    if (path.includes("/admin/plans")) return "Investment plan updated successfully!";
+    if (path.includes("/admin/news")) return "News article updated successfully!";
+    if (path.includes("/admin/settings/platform")) return "Platform settings updated successfully!";
+    if (path.includes("/admin/settings/email")) return "Email settings updated successfully!";
+    if (path.includes("/admin/settings/payout-cryptos")) return "Payout cryptocurrency updated successfully!";
+    if (path.includes("/admin/about/banners")) return "About banner updated successfully!";
+    if (path.includes("/admin/about/team-members")) return "Team member updated successfully!";
+    if (path.includes("/admin/countries")) return "Country updated successfully!";
+    if (path.includes("/admin/languages")) return "Language updated successfully!";
+    if (path.includes("/admin/profile")) return "Profile updated successfully!";
+    if (path.includes("/deposits")) {
+      if (path.includes("/approve")) return "Deposit approved successfully!";
+      if (path.includes("/reject")) return "Deposit rejected successfully!";
+      return "Deposit status updated successfully!";
+    }
+    if (path.includes("/withdrawals")) {
+      if (path.includes("/approve")) return "Withdrawal approved successfully!";
+      if (path.includes("/reject")) return "Withdrawal rejected successfully!";
+      return "Withdrawal status updated successfully!";
+    }
+    return "Updated successfully!";
+  }
+  
+  if (method === "DELETE") {
+    if (path.includes("/admin/settings/payout-cryptos")) return "Payout cryptocurrency deleted successfully!";
+    if (path.includes("/admin/languages")) return "Language deleted successfully!";
+    if (path.includes("/admin/countries")) return "Country deleted successfully!";
+    if (path.includes("/admin/plans")) return "Investment plan deleted successfully!";
+    if (path.includes("/admin/rewards/gift-codes")) return "Gift code deleted successfully!";
+    if (path.includes("/admin/partners")) return "Partner deleted successfully!";
+    if (path.includes("/admin/news")) return "News article deleted successfully!";
+    if (path.includes("/admin/rewards/tasks")) return "Task reward deleted successfully!";
+    if (path.includes("/admin/users")) return "User account deleted successfully!";
+    return "Deleted successfully!";
+  }
+  
+  return "Request successful!";
+};
+
 /* ================= POST ================= */
-export const usePost = (endpoint, queryKey, isFormData = false, options = { showToast: true }) => {
+export const usePost = (endpoint, queryKey, isFormData = false, options = {}) => {
   const queryClient = useQueryClient();
+  const showToast = options?.showToast ?? true;
 
   return useMutation({
     mutationFn: async (data) => {
@@ -82,25 +159,35 @@ export const usePost = (endpoint, queryKey, isFormData = false, options = { show
       return res;
     },
 
-    onSuccess: (res) => {
+    onSuccess: (res, variables, context) => {
       if (queryKey) {
         queryClient.invalidateQueries({
           queryKey: handleQueryKey(queryKey),
         });
       }
 
-      if (options.showToast) toast.success(res?.message || "Request successful");
+      if (showToast) {
+        toast.success(getSuccessMessage("POST", endpoint, res));
+      }
+
+      if (options?.onSuccess) {
+        options.onSuccess(res, variables, context);
+      }
     },
 
-    onError: (error) => {
-      if (options.showToast) toast.error(getErrorMessage(error));
+    onError: (error, variables, context) => {
+      if (showToast) toast.error(getErrorMessage(error));
+      if (options?.onError) {
+        options.onError(error, variables, context);
+      }
     },
   });
 };
 
 /* ================= PUT ================= */
-export const usePut = (endpoint, queryKey, options = { showToast: true }) => {
+export const usePut = (endpoint, queryKey, options = {}) => {
   const queryClient = useQueryClient();
+  const showToast = options?.showToast ?? true;
 
   return useMutation({
     mutationFn: async (payload) => {
@@ -132,25 +219,35 @@ export const usePut = (endpoint, queryKey, options = { showToast: true }) => {
       return res;
     },
 
-    onSuccess: (res) => {
+    onSuccess: (res, variables, context) => {
       if (queryKey) {
         queryClient.invalidateQueries({
           queryKey: handleQueryKey(queryKey),
         });
       }
 
-      toast.success(res?.message || "Updated successfully");
+      if (showToast) {
+        toast.success(getSuccessMessage("PUT", endpoint, res));
+      }
+
+      if (options?.onSuccess) {
+        options.onSuccess(res, variables, context);
+      }
     },
 
-    onError: (error) => {
-      toast.error(getErrorMessage(error));
+    onError: (error, variables, context) => {
+      if (showToast) toast.error(getErrorMessage(error));
+      if (options?.onError) {
+        options.onError(error, variables, context);
+      }
     },
   });
 };
 
 /* ================= PATCH ================= */
-export const usePatch = (endpoint, queryKey, isFormData = false, options = { showToast: true }) => {
+export const usePatch = (endpoint, queryKey, isFormData = false, options = {}) => {
   const queryClient = useQueryClient();
+  const showToast = options?.showToast ?? true;
 
   return useMutation({
     mutationFn: async (payload) => {
@@ -186,25 +283,35 @@ export const usePatch = (endpoint, queryKey, isFormData = false, options = { sho
       return res;
     },
 
-    onSuccess: (res) => {
+    onSuccess: (res, variables, context) => {
       if (queryKey) {
         queryClient.invalidateQueries({
           queryKey: handleQueryKey(queryKey),
         });
       }
 
-      toast.success(res?.message || "Updated successfully");
+      if (showToast) {
+        toast.success(getSuccessMessage("PATCH", endpoint, res));
+      }
+
+      if (options?.onSuccess) {
+        options.onSuccess(res, variables, context);
+      }
     },
 
-    onError: (error) => {
-      toast.error(getErrorMessage(error));
+    onError: (error, variables, context) => {
+      if (showToast) toast.error(getErrorMessage(error));
+      if (options?.onError) {
+        options.onError(error, variables, context);
+      }
     },
   });
 };
 
 /* ================= DELETE ================= */
-export const useDelete = (endpoint, queryKey, options = { showToast: true }) => {
+export const useDelete = (endpoint, queryKey, options = {}) => {
   const queryClient = useQueryClient();
+  const showToast = options?.showToast ?? true;
 
   return useMutation({
     mutationFn: async (id) => {
@@ -222,18 +329,27 @@ export const useDelete = (endpoint, queryKey, options = { showToast: true }) => 
       return res;
     },
 
-    onSuccess: (res) => {
+    onSuccess: (res, variables, context) => {
       if (queryKey) {
         queryClient.invalidateQueries({
           queryKey: handleQueryKey(queryKey),
         });
       }
 
-      if (options.showToast) toast.success(res?.message || "Deleted successfully");
+      if (showToast) {
+        toast.success(getSuccessMessage("DELETE", endpoint, res));
+      }
+
+      if (options?.onSuccess) {
+        options.onSuccess(res, variables, context);
+      }
     },
 
-    onError: (error) => {
-      if (options.showToast) toast.error(getErrorMessage(error));
+    onError: (error, variables, context) => {
+      if (showToast) toast.error(getErrorMessage(error));
+      if (options?.onError) {
+        options.onError(error, variables, context);
+      }
     },
   });
 };

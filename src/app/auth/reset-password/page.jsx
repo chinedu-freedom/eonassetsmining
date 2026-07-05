@@ -64,11 +64,7 @@ export default function ResetPasswordPage() {
       {
         onSuccess: () => {
           localStorage.removeItem("resetEmail");
-          toast.success("Password reset successfully");
           router.push("/"); // redirect to login
-        },
-        onError: (err) => {
-          toast.error(err?.message || "Reset failed. Please try again.");
         },
       }
     );

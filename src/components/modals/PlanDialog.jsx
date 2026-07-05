@@ -110,7 +110,7 @@ export default function PlanDialog({ open, setOpen, initialData }) {
 
   const onSubmit = async (data) => {
     if (!imagePreview) {
-      /* toast.error("Please upload an image for the package") (removed per user) */;
+      toast.error("Please upload an image for the package");
       return;
     }
 
