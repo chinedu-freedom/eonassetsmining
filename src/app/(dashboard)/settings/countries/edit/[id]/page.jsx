@@ -108,11 +108,6 @@ export default function EditCountryPage() {
 
               {/* Row 3 */}
               <div>
-                <label className="text-[13px] font-bold text-gray-700 block mb-1">Exchange Rate</label>
-                <Input type="number" step="any" {...register("exchange_rate", { required: true, min: 0 })} className="border-gray-200 focus-visible:ring-0 focus-visible:border-blue-500/50 focus:border-blue-500/50 h-10 text-gray-700 text-[13px] rounded-lg bg-white" />
-                <p className="text-[11px] text-gray-400 mt-1.5">How much 1 unit of site currency (USD) equals in local currency (e.g. if 1 USD = 19 ZAR, enter 19)</p>
-              </div>
-              <div>
                 <label className="text-[13px] font-bold text-gray-700 block mb-1">Status</label>
                 <Controller
                   name="status"
@@ -129,33 +124,6 @@ export default function EditCountryPage() {
                     </Select>
                   )}
                 />
-              </div>
-            </div>
-
-            {/* Auto Rate Update Section */}
-            <div className="pt-2">
-              <label className="text-[13px] font-bold text-gray-700 block mb-3">Auto Rate Update</label>
-              <div className="flex items-start gap-2">
-                <Controller
-                  name="auto_update"
-                  control={control}
-                  render={({ field }) => (
-                    <Checkbox 
-                      id="auto-rate" 
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                      className="mt-0.5 border-gray-300 data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600 rounded" 
-                    />
-                  )}
-                />
-                <div className="grid gap-1">
-                  <label htmlFor="auto-rate" className="text-[13px] font-bold text-gray-700 leading-none cursor-pointer">
-                    Enable automatic exchange rate updates
-                  </label>
-                  <p className="text-[11px] text-gray-400">
-                    When enabled, exchange rate will be fetched automatically from live APIs
-                  </p>
-                </div>
               </div>
             </div>
 
