@@ -66,10 +66,10 @@ export default function CountriesRatesPage() {
               <Info className="w-5 h-5 flex-shrink-0 mt-0.5 text-blue-500" />
               <div className="text-[13px] leading-relaxed text-blue-800">
                 <p>
-                  <span className="font-bold">Exchange Rate:</span> Set how much 1 unit of local currency equals in site currency.
+                  <span className="font-bold">Exchange Rate:</span> Set how much 1 unit of site currency (USD) equals in local currency.
                 </p>
                 <p>
-                  <span className="font-bold">Example:</span> If 1 NGN = 0.00065 USD, enter 0.00065 as the exchange rate.
+                  <span className="font-bold">Example:</span> If 1 USD = 1600 NGN, enter 1600 as the exchange rate.
                 </p>
                 <p>
                   <span className="font-bold">Auto Update:</span> Enable to automatically fetch real-time rates from exchange rate APIs.
@@ -108,7 +108,7 @@ export default function CountriesRatesPage() {
                       <TableCell className="py-4">
                         <div className="flex flex-col">
                           <span className="font-bold text-[13px] text-gray-700">
-                            1{item.currency_symbol} = <span className="text-black">${Number(item.exchange_rate).toFixed(6)}</span>
+                            $1 = <span className="text-black">{Number(item.exchange_rate).toFixed(2)} {item.currency_code}</span>
                           </span>
                         </div>
                       </TableCell>

@@ -110,7 +110,7 @@ export default function EditCountryPage() {
               <div>
                 <label className="text-[13px] font-bold text-gray-700 block mb-1">Exchange Rate</label>
                 <Input type="number" step="any" {...register("exchange_rate", { required: true, min: 0 })} className="border-gray-200 focus-visible:ring-0 focus-visible:border-blue-500/50 focus:border-blue-500/50 h-10 text-gray-700 text-[13px] rounded-lg bg-white" />
-                <p className="text-[11px] text-gray-400 mt-1.5">How much 1 unit of local currency equals in site currency</p>
+                <p className="text-[11px] text-gray-400 mt-1.5">How much 1 unit of site currency (USD) equals in local currency (e.g. if 1 USD = 19 ZAR, enter 19)</p>
               </div>
               <div>
                 <label className="text-[13px] font-bold text-gray-700 block mb-1">Status</label>
