@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Search, ArrowDownToLine, Loader2 } from "lucide-react"
+import { Search, ArrowDownToLine, Loader2, Copy, Check } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
@@ -34,6 +34,15 @@ export default function PendingWithdrawPage() {
   
   const [isProcessing, setIsProcessing] = useState(false);
   const [confirmModal, setConfirmModal] = useState({ show: false, type: "", withdrawId: null });
+  const [copiedId, setCopiedId] = useState(null);
+
+  const handleCopy = (id, address) => {
+    navigator.clipboard.writeText(address);
+    setCopiedId(id);
+    setTimeout(() => {
+      setCopiedId(null);
+    }, 2000);
+  };
 
   const safeFormatDate = (dateString) => {
     try {
@@ -81,9 +90,10 @@ export default function PendingWithdrawPage() {
       username: w.user?.email || "Unknown"
     },
     withdrawInfo: {
-      method: w.network || "Crypto",
+      method: w.network || w.withdrawal_method || "Crypto",
       transactionId: w.id,
-      date: safeFormatDate(w.created_at)
+      date: safeFormatDate(w.created_at),
+      walletAddress: w.wallet_address || ""
     },
     amountDetails: {
       amount: Number(w.amount) || 0,
@@ -180,6 +190,25 @@ export default function PendingWithdrawPage() {
                           <div className="text-[13px] text-gray-700">
                             Method: <span className="font-medium">{item.withdrawInfo.method}</span>
                           </div>
+                          {item.withdrawInfo.walletAddress && (
+                            <div className="text-[13px] text-gray-700 flex items-center gap-1.5">
+                              Wallet Address: 
+                              <span className="font-mono bg-gray-50 px-1.5 py-0.5 rounded text-[12px] text-gray-800 break-all select-all font-semibold">
+                                {item.withdrawInfo.walletAddress}
+                              </span>
+                              <button
+                                onClick={() => handleCopy(item.id, item.withdrawInfo.walletAddress)}
+                                className="text-gray-400 hover:text-blue-600 transition-colors p-0.5 inline-flex items-center cursor-pointer"
+                                title="Copy Address"
+                              >
+                                {copiedId === item.id ? (
+                                  <Check size={13} className="text-green-500" />
+                                ) : (
+                                  <Copy size={13} />
+                                )}
+                              </button>
+                            </div>
+                          )}
                           <div className="text-[13px] text-gray-700">
                             Transaction ID: <span className="font-bold text-gray-900">{item.withdrawInfo.transactionId}</span>
                           </div>
