@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { useParams, useRouter } from "next/navigation"
 import { useFetchData } from "@/hooks/useApi"
+import { useQueryClient } from "@tanstack/react-query"
 import { format } from "date-fns"
 import { ArrowLeft, User, Mail, Globe, Calendar, CreditCard, Gift, Activity, Settings, Save, CheckCircle, XCircle, ShieldAlert, KeyRound, Clock, MapPin, Hash, Link as LinkIcon, AlertTriangle, ArrowRightLeft, Loader2, PlusCircle, MinusCircle, Plus, Minus, WalletCards, ListOrdered, Trash, UserCheck } from "lucide-react"
 
@@ -31,6 +32,7 @@ const safeFormatDate = (dateStr, formatStr) => {
 export default function CustomerDetailsPage() {
   const params = useParams()
   const router = useRouter()
+  const queryClient = useQueryClient()
   const { id } = params
 
   let symbol = "$";
@@ -98,6 +100,7 @@ export default function CustomerDetailsPage() {
       if (res.ok) {
         toast.success(data.message || "Customer profile updated successfully")
         refetch()
+        queryClient.invalidateQueries()
       } else {
         toast.error(data.message || data.error || "Failed to update customer profile")
       }
@@ -143,6 +146,7 @@ export default function CustomerDetailsPage() {
           setDebitData({ balance_type: "main", amount: "", reason: "" })
         }
         refetch()
+        queryClient.invalidateQueries()
       } else {
         toast.error(resData.message || resData.error || `Failed to ${actionType} customer balance`)
       }
@@ -170,6 +174,7 @@ export default function CustomerDetailsPage() {
       
       if (res.ok) {
         toast.success("User deleted successfully")
+        queryClient.invalidateQueries()
         router.push("/customers")
       } else {
         const data = await res.json()

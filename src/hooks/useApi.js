@@ -165,6 +165,7 @@ export const usePost = (endpoint, queryKey, isFormData = false, options = {}) =>
           queryKey: handleQueryKey(queryKey),
         });
       }
+      queryClient.invalidateQueries(); // Force refetch of all data globally to keep tables fresh
 
       if (showToast) {
         toast.success(getSuccessMessage("POST", endpoint, res));
@@ -225,6 +226,7 @@ export const usePut = (endpoint, queryKey, options = {}) => {
           queryKey: handleQueryKey(queryKey),
         });
       }
+      queryClient.invalidateQueries(); // Force refetch of all data globally to keep tables fresh
 
       if (showToast) {
         toast.success(getSuccessMessage("PUT", endpoint, res));
@@ -289,6 +291,7 @@ export const usePatch = (endpoint, queryKey, isFormData = false, options = {}) =
           queryKey: handleQueryKey(queryKey),
         });
       }
+      queryClient.invalidateQueries(); // Force refetch of all data globally to keep tables fresh
 
       if (showToast) {
         toast.success(getSuccessMessage("PATCH", endpoint, res));
@@ -335,6 +338,7 @@ export const useDelete = (endpoint, queryKey, options = {}) => {
           queryKey: handleQueryKey(queryKey),
         });
       }
+      queryClient.invalidateQueries(); // Force refetch of all data globally to keep tables fresh
 
       if (showToast) {
         toast.success(getSuccessMessage("DELETE", endpoint, res));
