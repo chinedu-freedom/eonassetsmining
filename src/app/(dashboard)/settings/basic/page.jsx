@@ -270,26 +270,6 @@ export default function BasicSettingsPage() {
             </div>
 
             <ValidatedInput label="Registration Bonus" name="registration_bonus" type="number" register={register} requiredNote={false} />
-
-            <div className="flex flex-col space-y-1">
-              <label className="text-[13px] font-bold text-gray-700">Welcome Bonus Balance Destination</label>
-              <Controller
-                name="welcome_bonus_destination"
-                control={control}
-                render={({ field }) => (
-                  <Select value={field.value} onValueChange={field.onChange}>
-                    <SelectTrigger className="border-gray-200 focus:border-blue-500/50 focus:ring-0 h-10 rounded-lg text-gray-700 text-[13px] bg-white">
-                      <SelectValue placeholder="Select Destination" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="gift">Gift Balance</SelectItem>
-                      <SelectItem value="deposit">Main Balance</SelectItem>
-                    </SelectContent>
-                  </Select>
-                )}
-              />
-              <p className="text-[11px] text-blue-600 mt-1">Choose which balance the welcome bonus will be credited to</p>
-            </div>
           </div>
         </CardContent>
       </Card>

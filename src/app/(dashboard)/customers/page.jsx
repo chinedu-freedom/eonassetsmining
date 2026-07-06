@@ -182,8 +182,8 @@ export default function CustomersManagementPage() {
                 <TableHead className="font-bold text-gray-600 uppercase text-[11px] tracking-wider w-[50px] py-4">#</TableHead>
                 <TableHead className="font-bold text-gray-600 uppercase text-[11px] tracking-wider py-4">USER</TableHead>
                 <TableHead className="font-bold text-gray-600 uppercase text-[11px] tracking-wider py-4">COUNTRY</TableHead>
-                <TableHead className="font-bold text-gray-600 uppercase text-[11px] tracking-wider py-4">MAIN BALANCE</TableHead>
-                <TableHead className="font-bold text-gray-600 uppercase text-[11px] tracking-wider py-4">GIFT BALANCE</TableHead>
+                <TableHead className="font-bold text-gray-600 uppercase text-[11px] tracking-wider py-4">DEPOSIT BALANCE</TableHead>
+                <TableHead className="font-bold text-gray-600 uppercase text-[11px] tracking-wider py-4">EARNING BALANCE</TableHead>
                 <TableHead className="font-bold text-gray-600 uppercase text-[11px] tracking-wider py-4">REGISTERED</TableHead>
                 <TableHead className="font-bold text-gray-600 uppercase text-[11px] tracking-wider py-4">STATUS</TableHead>
                 <TableHead className="font-bold text-gray-600 uppercase text-[11px] tracking-wider py-4">ACTIONS</TableHead>
@@ -234,7 +234,7 @@ export default function CustomersManagementPage() {
                     <span className="font-bold text-[#5A8DEE] text-[13px]">{symbol}{Number(user.balance || 0).toFixed(2)}</span>
                   </TableCell>
                   <TableCell className="py-4">
-                    <span className="font-bold text-blue-600 text-[13px]">{symbol}{Number(user.gift_balance || 0).toFixed(2)}</span>
+                    <span className="font-bold text-blue-600 text-[13px]">{symbol}{Number(user.withdrawable_balance || 0).toFixed(2)}</span>
                   </TableCell>
                   <TableCell className="text-[12px] text-gray-600 py-4 whitespace-nowrap">
                     {format(new Date(user.created_at), "MMM dd, yyyy")}

@@ -137,7 +137,7 @@ export default function SpinSettingsDialog({ open, setOpen, initialData, totalPr
                     className="border-0 focus-visible:ring-0 text-gray-800 h-full rounded-sm h-10"
                   />
                 </div>
-                <p className="text-[12px] text-gray-200 mt-2">Amount deducted from user's balance per spin (gift balance used first)</p>
+                <p className="text-[12px] text-gray-200 mt-2">Amount deducted from user's withdrawable balance per spin</p>
               </div>
             </div>
 
@@ -218,7 +218,7 @@ export default function SpinSettingsDialog({ open, setOpen, initialData, totalPr
                 </div>
                 <ul className="list-disc pl-6 space-y-1.5 text-[14px]">
                   <li>Free spins are used <strong>before</strong> deducting from user balance</li>
-                  <li>When balance is used, <strong>gift balance</strong> is deducted first, then <strong>main balance</strong></li>
+                  <li>When balance is used, it is deducted from the user's withdrawable balance</li>
                   <li>All prizes are credited to the user's <strong>main balance</strong></li>
                 </ul>
               </div>
