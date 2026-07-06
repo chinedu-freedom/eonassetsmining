@@ -217,6 +217,47 @@ export default function CustomerDetailsPage() {
     }
   }
 
+  const getIsCredit = (tx) => {
+    const typeLower = (tx.type || "").toLowerCase();
+    const descLower = (tx.description || "").toLowerCase();
+    if (
+      typeLower.includes('debit') || 
+      typeLower.includes('cost') || 
+      typeLower.includes('withdraw') || 
+      typeLower.includes('invest') || 
+      typeLower.includes('plan')
+    ) {
+      return false;
+    }
+    if (
+      typeLower.includes('deposit') || 
+      typeLower.includes('reward') || 
+      typeLower.includes('bonus') || 
+      typeLower.includes('gift') || 
+      typeLower.includes('checkin') || 
+      typeLower.includes('check-in') || 
+      typeLower.includes('credit') || 
+      typeLower.includes('commission') || 
+      typeLower.includes('referral') || 
+      typeLower.includes('migration') ||
+      typeLower.includes('profit') ||
+      typeLower.includes('payout') ||
+      typeLower.includes('refund') ||
+      descLower.includes('refund') ||
+      descLower.includes('payout') ||
+      descLower.includes('profit')
+    ) {
+      return true;
+    }
+    if (tx.balance_before !== undefined && tx.balance_after !== undefined && tx.balance_before !== null && tx.balance_after !== null) {
+      const diff = parseFloat(tx.balance_after) - parseFloat(tx.balance_before);
+      if (diff !== 0) {
+        return diff > 0;
+      }
+    }
+    return false;
+  };
+
   if (isLoading) {
     return <div className="min-h-[60vh] flex flex-col items-center justify-center space-y-4"><Loader2 className="w-8 h-8 animate-spin text-[#5A8DEE]" /><p className="text-muted-foreground text-sm">Loading user data...</p></div>
   }
@@ -584,8 +625,8 @@ export default function CustomerDetailsPage() {
                       <TableCell>
                         <Badge showDot={false} className="bg-muted text-foreground border border-border text-xs font-medium shadow-sm">{(tx.type || "").replace(/_/g, ' ')}</Badge>
                       </TableCell>
-                      <TableCell className={`font-bold text-sm ${tx.amount > 0 ? 'text-emerald-500' : 'text-foreground'}`}>
-                        {symbol}{Math.abs(tx.amount).toFixed(2)}
+                      <TableCell className={`font-bold text-sm ${getIsCredit(tx) ? 'text-emerald-500' : 'text-red-500'}`}>
+                        {getIsCredit(tx) ? '+' : '-'}{symbol}{Math.abs(tx.amount).toFixed(2)}
                       </TableCell>
                       <TableCell className="text-sm text-muted-foreground max-w-[250px] truncate" title={tx.description || "N/A"}>
                         {tx.description || "N/A"}
