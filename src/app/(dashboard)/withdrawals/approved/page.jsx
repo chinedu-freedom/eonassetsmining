@@ -46,8 +46,8 @@ export default function ApprovedWithdrawPage() {
     },
     amountDetails: {
       amount: Number(w.amount) || 0,
-      charge: 0,
-      payable: Number(w.amount) || 0
+      charge: Number(w.fees) || 0,
+      payable: Number(w.net_amount) || Number(w.amount) || 0
     },
     status: w.status
   }));
