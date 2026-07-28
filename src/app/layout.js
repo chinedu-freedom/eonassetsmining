@@ -9,8 +9,8 @@ const plusJakartaSans = Plus_Jakarta_Sans({
 });
 
 export const metadata = {
-  title: "mykryptexapp.com Dashboard",
-  description: "mykryptexapp.com Dashboard Administration",
+  title: "Kryptex Mining Dashboard",
+  description: "Kryptex Mining Dashboard Administration",
 };
 
 export default function RootLayout({ children }) {

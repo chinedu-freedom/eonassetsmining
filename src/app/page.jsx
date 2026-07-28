@@ -34,7 +34,7 @@ export default function LoginPage() {
 
   const { data: settingsResponse } = useFetchData("/settings", ["platform-settings"]);
   const settings = settingsResponse?.settings || {};
-  const siteName = settings.site_name || "mykryptexapp.com";
+  const siteName = settings.site_name || "Kryptex Mining";
   const siteLogo = settings.platform_logo || null;
 
   useEffect(() => {
