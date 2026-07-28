@@ -46,7 +46,7 @@ export default function LoginPage() {
     }
   }, [setValue]);
 
-  const loginMutation = usePost("/auth/admin/login", null, false, { showToast: false });
+  const loginMutation = usePost("/auth/admin/login", null, false);
 
   if (!isMounted) {
     return null; // Prevents hydration mismatch
