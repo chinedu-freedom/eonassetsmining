@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { useParams, useRouter } from "next/navigation"
 import { useFetchData } from "@/hooks/useApi"
 import { useQueryClient } from "@tanstack/react-query"
@@ -48,6 +48,7 @@ export default function CustomerDetailsPage() {
   const [editData, setEditData] = useState(null)
   const [isSaving, setIsSaving] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
+  const deletingRef = useRef(false)
   const [isImpersonating, setIsImpersonating] = useState(false)
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
   const [showSaveConfirm, setShowSaveConfirm] = useState(false)
@@ -162,6 +163,8 @@ export default function CustomerDetailsPage() {
   }
 
   const executeDeleteUser = async () => {
+    if (deletingRef.current) return
+    deletingRef.current = true
     setIsDeleting(true)
     try {
       const token = document.cookie.split("; ").find(row => row.startsWith("sec-admin-token="))?.split("=")[1];
@@ -185,6 +188,7 @@ export default function CustomerDetailsPage() {
     } finally {
       setIsDeleting(false)
       setShowDeleteConfirm(false)
+      deletingRef.current = false
     }
   }
 

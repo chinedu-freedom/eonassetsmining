@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useRef } from "react"
 import { Search, Edit, Lock, LogIn, Users, CheckCircle, Clock, Ban, UserCog, History, RotateCcw, Trash2, AlertTriangle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -23,6 +23,7 @@ export default function CustomersManagementPage() {
   const [countryFilter, setCountryFilter] = useState("all-countries")
   const [userToDelete, setUserToDelete] = useState(null)
   const [isDeleting, setIsDeleting] = useState(false)
+  const deletingRef = useRef(false)
 
   let symbol = "$";
   if (typeof window !== "undefined") {
@@ -40,7 +41,8 @@ export default function CustomersManagementPage() {
   }
 
   const executeDeleteUser = async () => {
-    if (!userToDelete) return
+    if (!userToDelete || deletingRef.current) return
+    deletingRef.current = true
     setIsDeleting(true)
     try {
       const token = document.cookie.split("; ").find(row => row.startsWith("sec-admin-token="))?.split("=")[1];
@@ -63,6 +65,7 @@ export default function CustomersManagementPage() {
     } finally {
       setIsDeleting(false)
       setUserToDelete(null)
+      deletingRef.current = false
     }
   }
 
