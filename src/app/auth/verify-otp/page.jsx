@@ -21,7 +21,7 @@ export default function VerifyOtpPage() {
 
   const { data: settingsResponse } = useFetchData("/settings", ["platform-settings"]);
   const settings = settingsResponse?.settings || {};
-  const siteName = settings.site_name || "Polychainapp";
+  const siteName = settings.site_name || "mykryptexapp.com";
   const siteLogo = settings.platform_logo || null;
 
   const verifyOtpMutation = usePost("/auth/admin/verify-otp", null);

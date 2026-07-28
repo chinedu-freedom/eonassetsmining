@@ -40,7 +40,7 @@ export default function CustomerDetailsPage() {
     try {
       const cached = localStorage.getItem("admin-platform-settings-symbol");
       if (cached) symbol = cached;
-    } catch (e) {}
+    } catch (e) { }
   }
 
   const { data: fetchRes, isLoading, refetch } = useFetchData(`/admin/users/${id}`, ["adminUser", id])
@@ -51,10 +51,10 @@ export default function CustomerDetailsPage() {
   const [isImpersonating, setIsImpersonating] = useState(false)
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
   const [showSaveConfirm, setShowSaveConfirm] = useState(false)
-  
+
   const { data: countriesRes } = useFetchData("/auth/countries", ["countries"])
   const countries = Array.isArray(countriesRes) ? countriesRes : countriesRes?.data || [];
-  
+
   const [activeHistoryTab, setActiveHistoryTab] = useState("transactions")
 
   // Credit/Debit states
@@ -95,7 +95,7 @@ export default function CustomerDetailsPage() {
         },
         body: JSON.stringify(editData)
       })
-      
+
       const data = await res.json()
       if (res.ok) {
         toast.success(data.message || "Customer profile updated successfully")
@@ -115,12 +115,12 @@ export default function CustomerDetailsPage() {
   const handleProcessFinance = async (actionType) => {
     const dataObj = actionType === 'credit' ? creditData : debitData;
     const setProcessing = actionType === 'credit' ? setIsCreditProcessing : setIsDebitProcessing;
-    
+
     if (!dataObj.amount || Number(dataObj.amount) <= 0) {
       toast.error("Please enter a valid amount")
       return;
     }
-    
+
     setProcessing(true)
     try {
       const token = document.cookie.split("; ").find(row => row.startsWith("sec-admin-token="))?.split("=")[1];
@@ -136,7 +136,7 @@ export default function CustomerDetailsPage() {
           reason: dataObj.reason
         })
       })
-      
+
       const resData = await res.json()
       if (res.ok) {
         toast.success(resData.message || `Customer balance ${actionType}ed successfully`)
@@ -171,7 +171,7 @@ export default function CustomerDetailsPage() {
           "Authorization": `Bearer ${token}`
         }
       })
-      
+
       if (res.ok) {
         toast.success("User deleted successfully")
         queryClient.invalidateQueries()
@@ -202,10 +202,10 @@ export default function CustomerDetailsPage() {
       if (res.ok && data.token) {
         // Set cookie on main domain if in production
         const isLocal = window.location.hostname.includes('localhost');
-        const targetUrl = isLocal ? 'http://localhost:3002/dashboard' : 'https://polychainapp.com/dashboard';
-        
-        document.cookie = `sec-prd-token=${data.token}; path=/; max-age=7200; SameSite=Lax${!isLocal ? '; domain=.polychainapp.com; Secure' : ''}`;
-        
+        const targetUrl = isLocal ? 'http://localhost:3002/dashboard' : 'https://mykryptexapp.com/dashboard';
+
+        document.cookie = `sec-prd-token=${data.token}; path=/; max-age=7200; SameSite=Lax${!isLocal ? '; domain=.mykryptexapp.com; Secure' : ''}`;
+
         window.open(targetUrl, '_blank')
       } else {
         toast.error(data.message || data.error || "Failed to impersonate user")
@@ -221,24 +221,24 @@ export default function CustomerDetailsPage() {
     const typeLower = (tx.type || "").toLowerCase();
     const descLower = (tx.description || "").toLowerCase();
     if (
-      typeLower.includes('debit') || 
-      typeLower.includes('cost') || 
-      typeLower.includes('withdraw') || 
-      typeLower.includes('invest') || 
+      typeLower.includes('debit') ||
+      typeLower.includes('cost') ||
+      typeLower.includes('withdraw') ||
+      typeLower.includes('invest') ||
       typeLower.includes('plan')
     ) {
       return false;
     }
     if (
-      typeLower.includes('deposit') || 
-      typeLower.includes('reward') || 
-      typeLower.includes('bonus') || 
-      typeLower.includes('gift') || 
-      typeLower.includes('checkin') || 
-      typeLower.includes('check-in') || 
-      typeLower.includes('credit') || 
-      typeLower.includes('commission') || 
-      typeLower.includes('referral') || 
+      typeLower.includes('deposit') ||
+      typeLower.includes('reward') ||
+      typeLower.includes('bonus') ||
+      typeLower.includes('gift') ||
+      typeLower.includes('checkin') ||
+      typeLower.includes('check-in') ||
+      typeLower.includes('credit') ||
+      typeLower.includes('commission') ||
+      typeLower.includes('referral') ||
       typeLower.includes('migration') ||
       typeLower.includes('profit') ||
       typeLower.includes('payout') ||
@@ -313,7 +313,7 @@ export default function CustomerDetailsPage() {
         </CardHeader>
         <CardContent className="p-0">
           <div className="grid grid-cols-1 lg:grid-cols-12">
-            
+
             {/* Left Col: Identity & Stats */}
             <div className="lg:col-span-4 p-6 border-b lg:border-b-0 lg:border-r border-border flex flex-col items-center lg:items-start text-center lg:text-left bg-muted/5">
               <div className="w-24 h-24 rounded-full border-4 border-card bg-[#5A8DEE] text-white flex items-center justify-center text-3xl font-bold mb-4 shadow-sm">
@@ -329,23 +329,23 @@ export default function CustomerDetailsPage() {
 
               <div className="w-full space-y-3 pt-6 border-t border-border/50 text-sm">
                 <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1">
-                  <span className="text-muted-foreground flex items-center gap-2"><Hash className="w-3.5 h-3.5"/> User ID</span>
+                  <span className="text-muted-foreground flex items-center gap-2"><Hash className="w-3.5 h-3.5" /> User ID</span>
                   <span className="font-mono text-foreground bg-muted px-2 py-0.5 rounded text-xs">{(user.id || "").substring(0, 12)}...</span>
                 </div>
                 <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1">
-                  <span className="text-muted-foreground flex items-center gap-2"><Calendar className="w-3.5 h-3.5"/> Registered</span>
+                  <span className="text-muted-foreground flex items-center gap-2"><Calendar className="w-3.5 h-3.5" /> Registered</span>
                   <span className="font-medium text-foreground">{safeFormatDate(user.created_at, "MMM dd, yyyy")}</span>
                 </div>
                 <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1">
-                  <span className="text-muted-foreground flex items-center gap-2"><Globe className="w-3.5 h-3.5"/> Country</span>
+                  <span className="text-muted-foreground flex items-center gap-2"><Globe className="w-3.5 h-3.5" /> Country</span>
                   <span className="font-medium text-foreground">{user.country?.country_name || "N/A"}</span>
                 </div>
                 <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1">
-                  <span className="text-muted-foreground flex items-center gap-2"><Clock className="w-3.5 h-3.5"/> Last Login</span>
+                  <span className="text-muted-foreground flex items-center gap-2"><Clock className="w-3.5 h-3.5" /> Last Login</span>
                   <span className="font-medium text-foreground">{safeFormatDate(user.last_login, "MMM dd, HH:mm")}</span>
                 </div>
                 <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1">
-                  <span className="text-muted-foreground flex items-center gap-2"><MapPin className="w-3.5 h-3.5"/> IP Address</span>
+                  <span className="text-muted-foreground flex items-center gap-2"><MapPin className="w-3.5 h-3.5" /> IP Address</span>
                   <span className="font-medium text-foreground">{user.last_ip === "::1" ? "127.0.0.1 (Local)" : (user.last_ip || "Unknown")}</span>
                 </div>
               </div>
@@ -377,18 +377,18 @@ export default function CustomerDetailsPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                   <div className="space-y-2">
                     <Label className="text-foreground">Full Name</Label>
-                    <Input value={editData.full_name} onChange={(e) => setEditData({...editData, full_name: e.target.value})} className="bg-background border-border text-foreground h-10" />
+                    <Input value={editData.full_name} onChange={(e) => setEditData({ ...editData, full_name: e.target.value })} className="bg-background border-border text-foreground h-10" />
                   </div>
                   <div className="space-y-2">
                     <Label className="text-foreground">Username</Label>
-                    <Input value={editData.username} onChange={(e) => setEditData({...editData, username: e.target.value})} className="bg-background border-border text-foreground h-10" />
+                    <Input value={editData.username} onChange={(e) => setEditData({ ...editData, username: e.target.value })} className="bg-background border-border text-foreground h-10" />
                   </div>
                   <div className="space-y-2">
                     <Label className="text-foreground">Email Address</Label>
-                    <Input value={editData.email} onChange={(e) => setEditData({...editData, email: e.target.value})} className="bg-background border-border text-foreground h-10" />
+                    <Input value={editData.email} onChange={(e) => setEditData({ ...editData, email: e.target.value })} className="bg-background border-border text-foreground h-10" />
                   </div>
                   <div className="space-y-2">
-                    <Label className="text-foreground flex items-center gap-2"><Globe className="w-4 h-4"/> Country</Label>
+                    <Label className="text-foreground flex items-center gap-2"><Globe className="w-4 h-4" /> Country</Label>
                     <Select value={editData.country_id || "none"} onValueChange={(val) => setEditData({ ...editData, country_id: val === "none" ? null : val })}>
                       <SelectTrigger className="h-10 bg-background border-border text-foreground"><SelectValue placeholder="Select Country" /></SelectTrigger>
                       <SelectContent>
@@ -400,7 +400,7 @@ export default function CustomerDetailsPage() {
                     </Select>
                   </div>
                   <div className="space-y-2">
-                    <Label className="text-foreground flex items-center gap-2"><ShieldAlert className="w-4 h-4"/> Account Status</Label>
+                    <Label className="text-foreground flex items-center gap-2"><ShieldAlert className="w-4 h-4" /> Account Status</Label>
                     <Select value={editData.is_active ? "active" : "banned"} onValueChange={(val) => setEditData({ ...editData, is_active: val === "active" })}>
                       <SelectTrigger className="h-10 bg-background border-border text-foreground"><SelectValue /></SelectTrigger>
                       <SelectContent>
@@ -410,7 +410,7 @@ export default function CustomerDetailsPage() {
                     </Select>
                   </div>
                   <div className="space-y-2 md:col-span-2 pt-2">
-                    <Label className="text-foreground flex items-center gap-2"><KeyRound className="w-4 h-4"/> Reset Password</Label>
+                    <Label className="text-foreground flex items-center gap-2"><KeyRound className="w-4 h-4" /> Reset Password</Label>
                     <Input type="text" placeholder="Enter new password (optional)" value={editData.new_password} onChange={(e) => setEditData({ ...editData, new_password: e.target.value })} className="bg-background border-border text-foreground h-10" />
                     <p className="text-xs text-muted-foreground mt-1">Leave blank to keep the current password unchanged.</p>
                   </div>
@@ -433,7 +433,7 @@ export default function CustomerDetailsPage() {
         </CardHeader>
         <CardContent className="p-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            
+
             {/* Credit Balance Box */}
             <div className="border-2 border-dashed border-border rounded-xl p-6 bg-emerald-500/5 relative overflow-hidden">
               <div className="absolute top-0 left-0 w-full h-1 bg-emerald-500/20"></div>
@@ -441,9 +441,9 @@ export default function CustomerDetailsPage() {
                 <PlusCircle className="w-5 h-5" />
                 Credit Balance
               </div>
-              
+
               <div className="space-y-4">
-                <Select value={creditData.balance_type} onValueChange={(val) => setCreditData({...creditData, balance_type: val})}>
+                <Select value={creditData.balance_type} onValueChange={(val) => setCreditData({ ...creditData, balance_type: val })}>
                   <SelectTrigger className="bg-background border-border text-foreground h-11">
                     <SelectValue />
                   </SelectTrigger>
@@ -452,26 +452,26 @@ export default function CustomerDetailsPage() {
                     <SelectItem value="withdrawable">Withdrawable Balance</SelectItem>
                   </SelectContent>
                 </Select>
-                
-                <Input 
-                  type="number" 
-                  placeholder="Enter amount" 
-                  value={creditData.amount} 
-                  onChange={(e) => setCreditData({...creditData, amount: e.target.value})} 
-                  className="bg-background border-border text-foreground h-11" 
+
+                <Input
+                  type="number"
+                  placeholder="Enter amount"
+                  value={creditData.amount}
+                  onChange={(e) => setCreditData({ ...creditData, amount: e.target.value })}
+                  className="bg-background border-border text-foreground h-11"
                 />
-                
-                <Input 
-                  type="text" 
-                  placeholder="Reason (optional)" 
-                  value={creditData.reason} 
-                  onChange={(e) => setCreditData({...creditData, reason: e.target.value})} 
-                  className="bg-background border-border text-foreground h-11" 
+
+                <Input
+                  type="text"
+                  placeholder="Reason (optional)"
+                  value={creditData.reason}
+                  onChange={(e) => setCreditData({ ...creditData, reason: e.target.value })}
+                  className="bg-background border-border text-foreground h-11"
                 />
-                
-                <Button 
-                  onClick={() => handleProcessFinance('credit')} 
-                  disabled={isCreditProcessing} 
+
+                <Button
+                  onClick={() => handleProcessFinance('credit')}
+                  disabled={isCreditProcessing}
                   className="w-full h-11 bg-emerald-500 hover:bg-emerald-600 text-white font-medium text-base mt-2"
                 >
                   {isCreditProcessing ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Plus className="w-4 h-4 mr-2" />}
@@ -487,9 +487,9 @@ export default function CustomerDetailsPage() {
                 <MinusCircle className="w-5 h-5" />
                 Debit Balance
               </div>
-              
+
               <div className="space-y-4">
-                <Select value={debitData.balance_type} onValueChange={(val) => setDebitData({...debitData, balance_type: val})}>
+                <Select value={debitData.balance_type} onValueChange={(val) => setDebitData({ ...debitData, balance_type: val })}>
                   <SelectTrigger className="bg-background border-border text-foreground h-11">
                     <SelectValue />
                   </SelectTrigger>
@@ -498,26 +498,26 @@ export default function CustomerDetailsPage() {
                     <SelectItem value="withdrawable">Withdrawable Balance</SelectItem>
                   </SelectContent>
                 </Select>
-                
-                <Input 
-                  type="number" 
-                  placeholder="Enter amount" 
-                  value={debitData.amount} 
-                  onChange={(e) => setDebitData({...debitData, amount: e.target.value})} 
-                  className="bg-background border-border text-foreground h-11" 
+
+                <Input
+                  type="number"
+                  placeholder="Enter amount"
+                  value={debitData.amount}
+                  onChange={(e) => setDebitData({ ...debitData, amount: e.target.value })}
+                  className="bg-background border-border text-foreground h-11"
                 />
-                
-                <Input 
-                  type="text" 
-                  placeholder="Reason (optional)" 
-                  value={debitData.reason} 
-                  onChange={(e) => setDebitData({...debitData, reason: e.target.value})} 
-                  className="bg-background border-border text-foreground h-11" 
+
+                <Input
+                  type="text"
+                  placeholder="Reason (optional)"
+                  value={debitData.reason}
+                  onChange={(e) => setDebitData({ ...debitData, reason: e.target.value })}
+                  className="bg-background border-border text-foreground h-11"
                 />
-                
-                <Button 
-                  onClick={() => handleProcessFinance('debit')} 
-                  disabled={isDebitProcessing} 
+
+                <Button
+                  onClick={() => handleProcessFinance('debit')}
+                  disabled={isDebitProcessing}
                   className="w-full h-11 bg-red-500 hover:bg-red-600 text-white font-medium text-base mt-2"
                 >
                   {isDebitProcessing ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Minus className="w-4 h-4 mr-2" />}
@@ -594,7 +594,7 @@ export default function CustomerDetailsPage() {
             <h2 className="text-lg font-bold text-black">
               User History
             </h2>
-            </div>
+          </div>
           <div className="flex overflow-x-auto gap-2">
             <button onClick={() => setActiveHistoryTab('transactions')} className={`px-4 py-3 text-sm font-medium transition-colors whitespace-nowrap border-b-2 ${activeHistoryTab === 'transactions' ? 'text-[#5A8DEE] border-[#5A8DEE]' : 'text-muted-foreground border-transparent hover:text-foreground'}`}>
               Recent Transactions
@@ -687,7 +687,7 @@ export default function CustomerDetailsPage() {
           </div>
         )}
       </Card>
-      
+
       {/* Delete Confirmation Modal */}
       <Dialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
         <DialogContent className="sm:max-w-[425px] border-border bg-card">

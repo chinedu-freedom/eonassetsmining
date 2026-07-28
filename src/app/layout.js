@@ -9,8 +9,8 @@ const plusJakartaSans = Plus_Jakarta_Sans({
 });
 
 export const metadata = {
-  title: "Polychainapp Dashboard",
-  description: "Polychainapp Dashboard Administration",
+  title: "mykryptexapp.com Dashboard",
+  description: "mykryptexapp.com Dashboard Administration",
 };
 
 export default function RootLayout({ children }) {
