@@ -61,10 +61,16 @@ export default function LoginPage() {
       localStorage.removeItem("rememberedEmail");
     }
 
-    loginMutation.mutate({ email: data.email, password: data.password }, {
+    loginMutation.mutate({ email: data.email, password: data.password, keepMeLoggedIn }, {
       onSuccess: (res) => {
         if (res?.token) {
-          CookieManager.set("sec-admin-token", res.token);
+          const cookieOptions = {
+            path: "/",
+            expires: keepMeLoggedIn ? 1 : 1 / 24, // 24 hours (1 day) or 1 hour
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "Lax",
+          };
+          CookieManager.set("sec-admin-token", res.token, cookieOptions);
           localStorage.setItem("adminToken", res.token);
           localStorage.setItem("adminUser", JSON.stringify(res.admin));
         }
