@@ -174,7 +174,7 @@ export default function SpinWheelPage() {
       <Card className="border-none shadow-sm bg-card">
         <CardContent className="p-6">
           <div className="flex flex-col md:flex-row gap-4 w-full">
-            <div className="flex items-center gap-4 w-full">
+            <div className="flex flex-col sm:flex-row gap-4 w-full">
               <div className="relative flex-1">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground z-10 pointer-events-none" />
                 <Input
@@ -185,7 +185,7 @@ export default function SpinWheelPage() {
                 />
               </div>
               <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger className="w-36 bg-background">
+                <SelectTrigger className="w-full sm:w-36 bg-background">
                   <SelectValue placeholder="Status" />
                 </SelectTrigger>
                 <SelectContent>

@@ -170,8 +170,8 @@ export default function PlansManagementPage() {
                 className="pl-9 bg-background h-10 w-full"
               />
             </div>
-            <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="w-48 bg-background">
+             <Select value={statusFilter} onValueChange={setStatusFilter}>
+              <SelectTrigger className="w-full md:w-48 bg-background">
                 <SelectValue placeholder="Filter by status" />
               </SelectTrigger>
               <SelectContent>
@@ -181,7 +181,7 @@ export default function PlansManagementPage() {
               </SelectContent>
             </Select>
             <Select value={typeFilter} onValueChange={setTypeFilter}>
-              <SelectTrigger className="w-48 bg-background">
+              <SelectTrigger className="w-full md:w-48 bg-background">
                 <SelectValue placeholder="Filter by type" />
               </SelectTrigger>
               <SelectContent>

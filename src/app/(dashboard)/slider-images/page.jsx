@@ -107,18 +107,18 @@ export default function SliderImagesPage() {
       <Card className="border-none shadow-sm bg-white rounded-md">
         <CardContent className="p-6">
           <div className="flex flex-col md:flex-row gap-4 w-full">
-            <div className="flex items-center gap-4 w-full">
+            <div className="flex flex-col sm:flex-row gap-4 w-full">
               <div className="relative flex-1">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground z-10 pointer-events-none" />
                 <Input
                   placeholder="Search page view..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-9 bg-white border-gray-200 h-10"
+                  className="pl-9 bg-white border-gray-200 h-10 w-full"
                 />
               </div>
               <Select value={statusFilter} onValueChange={handleStatusFilterChange}>
-                <SelectTrigger className="w-52 bg-white border-gray-200 h-10">
+                <SelectTrigger className="w-full sm:w-52 bg-white border-gray-200 h-10">
                   <SelectValue placeholder="Status" />
                 </SelectTrigger>
                 <SelectContent>

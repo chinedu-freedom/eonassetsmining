@@ -87,7 +87,7 @@ export default function PayoutCryptosPage() {
       <Card className="border border-gray-150 shadow-sm bg-white rounded-lg">
         <CardContent className="p-6">
           <div className="flex flex-col md:flex-row gap-4 w-full">
-            <div className="flex items-center gap-4 w-full">
+            <div className="flex flex-col sm:flex-row gap-4 w-full">
               <div className="relative flex-1">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 z-10 pointer-events-none" />
                 <Input
@@ -98,7 +98,7 @@ export default function PayoutCryptosPage() {
                 />
               </div>
               <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger className="w-36 bg-white border-gray-200 text-gray-700 text-sm rounded-lg focus:ring-0 focus:border-blue-500/50">
+                <SelectTrigger className="w-full sm:w-36 bg-white border-gray-200 text-gray-700 text-sm rounded-lg focus:ring-0 focus:border-blue-500/50">
                   <SelectValue placeholder="Status" />
                 </SelectTrigger>
                 <SelectContent>

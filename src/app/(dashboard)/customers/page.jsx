@@ -146,7 +146,7 @@ export default function CustomersManagementPage() {
                 className="pl-9 border-gray-300 h-10 rounded-md text-[13px]"
               />
             </div>
-            <div className="w-[180px]">
+            <div className="w-full md:w-[180px]">
               <Select value={statusFilter} onValueChange={setStatusFilter}>
                 <SelectTrigger className="border-gray-200 h-10 text-gray-600">
                   <SelectValue placeholder="All Status" />
@@ -158,7 +158,7 @@ export default function CustomersManagementPage() {
                 </SelectContent>
               </Select>
             </div>
-            <div className="w-[180px]">
+            <div className="w-full md:w-[180px]">
               <Select value={countryFilter} onValueChange={setCountryFilter}>
                 <SelectTrigger className="border-gray-200 h-10 text-gray-600">
                   <SelectValue placeholder="All Countries" />
