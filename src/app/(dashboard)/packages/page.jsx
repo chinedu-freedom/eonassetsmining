@@ -210,7 +210,7 @@ export default function PlansManagementPage() {
                   <TableHead className="font-bold text-[#475f7b] text-[12px] uppercase">Duration</TableHead>
                   <TableHead className="font-bold text-[#475f7b] text-[12px] uppercase">Daily %</TableHead>
                   <TableHead className="font-bold text-[#475f7b] text-[12px] uppercase">Min/Max</TableHead>
-                  <TableHead className="font-bold text-[#475f7b] text-[12px] uppercase">Capital Return</TableHead>
+                  <TableHead className="font-bold text-[#475f7b] text-[12px] uppercase">Deposit Type</TableHead>
                   <TableHead className="font-bold text-[#475f7b] text-[12px] uppercase">Status</TableHead>
                   <TableHead className="font-bold text-[#475f7b] text-[12px] uppercase text-right">Actions</TableHead>
                 </TableRow>

@@ -37,7 +37,6 @@ const planSchema = z.object({
   dailyReturn: z.coerce.number().min(0.01, "Daily return is required"),
   minInvestment: z.coerce.number().min(1, "Min investment is required"),
   maxInvestment: z.coerce.number().min(1, "Max investment is required"),
-  returnCapital: z.enum(["yes", "no"]),
   isFixedDeposit: z.enum(["yes", "no"]),
   status: z.enum(["active", "inactive"]),
 });
@@ -66,7 +65,6 @@ export default function PlanDialog({ open, setOpen, initialData }) {
       dailyReturn: 1.2,
       minInvestment: 10,
       maxInvestment: 10000,
-      returnCapital: "yes",
       isFixedDeposit: "no",
       status: "active",
     },
@@ -87,7 +85,6 @@ export default function PlanDialog({ open, setOpen, initialData }) {
         dailyReturn: initialData.daily_income ? Number(initialData.daily_income) : 1.2,
         minInvestment: initialData.min_investment ? Number(initialData.min_investment) : 10,
         maxInvestment: initialData.max_investment ? Number(initialData.max_investment) : 10000,
-        returnCapital: initialData.capital_return ? "yes" : "no",
         isFixedDeposit: initialData.is_fixed_deposit ? "yes" : "no",
         status: initialData.status ? "active" : "inactive",
       });
@@ -99,7 +96,6 @@ export default function PlanDialog({ open, setOpen, initialData }) {
     }
   }, [initialData, reset]);
 
-  const returnCapital = watch("returnCapital");
   const status = watch("status");
 
   const createMutation = usePost("/admin/plans", ["plans"]);
@@ -129,7 +125,7 @@ export default function PlanDialog({ open, setOpen, initialData }) {
       daily_income: Number(data.dailyReturn),
       min_investment: Number(data.minInvestment),
       max_investment: Number(data.maxInvestment),
-      capital_return: data.returnCapital === "yes",
+      capital_return: false,
       is_fixed_deposit: data.isFixedDeposit === "yes",
       status: data.status === "active",
       image: imagePreview
@@ -309,18 +305,7 @@ export default function PlanDialog({ open, setOpen, initialData }) {
           {/* Capital & Status */}
           <div className="bg-white p-6 rounded-lg border shadow-sm space-y-4">
             <h3 className="text-lg font-medium text-blue-500">Capital, Deposit Type & Status</h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="flex items-center justify-between gap-6">
-                <div>
-                  <Label className="text-gray-600 text-sm mb-1.5 block">Return Capital?</Label>
-                  <p className="text-[11px] text-gray-500">● Yes: Initial capital returned after plan ends</p>
-                </div>
-                <Switch
-                  checked={returnCapital === "yes"}
-                  onCheckedChange={(val) => setValue("returnCapital", val ? "yes" : "no")}
-                  className="data-[state=checked]:bg-blue-600"
-                />
-              </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="flex items-center justify-between gap-6">
                 <div>
                   <Label className="text-gray-600 text-sm mb-1.5 block">Is Fixed Deposit?</Label>

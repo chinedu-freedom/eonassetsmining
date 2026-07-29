@@ -26,7 +26,6 @@ const emailSettingsSchema = z.object({
   notify_withdrawal_rejected: z.boolean(),
   notify_news_update: z.boolean(),
   notify_profit_return: z.boolean(),
-  notify_capital_return: z.boolean(),
 })
 
 export default function EmailSettingsPage() {
@@ -50,7 +49,6 @@ export default function EmailSettingsPage() {
       notify_withdrawal_rejected: true,
       notify_news_update: true,
       notify_profit_return: true,
-      notify_capital_return: true,
     }
   })
 
@@ -71,7 +69,6 @@ export default function EmailSettingsPage() {
         notify_withdrawal_rejected: settingsData.notify_withdrawal_rejected ?? true,
         notify_news_update: settingsData.notify_news_update ?? true,
         notify_profit_return: settingsData.notify_profit_return ?? true,
-        notify_capital_return: settingsData.notify_capital_return ?? true,
       })
     }
   }, [settingsData, reset])
@@ -186,12 +183,7 @@ export default function EmailSettingsPage() {
                         <label htmlFor="oth-prof" className="text-[13px] font-medium text-gray-600 cursor-pointer">Profit Return</label>
                       </div>
                     )} />
-                    <Controller name="notify_capital_return" control={control} render={({ field }) => (
-                      <div className="flex items-center space-x-2">
-                        <Checkbox id="oth-cap" checked={field.value} onCheckedChange={field.onChange} className="border-gray-300 data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600 text-white rounded" />
-                        <label htmlFor="oth-cap" className="text-[13px] font-medium text-gray-600 cursor-pointer">Capital Return</label>
-                      </div>
-                    )} />
+
                     <Controller name="notify_news_update" control={control} render={({ field }) => (
                       <div className="flex items-center space-x-2">
                         <Checkbox id="oth-news" checked={field.value} onCheckedChange={field.onChange} className="border-gray-300 data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600 text-white rounded" />
