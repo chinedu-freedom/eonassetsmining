@@ -31,6 +31,7 @@ export default function DashboardOverview() {
     assetsValue: 0,
     inProgressAssetsCount: 0,
     inProgressAssetsSum: 0,
+    cumulativeInvestmentsSum: 0,
     pendingDepositsCount: 0,
     approvedDepositsCount: 0,
     pendingWithdrawalsCount: 0,
@@ -82,6 +83,8 @@ export default function DashboardOverview() {
     { title: "Total Deposit", value: `${symbol}${Number(stats.approvedDepositsSum || 0).toFixed(2)}`, icon: DollarSign, colorClasses: "bg-[#e2ffe8] text-emerald-600", link: "/recharge/approved" },
     { title: "Total Withdrawal", value: `${symbol}${Number(stats.approvedWithdrawalsSum || 0).toFixed(2)}`, icon: DollarSign, colorClasses: "bg-[#e2ffe8] text-emerald-600", link: "/withdrawals/approved" },
     { title: "Total Assets", value: `${symbol}${Number(stats.totalAssets || 0).toFixed(2)}`, icon: Briefcase, colorClasses: "bg-[#f0f7ff] text-blue-600", link: "/packages" },
+    { title: "Active Investments", value: `${symbol}${Number(stats.inProgressAssetsSum || 0).toFixed(2)}`, icon: DollarSign, colorClasses: "bg-[#f0f7ff] text-blue-600", link: "/packages" },
+    { title: "Cumulative Investments", value: `${symbol}${Number(stats.cumulativeInvestmentsSum || 0).toFixed(2)}`, icon: DollarSign, colorClasses: "bg-[#e2ffe8] text-emerald-600", link: "/packages" },
 
     { title: "Assets Value", value: `${symbol}${Number(stats.assetsValue || 0).toFixed(2)}`, icon: CircleDollarSign, colorClasses: "bg-[#e2ffe8] text-emerald-600", link: "/packages" },
     { title: "In-Progress Assets", value: (stats.inProgressAssetsCount || 0).toString(), icon: Clock, colorClasses: "bg-[#ffeded] text-[#FF5B5C]", link: "/packages" },
