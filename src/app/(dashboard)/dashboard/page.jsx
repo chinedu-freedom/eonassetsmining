@@ -82,11 +82,7 @@ export default function DashboardOverview() {
     { title: "Total Users", value: (stats.totalUsers || 0).toString(), icon: User, colorClasses: "bg-[#ffeded] text-[#FF5B5C]", link: "/customers" },
     { title: "Total Deposit", value: `${symbol}${Number(stats.approvedDepositsSum || 0).toFixed(2)}`, icon: DollarSign, colorClasses: "bg-[#e2ffe8] text-emerald-600", link: "/recharge/approved" },
     { title: "Total Withdrawal", value: `${symbol}${Number(stats.approvedWithdrawalsSum || 0).toFixed(2)}`, icon: DollarSign, colorClasses: "bg-[#e2ffe8] text-emerald-600", link: "/withdrawals/approved" },
-    { title: "Total Assets", value: `${symbol}${Number(stats.totalAssets || 0).toFixed(2)}`, icon: Briefcase, colorClasses: "bg-[#f0f7ff] text-blue-600", link: "/packages" },
-    { title: "Active Investments", value: `${symbol}${Number(stats.inProgressAssetsSum || 0).toFixed(2)}`, icon: DollarSign, colorClasses: "bg-[#f0f7ff] text-blue-600", link: "/packages" },
-    { title: "Cumulative Investments", value: `${symbol}${Number(stats.cumulativeInvestmentsSum || 0).toFixed(2)}`, icon: DollarSign, colorClasses: "bg-[#e2ffe8] text-emerald-600", link: "/packages" },
 
-    { title: "Assets Value", value: `${symbol}${Number(stats.assetsValue || 0).toFixed(2)}`, icon: CircleDollarSign, colorClasses: "bg-[#e2ffe8] text-emerald-600", link: "/packages" },
     { title: "In-Progress Assets", value: (stats.inProgressAssetsCount || 0).toString(), icon: Clock, colorClasses: "bg-[#ffeded] text-[#FF5B5C]", link: "/packages" },
 
     { title: "Pending Withdraw Count", value: (stats.pendingWithdrawalsCount || 0).toString(), icon: FileText, colorClasses: "bg-[#ffeded] text-[#FF5B5C]", link: "/withdrawals/pending" },
@@ -131,7 +127,7 @@ export default function DashboardOverview() {
     return (
       <div className="max-w-7xl mx-auto space-y-4 sm:space-y-6 font-['Rubik',sans-serif]">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-          {Array.from({ length: 16 }).map((_, i) => (
+          {Array.from({ length: 14 }).map((_, i) => (
             <Card key={i} className="border border-gray-100 shadow-[0_4px_24px_0_rgba(34,41,47,0.05)] rounded-[12px] bg-white">
               <CardContent className="p-5 flex items-center justify-between">
                 <div className="flex flex-col items-start gap-3 w-[70%]">
