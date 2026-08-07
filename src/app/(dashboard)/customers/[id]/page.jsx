@@ -53,7 +53,7 @@ export default function CustomerDetailsPage() {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
   const [showSaveConfirm, setShowSaveConfirm] = useState(false)
 
-  const { data: countriesRes } = useFetchData("/auth/countries", ["countries"])
+  const { data: countriesRes } = useFetchData("/admin/countries", ["countries"])
   const countries = Array.isArray(countriesRes) ? countriesRes : countriesRes?.data || [];
 
   const [activeHistoryTab, setActiveHistoryTab] = useState("transactions")
