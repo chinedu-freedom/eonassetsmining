@@ -63,6 +63,7 @@ export default function CustomerDetailsPage() {
   const [debitData, setDebitData] = useState({ balance_type: "main", amount: "", reason: "" })
   const [isCreditProcessing, setIsCreditProcessing] = useState(false)
   const [isDebitProcessing, setIsDebitProcessing] = useState(false)
+  const [securityModal, setSecurityModal] = useState({ isOpen: false, actionType: "", password: "" })
 
   useEffect(() => {
     if (user && !user.error && !editData && !isLoading) {
@@ -115,14 +116,31 @@ export default function CustomerDetailsPage() {
 
   const handleProcessFinance = async (actionType) => {
     const dataObj = actionType === 'credit' ? creditData : debitData;
-    const setProcessing = actionType === 'credit' ? setIsCreditProcessing : setIsDebitProcessing;
 
     if (!dataObj.amount || Number(dataObj.amount) <= 0) {
       toast.error("Please enter a valid amount")
       return;
     }
 
+    setSecurityModal({
+      isOpen: true,
+      actionType,
+      password: ''
+    });
+  }
+
+  const handleConfirmProcessFinance = async () => {
+    const { actionType, password } = securityModal;
+    const dataObj = actionType === 'credit' ? creditData : debitData;
+    const setProcessing = actionType === 'credit' ? setIsCreditProcessing : setIsDebitProcessing;
+
+    if (!password) {
+      toast.error("Admin password is required")
+      return;
+    }
+
     setProcessing(true)
+    setSecurityModal(prev => ({ ...prev, isOpen: false }))
     try {
       const token = document.cookie.split("; ").find(row => row.startsWith("sec-admin-token="))?.split("=")[1];
       const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/admin/users/${id}/${actionType}`, {
@@ -134,7 +152,8 @@ export default function CustomerDetailsPage() {
         body: JSON.stringify({
           amount: Number(dataObj.amount),
           balance_type: dataObj.balance_type,
-          reason: dataObj.reason
+          reason: dataObj.reason,
+          adminPassword: password
         })
       })
 
@@ -732,6 +751,56 @@ export default function CustomerDetailsPage() {
                 Save Changes
               </Button>
             </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Security Verification Modal */}
+      <Dialog 
+        open={securityModal.isOpen} 
+        onOpenChange={(open) => setSecurityModal(prev => ({ ...prev, isOpen: open }))}
+      >
+        <DialogContent className="max-w-md bg-card border border-border">
+          <DialogHeader>
+            <DialogTitle className="text-xl font-bold flex items-center gap-2">
+              <ShieldAlert className="w-5 h-5 text-amber-500" />
+              Confirm Admin Verification
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-3">
+            <p className="text-sm text-muted-foreground">
+              You are about to {securityModal.actionType} <strong>{symbol}{Number(securityModal.actionType === 'credit' ? creditData.amount : debitData.amount).toFixed(2)}</strong> to this user's <strong>{securityModal.actionType === 'credit' ? creditData.balance_type : debitData.balance_type} balance</strong>.
+            </p>
+            <div className="space-y-2">
+              <Label htmlFor="admin-password">Enter Admin Password</Label>
+              <Input
+                id="admin-password"
+                type="password"
+                placeholder="Enter your password to confirm"
+                value={securityModal.password}
+                onChange={(e) => setSecurityModal(prev => ({ ...prev, password: e.target.value }))}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') handleConfirmProcessFinance();
+                }}
+                className="bg-background border-border text-foreground"
+                autoFocus
+              />
+            </div>
+          </div>
+          <div className="flex justify-end gap-3 mt-4">
+            <Button
+              variant="outline"
+              onClick={() => setSecurityModal(prev => ({ ...prev, isOpen: false }))}
+              className="border-border text-foreground bg-background hover:bg-muted"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleConfirmProcessFinance}
+              className={`text-white ${securityModal.actionType === 'credit' ? 'bg-emerald-500 hover:bg-emerald-600' : 'bg-red-500 hover:bg-red-600'}`}
+            >
+              Confirm
+            </Button>
           </div>
         </DialogContent>
       </Dialog>
